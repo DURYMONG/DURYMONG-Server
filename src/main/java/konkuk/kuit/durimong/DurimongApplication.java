@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DurimongApplication {
 
 	public static void main(String[] args) {
+		System.out.println("DurimongApplication started");
 		SpringApplication.run(DurimongApplication.class, args);
 	}
 
