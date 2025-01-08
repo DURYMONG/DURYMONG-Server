@@ -3,11 +3,11 @@ name: CD with Gradle and Docker
 on:
   push:
     branches:
-      - 'devlop'
+      - 'develop'
       - 'main'
   pull_request:
     branches:
-      - 'devlop'
+      - 'develop'
       - 'main'
 
 permissions:
