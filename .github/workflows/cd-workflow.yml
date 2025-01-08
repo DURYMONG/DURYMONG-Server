@@ -49,16 +49,14 @@ jobs:
           envs: GITHUB_SHA
           script: |
             echo "✋🏻Stopping existing container"
-            sudo docker stop durimong
-            sudo docker rm durimong
+            sudo docker stop durimong || true
+            sudo docker rm durimong || true
         
-            sudo docker ps -a
-            
             echo "🥳 Pulling new image"
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
             
             echo "🌱 Running new container"
-            sudo docker run -d -p 8000:8080 --name durimong ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
+            sudo docker run --pull always -d -p 8000:8080 --name durimong ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
 
             echo "🚮 Cleaning up old images"
             sudo docker image prune -f
