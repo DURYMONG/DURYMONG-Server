@@ -18,8 +18,9 @@ jobs:
     runs-on: ubuntu-latest     # OS 지정
     steps:
       - uses: actions/checkout@v4
+
       - name: ☕️ set up JDK 17        # 프로젝트의 java 버전에 맞추어 설정
-        uses: actions/setup-java@v
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -30,4 +31,4 @@ jobs:
         run: chmod +x gradlew
 
       - name: 🐘 build with Gradle (without test)
-			  run: ./gradlew clean build -x test --stacktrace
+        run: ./gradlew clean build -x test --stacktrace
