@@ -11,7 +11,7 @@ public class AuthController {
     @Operation(summary = "테스트1" , description = "테스트1")
     @GetMapping("test1")
     public ResponseEntity<String> test(){
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok("test");
     }
 
     @Operation(summary = "테스트2" , description = "테스트2")
