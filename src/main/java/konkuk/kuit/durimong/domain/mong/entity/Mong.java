@@ -35,4 +35,12 @@ public class Mong {
     @JoinColumn(name = "userId")
     private User user;
 
+    public Mong create(String name, String image, String color){
+        return builder()
+                .name(name)
+                .image(image)
+                .color(color)
+                .build();
+    }
+
 }
