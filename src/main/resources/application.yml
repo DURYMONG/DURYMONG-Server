@@ -1,6 +1,9 @@
 spring:
   application:
     name: durymong
+  web:
+    resources:
+      add-mappings: false
   profiles:
     group:
       local: local-db, dev-port

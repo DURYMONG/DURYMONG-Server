@@ -15,11 +15,11 @@ public enum ErrorCode {
     PARAMETER_GRAMMAR_ERROR(-104, "파라미터 문법 에러입니다.", 422),
     INVALID_TYPE_PARAMETER(-106, "잘못된 타입 파라미터입니다.", 422),
     NOT_FOUND_PATH(-108, "존재하지 않는 API 경로입니다.", 404),
-
     //User
     USER_NOT_FOUND(-300, "존재하지 않는 회원입니다.", 406),
     USER_DUPLICATE_ID(-301, "이미 존재하는 아이디입니다.", 401),
-    USER_NOT_MATCH_PASSWORD(-302, "비밀번호가 일치하지 않습니다.", 403);
+    USER_NOT_MATCH_PASSWORD(-302, "비밀번호가 일치하지 않습니다.", 403),
+    USER_DUPLICATE_EMAIL(-303,"이미 사용중인 이메일입니다.",401);
     //Mong
 
 
