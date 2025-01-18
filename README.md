@@ -1,1 +1,1 @@
-# DURIMONG-Server
+# DURYMONG-Server
