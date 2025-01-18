@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
+import konkuk.kuit.durimong.global.response.result.ResponseState;
 @Getter
 @Setter
 @ToString
@@ -29,6 +29,10 @@ public class SuccessResponse<T> {
 
     public static <T> SuccessResponse<T> of(int code, String message, T data) {
         return new SuccessResponse<>(code, message, data);
+    }
+
+    public static <T> SuccessResponse<T> ok(T data) {
+        return of(ResponseState.SUCCESS.getCode(), ResponseState.SUCCESS.getMessage(), data);
     }
 
 }
