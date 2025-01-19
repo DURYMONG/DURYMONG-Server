@@ -42,13 +42,15 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime lastLogin;
 
-    private User create(String id, String password, String email, String name, String nickname) {
+    public static User create(String id, String password, String email, String name, String nickname) {
         return User.builder()
                 .id(id)
                 .password(password)
                 .email(email)
                 .name(name)
                 .nickname(nickname)
+                .createdAt(LocalDateTime.now())
+                .lastLogin(LocalDateTime.now())
                 .build();
     }
 }

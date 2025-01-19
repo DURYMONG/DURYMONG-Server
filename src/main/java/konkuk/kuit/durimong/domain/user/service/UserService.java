@@ -1,8 +1,11 @@
 package konkuk.kuit.durimong.domain.user.service;
 
 import jakarta.transaction.Transactional;
+import konkuk.kuit.durimong.domain.user.dto.request.signup.UserSignUpReq;
+import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
 import konkuk.kuit.durimong.global.exception.CustomException;
+import konkuk.kuit.durimong.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +27,7 @@ public class UserService {
     private final MailService mailService;
     private final RedisService redisService;
     private final UserRepository userRepository;
-
+    private final JwtProvider jwtProvider;
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
 
@@ -86,6 +89,13 @@ public class UserService {
             throw new CustomException(USER_EMAIL_VERIFY_FAILED);
         }
         return "인증이 완료되었습니다.";
+    }
+
+    public String register(UserSignUpReq req) {
+        User user = User.create(req.getId(), req.getPassword(), req.getEmail(),req.getName(),req.getEmail());
+        user = userRepository.save(user);
+        String accessToken = jwtProvider.createAccessToken(user);
+        return "회원가입이 완료되었습니다.";
     }
 
 

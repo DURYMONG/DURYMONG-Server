@@ -1,17 +1,12 @@
 package konkuk.kuit.durimong.domain.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import konkuk.kuit.durimong.domain.user.dto.request.signup.EmailVerifyReq;
-import konkuk.kuit.durimong.domain.user.dto.request.signup.UserEmailReq;
-import konkuk.kuit.durimong.domain.user.dto.request.signup.UserIdReq;
-import konkuk.kuit.durimong.domain.user.dto.request.signup.UserPasswordReq;
+import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
 import konkuk.kuit.durimong.domain.user.service.UserService;
 import konkuk.kuit.durimong.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -49,6 +44,11 @@ public class UserController {
         return SuccessResponse.ok(userService.verifyCode(req.getEmail(),req.getAuthCode()));
     }
 
-
-
+    @Operation(summary = "회원가입",description = "유저가 회원가입을 합니다.")
+    @PostMapping("signup")
+    public SuccessResponse<String> signup(
+            @Validated @RequestBody UserSignUpReq req){
+        return SuccessResponse.ok(userService.register(req));
+    }
+    
 }
