@@ -1,12 +1,16 @@
 spring:
   application:
     name: durymong
+  web:
+    resources:
+      add-mappings: false
   profiles:
     group:
-      local: local-db, dev-port
-      dev: dev-db, dev-port
-      prod: prod-db, prod-port
+      local: local-db, dev-port, common
+      dev: dev-db, dev-port, common
+      prod: prod-db, prod-port, common
     active: dev
+
 ---
 # ??? DB
 spring:
@@ -26,6 +30,11 @@ spring:
         format_sql: true
         show_sql: true
         highlight_sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 ---
 # ??? DB
 spring:
@@ -42,9 +51,15 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
         show_sql: true
         highlight_sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 ---
 # ??? DB
 spring:
@@ -65,6 +80,11 @@ spring:
         show_sql: true
         highlight_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 ---
 # ??? ??
 spring:
@@ -81,3 +101,32 @@ spring:
       on-profile: prod-port
 server:
   port: 9002
+---
+# ??
+spring:
+  config:
+    activate:
+      on-profile: common
+  docker:
+        compose:
+          enabled: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: idwjddus1112@gmail.com
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30?
+
+jwt:
+  secret: ${JWT_SECRET}
+  accessTokenExpiration: 3600000 #1??
