@@ -20,11 +20,9 @@ public enum ErrorCode {
     USER_DUPLICATE_ID(-301, "이미 존재하는 아이디입니다.", 401),
     USER_NOT_MATCH_PASSWORD(-302, "비밀번호가 일치하지 않습니다.", 403),
     USER_DUPLICATE_EMAIL(-303,"이미 사용중인 이메일입니다.",401),
-    USER_PASSWORD_SHORT(-304,"비밀번호는 8자 이상 16자 이하입니다.", 401),
+    USER_PASSWORD_SHORT(-304,"비밀번호는 6자 이상 10자 이하입니다.", 401),
     USER_PASSWORD_NONUM(-305,"비밀번호에 숫자가 포함되어야 합니다.",401),
-    USER_PASSWORD_LOWER(-306,"비밀번호에 소문자가 포함되어야 합니다.",401),
-    USER_PASSWORD_UPPER(-307,"비밀번호에 대문자가 포함되어야 합니다.",401),
-    USER_PASSWORD_SPECIAL(-308,"비밀번호에 특수문자가 포함되어야 합니다.",401);
+    USER_PASSWORD_ENGLISH(-306,"비밀번호에 영문자가 포함되어야 합니다.",401);
     //Mong
 
 

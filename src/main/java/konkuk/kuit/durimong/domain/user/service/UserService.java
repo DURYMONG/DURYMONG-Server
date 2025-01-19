@@ -27,7 +27,7 @@ public class UserService {
         return null;
     }
     public String validatePassword(String password) {
-        if (password.length() < 8 || password.length() > 16) {
+        if (password.length() < 6 || password.length() > 10) {
             throw new CustomException(USER_PASSWORD_SHORT);
         }
 
@@ -35,19 +35,10 @@ public class UserService {
             throw new CustomException(USER_PASSWORD_NONUM);
         }
 
-
-
-        if (!password.matches(".*[a-z].*")) {
-            throw new CustomException(USER_PASSWORD_LOWER);
+        if (!password.matches(".*[a-zA-Z].*")) {
+            throw new CustomException(USER_PASSWORD_ENGLISH);
         }
 
-        if (!password.matches(".*[A-Z].*")) {
-            throw new CustomException(USER_PASSWORD_UPPER);
-        }
-
-        if (!password.matches(".*[!@#$%^&*()].*")) {
-            throw new CustomException(USER_PASSWORD_SPECIAL);
-        }
         return null;
     }
 

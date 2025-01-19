@@ -28,7 +28,7 @@ public class UserController {
         return userService.validateEmail(req.getEmail());
     }
 
-    @Operation(summary = "비밀번호 유효성 검사", description = "비밀번호의 유효성(길이,대소문자,특수문자 여부)을 검사합니다.")
+    @Operation(summary = "비밀번호 유효성 검사", description = "비밀번호의 유효성(길이,영문 + 숫자)을 검사합니다.")
     @PostMapping("password")
     public String getPassword(UserPasswordReq req){
         return userService.validatePassword(req.getPassword());
