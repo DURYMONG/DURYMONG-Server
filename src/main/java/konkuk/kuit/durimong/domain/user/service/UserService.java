@@ -96,8 +96,7 @@ public class UserService {
 
     public String register(UserSignUpReq req) {
         User user = User.create(req.getId(), req.getPassword(), req.getEmail(),req.getName(),req.getEmail());
-        user = userRepository.save(user);
-        String accessToken = jwtProvider.createAccessToken(user);
+        userRepository.save(user);
         return "회원가입이 완료되었습니다.";
     }
 
@@ -110,7 +109,9 @@ public class UserService {
         user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
         String accessToken = jwtProvider.createAccessToken(user);
-        return new UserTokenRes(accessToken);
+        String refreshToken = jwtProvider.createRefreshToken(user);
+        jwtProvider.storeRefreshToken(refreshToken,user.getUserId());
+        return new UserTokenRes(accessToken,refreshToken);
     }
 
 
