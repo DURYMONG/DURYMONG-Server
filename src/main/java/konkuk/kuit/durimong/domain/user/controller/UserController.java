@@ -1,19 +1,21 @@
 package konkuk.kuit.durimong.domain.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import konkuk.kuit.durimong.domain.user.dto.request.signup.EmailVerifyReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.UserEmailReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.UserIdReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.UserPasswordReq;
 import konkuk.kuit.durimong.domain.user.service.UserService;
 import konkuk.kuit.durimong.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("users")
 public class UserController {
     private final UserService userService;
 
@@ -34,5 +36,19 @@ public class UserController {
     public SuccessResponse<String> getPassword(UserPasswordReq req){
         return SuccessResponse.ok(userService.validatePassword(req.getPassword()));
     }
+
+    @Operation(summary = "이메일 인증번호 전송",description = "유저의 이메일로 인증번호를 전송합니다.")
+    @PostMapping("email-requests")
+    public SuccessResponse<String> requestEmail(UserEmailReq req){
+        return SuccessResponse.ok(userService.sendCodeToEmail(req.getEmail()));
+    }
+
+    @Operation(summary = "이메일 인증번호 확인", description = "유저에게 전송한 인증번호와 유저가 입력한 인증번호 일치 여부를 확인합니다.")
+    @GetMapping("email-verifications")
+    public SuccessResponse<String> emailVerification(EmailVerifyReq req){
+        return SuccessResponse.ok(userService.verifyCode(req.getEmail(),req.getAuthCode()));
+    }
+
+
 
 }

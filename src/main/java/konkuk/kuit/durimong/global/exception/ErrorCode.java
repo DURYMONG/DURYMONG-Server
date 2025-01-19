@@ -15,6 +15,8 @@ public enum ErrorCode {
     PARAMETER_GRAMMAR_ERROR(-104, "파라미터 문법 에러입니다.", 422),
     INVALID_TYPE_PARAMETER(-106, "잘못된 타입 파라미터입니다.", 422),
     NOT_FOUND_PATH(-108, "존재하지 않는 API 경로입니다.", 404),
+    UNABLE_TO_SEND_EMAIL(-109,"이메일을 전송할 수 없습니다.",404),
+    NO_SUCH_ALGORITHM(-110,"사용 불가능한 암호화 알고리즘입니다.",404),
     //User
     USER_NOT_FOUND(-300, "존재하지 않는 회원입니다.", 406),
     USER_DUPLICATE_ID(-301, "이미 존재하는 아이디입니다.", 401),
@@ -22,7 +24,8 @@ public enum ErrorCode {
     USER_DUPLICATE_EMAIL(-303,"이미 사용중인 이메일입니다.",401),
     USER_PASSWORD_SHORT(-304,"비밀번호는 6자 이상 10자 이하입니다.", 401),
     USER_PASSWORD_NONUM(-305,"비밀번호에 숫자가 포함되어야 합니다.",401),
-    USER_PASSWORD_ENGLISH(-306,"비밀번호에 영문자가 포함되어야 합니다.",401);
+    USER_PASSWORD_ENGLISH(-306,"비밀번호에 영문자가 포함되어야 합니다.",401),
+    USER_EMAIL_VERIFY_FAILED(-307,"이메일 인증에 실패하였씁니다.",401);
     //Mong
 
 
