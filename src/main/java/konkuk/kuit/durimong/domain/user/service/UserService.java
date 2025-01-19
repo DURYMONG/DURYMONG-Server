@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 import static konkuk.kuit.durimong.global.exception.ErrorCode.*;
@@ -106,6 +107,8 @@ public class UserService {
         if (!req.getPassword().equals(user.getPassword())) {
             throw new CustomException(USER_NOT_MATCH_PASSWORD);
         }
+        user.setLastLogin(LocalDateTime.now());
+        userRepository.save(user);
         String accessToken = jwtProvider.createAccessToken(user);
         return new UserTokenRes(accessToken);
     }
