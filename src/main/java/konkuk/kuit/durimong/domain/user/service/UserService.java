@@ -18,13 +18,13 @@ public class UserService {
         if(userRepository.existsById(id)) {
             throw new CustomException(USER_DUPLICATE_ID);
         }
-        return null;
+        return "사용 가능한 아이디입니다.";
     }
     public String validateEmail(String email) {
         if(userRepository.existsByEmail(email)) {
             throw new CustomException(USER_DUPLICATE_EMAIL);
         }
-        return null;
+        return "사용 가능한 이메일입니다.";
     }
     public String validatePassword(String password) {
         if (password.length() < 6 || password.length() > 10) {
@@ -39,7 +39,7 @@ public class UserService {
             throw new CustomException(USER_PASSWORD_ENGLISH);
         }
 
-        return null;
+        return "사용 가능한 비밀번호입니다.";
     }
 
 }
