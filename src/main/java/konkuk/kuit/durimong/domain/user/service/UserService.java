@@ -1,7 +1,9 @@
 package konkuk.kuit.durimong.domain.user.service;
 
 import jakarta.transaction.Transactional;
+import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.UserSignUpReq;
+import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
 import konkuk.kuit.durimong.global.exception.CustomException;
@@ -98,6 +100,15 @@ public class UserService {
         return "회원가입이 완료되었습니다.";
     }
 
+    public UserTokenRes login(UserLoginReq req){
+        User user = userRepository.findById(req.getId())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if (!req.getPassword().equals(user.getPassword())) {
+            throw new CustomException(USER_NOT_MATCH_PASSWORD);
+        }
+        String accessToken = jwtProvider.createAccessToken(user);
+        return new UserTokenRes(accessToken);
+    }
 
 
 }

@@ -1,7 +1,9 @@
 package konkuk.kuit.durimong.domain.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
+import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
 import konkuk.kuit.durimong.domain.user.service.UserService;
 import konkuk.kuit.durimong.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +52,11 @@ public class UserController {
             @Validated @RequestBody UserSignUpReq req){
         return SuccessResponse.ok(userService.register(req));
     }
-    
+
+    @Operation(summary = "로그인", description = "유저가 로그인을 합니다.")
+    @PostMapping("login")
+    public SuccessResponse<UserTokenRes> login(
+            @Validated @RequestBody UserLoginReq req){
+        return SuccessResponse.ok(userService.login(req));
+    }
 }
