@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -56,10 +55,12 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
-                                .requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()
-                                .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
-                                .requestMatchers(HttpMethod.PUT, PUBLIC_PUT).permitAll()
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll() //테스트할 때 일일히 인증하기 귀찮으니까.. 일단 다 열어둠
+//                                .requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()
+//                                .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
+//                                .requestMatchers(HttpMethod.PUT, PUBLIC_PUT).permitAll()
+//                                .anyRequest().authenticated()
+
                 );
         http
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
