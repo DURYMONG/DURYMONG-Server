@@ -125,14 +125,11 @@ public class UserService {
             throw new CustomException(JWT_EXPIRE_TOKEN);
         }
         Long userId = jwtProvider.getUserIdFromRefreshToken(refreshToken);
-        log.info("Checking if refresh token exists for userId in Redis: {}", userId);
         if(!jwtProvider.checkTokenExists(String.valueOf(userId))) {
-            log.error("Refresh token not found in Redis for userId: {}", userId);
             throw new CustomException(BAD_REQUEST);
         }
         jwtProvider.invalidateToken(userId);
 
-        log.info("Attempting to find user with userId: {}", userId);
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         String newAccessToken = jwtProvider.createAccessToken(user);
         String newRefreshToken = jwtProvider.createRefreshToken(user);
