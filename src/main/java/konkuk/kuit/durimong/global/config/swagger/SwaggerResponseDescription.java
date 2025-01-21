@@ -40,6 +40,11 @@ public enum SwaggerResponseDescription {
             JWT_EXPIRE_TOKEN,
             JWT_ERROR_TOKEN,
             BAD_REQUEST
+    ))),
+
+    //Mong
+    MONG_NAME(new LinkedHashSet<>(Set.of(
+            MONG_NAME_LENGTH
     )));
 
 

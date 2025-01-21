@@ -36,9 +36,9 @@ public enum ErrorCode {
     USER_PASSWORD_SHORT(-304,"비밀번호는 6자 이상 10자 이하입니다.", 401),
     USER_PASSWORD_NONUM(-305,"비밀번호에 숫자가 포함되어야 합니다.",401),
     USER_PASSWORD_ENGLISH(-306,"비밀번호에 영문자가 포함되어야 합니다.",401),
-    USER_EMAIL_VERIFY_FAILED(-307,"이메일 인증에 실패하였씁니다.",401);
+    USER_EMAIL_VERIFY_FAILED(-307,"이메일 인증에 실패하였씁니다.",401),
     //Mong
-
+    MONG_NAME_LENGTH(-400,"이름은 1~6자로 입력해주세요.",401);
 
 
     private final int errorCode;
