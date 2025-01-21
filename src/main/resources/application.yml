@@ -12,7 +12,7 @@ spring:
     active: dev
 
 ---
-# ??? DB
+# 로컬용 DB
 spring:
   config:
     activate:
@@ -36,7 +36,7 @@ spring:
       port: 6379
 
 ---
-# ??? DB
+# 개발용 DB
 spring:
   config:
     activate:
@@ -61,7 +61,7 @@ spring:
       port: 6379
 
 ---
-# ??? DB
+# 배포용 DB
 spring:
   config:
     activate:
@@ -86,7 +86,7 @@ spring:
       port: 6379
 
 ---
-# ??? ??
+# 개발용 포트
 spring:
   config:
     activate:
@@ -94,7 +94,7 @@ spring:
 server:
   port: 9001
 ---
-# ??? ??
+# 배포용 포트
 spring:
   config:
     activate:
@@ -102,7 +102,7 @@ spring:
 server:
   port: 9002
 ---
-# ??
+# 공통
 spring:
   config:
     activate:
