@@ -1,7 +1,11 @@
 package konkuk.kuit.durimong.domain.user.service;
 
 import jakarta.transaction.Transactional;
+import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
+import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.UserSignUpReq;
+import konkuk.kuit.durimong.domain.user.dto.response.ReIssueTokenRes;
+import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
 import konkuk.kuit.durimong.global.exception.CustomException;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 import static konkuk.kuit.durimong.global.exception.ErrorCode.*;
@@ -92,10 +97,44 @@ public class UserService {
     }
 
     public String register(UserSignUpReq req) {
+        User findUser = userRepository.findById(req.getId()).orElseThrow(
+                () -> new CustomException(USER_DUPLICATE_ID)
+        );
         User user = User.create(req.getId(), req.getPassword(), req.getEmail(),req.getName(),req.getEmail());
-        user = userRepository.save(user);
-        String accessToken = jwtProvider.createAccessToken(user);
+        userRepository.save(user);
         return "회원가입이 완료되었습니다.";
+    }
+
+    public UserTokenRes login(UserLoginReq req){
+        User user = userRepository.findById(req.getId())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if (!req.getPassword().equals(user.getPassword())) {
+            throw new CustomException(USER_NOT_MATCH_PASSWORD);
+        }
+        user.setLastLogin(LocalDateTime.now());
+        userRepository.save(user);
+        String accessToken = jwtProvider.createAccessToken(user);
+        String refreshToken = jwtProvider.createRefreshToken(user);
+        jwtProvider.storeRefreshToken(refreshToken,user.getUserId());
+        return new UserTokenRes(accessToken,refreshToken);
+    }
+
+    public ReIssueTokenRes reissueToken(ReIssueTokenReq req){
+        String refreshToken = req.getRefreshToken();
+        if(!jwtProvider.validateRefreshToken(refreshToken)) {
+            throw new CustomException(JWT_EXPIRE_TOKEN);
+        }
+        Long userId = jwtProvider.getUserIdFromRefreshToken(refreshToken);
+        if(!jwtProvider.checkTokenExists(String.valueOf(userId))) {
+            throw new CustomException(BAD_REQUEST);
+        }
+        jwtProvider.invalidateToken(userId);
+
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        String newAccessToken = jwtProvider.createAccessToken(user);
+        String newRefreshToken = jwtProvider.createRefreshToken(user);
+        return new ReIssueTokenRes(newAccessToken,newRefreshToken);
+
     }
 
 

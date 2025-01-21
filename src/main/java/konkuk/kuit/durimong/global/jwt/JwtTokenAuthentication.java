@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class JwtTokenAuthentication implements Authentication {
 
-    private final Long usIdx;
+    private final Long userId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
