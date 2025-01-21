@@ -28,7 +28,7 @@ public class JwtProvider {
 
     public JwtProvider(@Value("${jwt.secret}") String secretKey,
                        @Value("${jwt.accessTokenExpiration}") Long accessTokenExpiration,
-                       @Value("${accessTokenExpiration}") Long refreshTokenExpiration, RedisTemplate<String, Object> redisTemplate) {
+                       @Value("${jwt.refreshTokenExpiration}") Long refreshTokenExpiration, RedisTemplate<String, Object> redisTemplate) {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         this.ACCESS_TOKEN_EXPIRE_MILLIS = accessTokenExpiration;
         this.REFRESH_TOKEN_EXPIRE_MILLIS = refreshTokenExpiration;
@@ -49,7 +49,7 @@ public class JwtProvider {
     public String createRefreshToken(User user) {
         Date now = new Date();
         return Jwts.builder()
-                .claim("category","access")
+                .claim("category","refresh")
                 .claim("userId",user.getUserId())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_MILLIS))
@@ -57,6 +57,7 @@ public class JwtProvider {
                 .compact();
     }
     public void storeRefreshToken(String token, Long userId) {
+        log.info("Storing refresh token in Redis for userId: {}", userId);
         redisTemplate.opsForValue().set(String.valueOf(userId), token, REFRESH_TOKEN_EXPIRE_MILLIS, TimeUnit.MILLISECONDS);
     }
 
@@ -68,6 +69,49 @@ public class JwtProvider {
     public void invalidateToken(Long userId) {
         redisTemplate.delete(String.valueOf(userId));
     }
+
+    public Long getUserIdFromRefreshToken(String refreshToken) {
+        log.info("Refresh token: {}", refreshToken);
+        Claims claims = getClaims(refreshToken);
+        log.info("Extracted userId from refreshToken: {}", claims.get("userId"));
+        if (!"refresh".equals(claims.get("category"))) {
+            throw new CustomException(ErrorCode.JWT_ERROR_TOKEN); // 적절한 에러 코드 설정
+        }
+        return Long.parseLong(claims.get("userId").toString());
+    }
+
+
+    public boolean validateRefreshToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            // 만료시간 확인
+            Date expiration = claims.getExpiration();
+            if (expiration.before(new Date())) {
+                log.debug("Refresh Token이 만료되었습니다.");
+                throw new CustomException(ErrorCode.JWT_EXPIRE_TOKEN);
+            }
+
+            // Refresh Token의 카테고리 확인 (선택적으로 사용 가능)
+            if (!"refresh".equals(claims.get("category"))) {
+                log.debug("유효하지 않은 Refresh Token입니다.");
+                throw new CustomException(ErrorCode.JWT_ERROR_TOKEN);
+            }
+
+            return true; // 유효한 토큰
+        } catch (ExpiredJwtException e) {
+            log.debug("만료된 Refresh Token입니다.");
+            throw new CustomException(ErrorCode.JWT_EXPIRE_TOKEN);
+        } catch (JwtException | IllegalArgumentException e) {
+            log.debug("유효하지 않은 Refresh Token입니다.");
+            throw new CustomException(ErrorCode.JWT_ERROR_TOKEN);
+        }
+    }
+
 
     public boolean verify(String token) {
         try {

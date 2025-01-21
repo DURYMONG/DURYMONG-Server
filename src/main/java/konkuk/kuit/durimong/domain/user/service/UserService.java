@@ -1,8 +1,10 @@
 package konkuk.kuit.durimong.domain.user.service;
 
 import jakarta.transaction.Transactional;
+import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.UserSignUpReq;
+import konkuk.kuit.durimong.domain.user.dto.response.ReIssueTokenRes;
 import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
@@ -95,6 +97,9 @@ public class UserService {
     }
 
     public String register(UserSignUpReq req) {
+        User findUser = userRepository.findById(req.getId()).orElseThrow(
+                () -> new CustomException(USER_DUPLICATE_ID)
+        );
         User user = User.create(req.getId(), req.getPassword(), req.getEmail(),req.getName(),req.getEmail());
         userRepository.save(user);
         return "회원가입이 완료되었습니다.";
@@ -113,6 +118,28 @@ public class UserService {
         jwtProvider.storeRefreshToken(refreshToken,user.getUserId());
         return new UserTokenRes(accessToken,refreshToken);
     }
+
+    public ReIssueTokenRes reissueToken(ReIssueTokenReq req){
+        String refreshToken = req.getRefreshToken();
+        if(!jwtProvider.validateRefreshToken(refreshToken)) {
+            throw new CustomException(JWT_EXPIRE_TOKEN);
+        }
+        Long userId = jwtProvider.getUserIdFromRefreshToken(refreshToken);
+        log.info("Checking if refresh token exists for userId in Redis: {}", userId);
+        if(!jwtProvider.checkTokenExists(String.valueOf(userId))) {
+            log.error("Refresh token not found in Redis for userId: {}", userId);
+            throw new CustomException(BAD_REQUEST);
+        }
+        jwtProvider.invalidateToken(userId);
+
+        log.info("Attempting to find user with userId: {}", userId);
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        String newAccessToken = jwtProvider.createAccessToken(user);
+        String newRefreshToken = jwtProvider.createRefreshToken(user);
+        return new ReIssueTokenRes(newAccessToken,newRefreshToken);
+
+    }
+
 
 
 }

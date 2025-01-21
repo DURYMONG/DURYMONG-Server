@@ -125,9 +125,9 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-    auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30?
+    auth-code-expiration-millis: 1800000
 
 jwt:
   secret: ${JWT_SECRET}
-  accessTokenExpiration: 3600000 #1??
+  accessTokenExpiration: 3600000
   refreshTokenExpiration: 604800000

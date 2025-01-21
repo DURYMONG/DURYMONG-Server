@@ -1,8 +1,10 @@
 package konkuk.kuit.durimong.domain.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
+import konkuk.kuit.durimong.domain.user.dto.response.ReIssueTokenRes;
 import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
 import konkuk.kuit.durimong.domain.user.service.UserService;
 import konkuk.kuit.durimong.global.response.SuccessResponse;
@@ -58,5 +60,13 @@ public class UserController {
     public SuccessResponse<UserTokenRes> login(
             @Validated @RequestBody UserLoginReq req){
         return SuccessResponse.ok(userService.login(req));
+    }
+
+    @Operation(summary = "토큰 재발급", description = "토큰 유효기간 만료 시 호출되는 API입니다.")
+    @PostMapping("newtokens")
+    public SuccessResponse<ReIssueTokenRes> reIssueTokens(
+            @Validated @RequestBody ReIssueTokenReq req
+    ){
+        return SuccessResponse.ok(userService.reissueToken(req));
     }
 }

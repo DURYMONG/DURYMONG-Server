@@ -17,15 +17,13 @@ import static konkuk.kuit.durimong.global.exception.ErrorCode.UNABLE_TO_SEND_EMA
 public class MailService {
     private final JavaMailSender emailSender;
 
-    public void sendEmail(String toEmail,
-                          String title,
-                          String text) {
+    public void sendEmail(String toEmail, String title, String text) {
         SimpleMailMessage emailForm = createEmailForm(toEmail, title, text);
         try {
+            log.info("Sending email to {}", toEmail);
             emailSender.send(emailForm);
         } catch (RuntimeException e) {
-            log.debug("MailService.sendEmail exception occur toEmail: {}, " +
-                    "title: {}, text: {}", toEmail, title, text);
+            log.error("Failed to send email: {}", e.getMessage(), e);
             throw new CustomException(UNABLE_TO_SEND_EMAIL);
         }
     }
