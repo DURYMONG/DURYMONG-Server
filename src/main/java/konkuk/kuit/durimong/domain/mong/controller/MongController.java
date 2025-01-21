@@ -2,20 +2,19 @@ package konkuk.kuit.durimong.domain.mong.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import konkuk.kuit.durimong.domain.mong.dto.request.MongCreateReq;
+import konkuk.kuit.durimong.domain.mong.dto.request.MongNameReq;
 import konkuk.kuit.durimong.domain.mong.service.MongService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
 import konkuk.kuit.durimong.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.MONG_NAME;
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("mongs")
 public class MongController {
@@ -25,7 +24,15 @@ public class MongController {
     @CustomExceptionDescription(MONG_NAME)
     @GetMapping("name")
     public SuccessResponse<String> setMongName(
-            @Validated MongCreateReq req){
+            @Validated MongNameReq req){
         return SuccessResponse.ok(mongService.validateName(req));
     }
+
+    @Operation(summary = "몽 생성", description = "몽을 생성합니다.")
+    @PostMapping("creation")
+    public SuccessResponse<String> createMong(
+            @Validated @RequestBody MongCreateReq req){
+        return SuccessResponse.ok(mongService.createMong(req));
+    }
+
 }
