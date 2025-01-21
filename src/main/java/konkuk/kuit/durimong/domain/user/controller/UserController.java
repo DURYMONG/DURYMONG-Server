@@ -23,21 +23,21 @@ public class UserController {
 
     @Operation(summary = "아이디 중복검사", description = "아이디 중복여부를 확인합니다.")
     @CustomExceptionDescription(USER_ID)
-    @PostMapping("userid")
+    @GetMapping("userid")
     public SuccessResponse<String> getId(UserIdReq req){
         return SuccessResponse.ok(userService.validateId(req.getId()));
     }
 
     @Operation(summary = "이메일 중복검사", description = "이메일 중복여부를 확인합니다.")
     @CustomExceptionDescription(USER_EMAIL)
-    @PostMapping("email")
+    @GetMapping("email")
     public SuccessResponse<String> getEmail(UserEmailReq req){
         return SuccessResponse.ok(userService.validateEmail(req.getEmail()));
     }
 
     @Operation(summary = "비밀번호 유효성 검사", description = "비밀번호의 유효성(길이,영문 + 숫자)을 검사합니다.")
     @CustomExceptionDescription(USER_PASSWORD)
-    @PostMapping("password")
+    @GetMapping("password")
     public SuccessResponse<String> getPassword(UserPasswordReq req){
         return SuccessResponse.ok(userService.validatePassword(req.getPassword()));
     }
