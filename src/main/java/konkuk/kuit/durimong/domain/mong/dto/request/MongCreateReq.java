@@ -13,4 +13,5 @@ public class MongCreateReq {
 
     @Schema(description = "캐릭터 색상", example = " ")
     private String color;
+
 }

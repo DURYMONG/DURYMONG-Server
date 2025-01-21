@@ -1,10 +1,12 @@
 package konkuk.kuit.durimong.domain.mong.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import konkuk.kuit.durimong.domain.mong.dto.request.MongCreateReq;
 import konkuk.kuit.durimong.domain.mong.dto.request.MongNameReq;
 import konkuk.kuit.durimong.domain.mong.service.MongService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
+import konkuk.kuit.durimong.global.annotation.UserId;
 import konkuk.kuit.durimong.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +33,9 @@ public class MongController {
     @Operation(summary = "몽 생성", description = "몽을 생성합니다.")
     @PostMapping("creation")
     public SuccessResponse<String> createMong(
-            @Validated @RequestBody MongCreateReq req){
-        return SuccessResponse.ok(mongService.createMong(req));
+            @Validated @RequestBody MongCreateReq req,
+            @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(mongService.createMong(req,userId));
     }
 
 }
