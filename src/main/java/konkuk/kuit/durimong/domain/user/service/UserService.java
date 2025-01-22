@@ -1,13 +1,19 @@
 package konkuk.kuit.durimong.domain.user.service;
 
 import jakarta.transaction.Transactional;
+import konkuk.kuit.durimong.domain.mong.entity.Mong;
+import konkuk.kuit.durimong.domain.mong.entity.MongQuestion;
+import konkuk.kuit.durimong.domain.mong.repository.MongQuestionRepository;
+import konkuk.kuit.durimong.domain.mong.repository.MongRepository;
 import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.UserSignUpReq;
 import konkuk.kuit.durimong.domain.user.dto.response.ReIssueTokenRes;
+import konkuk.kuit.durimong.domain.user.dto.response.UserHomeRes;
 import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
+import konkuk.kuit.durimong.global.annotation.UserId;
 import konkuk.kuit.durimong.global.exception.CustomException;
 import konkuk.kuit.durimong.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +24,10 @@ import org.springframework.stereotype.Service;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static konkuk.kuit.durimong.global.exception.ErrorCode.*;
@@ -32,6 +41,8 @@ public class UserService {
     private final MailService mailService;
     private final RedisService redisService;
     private final UserRepository userRepository;
+    private final MongRepository mongRepository;
+    private final MongQuestionRepository mongAnswerRepository;
     private final JwtProvider jwtProvider;
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
@@ -136,6 +147,41 @@ public class UserService {
         return new ReIssueTokenRes(newAccessToken,newRefreshToken);
 
     }
+
+    public UserHomeRes homePage(@UserId Long userId) {
+        LocalDate todayDate = LocalDate.now();
+        LocalDateTime today = LocalDateTime.now();
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Mong findMong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
+        String mongImage = findMong.getImage();
+        String mongName = findMong.getName();
+        LocalDateTime createdAt = findMong.getCreatedAt();
+        int dateWithMong = getDateWithMong(today,createdAt);
+        String mongQuestion = getMongQuestion(findMong,userId);
+
+        return new UserHomeRes(todayDate, dateWithMong, mongName, mongImage, mongQuestion);
+    }
+
+    private int getDateWithMong(LocalDateTime today, LocalDateTime createdAt){
+        return (int) Duration.between(createdAt, today).toDays() + 1;
+    }
+
+    private String getMongQuestion(Mong mong, @UserId Long userId){
+        List<MongQuestion> mongAnswers = mongAnswerRepository.findAll();
+        List<MongQuestion> realAnswers = new ArrayList<>();
+        for (MongQuestion mongAnswer : mongAnswers) {
+            if(mongAnswer.getMong().getUser().getUserId().equals(userId)){
+                realAnswers.add(mongAnswer);
+            }
+        }
+        int size = realAnswers.size();
+        if(size == 0){
+            throw new CustomException(QUESTION_NOT_EXISTS);
+        }
+        Random random = new Random();
+        return mongAnswers.get(random.nextInt(size)).getQuestion();
+    }
+
 
 
 

@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,6 +33,9 @@ public class Mong {
     @Builder.Default
     private int level = 1;
 
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
     @OneToOne
     @JoinColumn(name = "userId")
     private User user;
@@ -42,6 +47,7 @@ public class Mong {
                 .image(image)
                 .color(color)
                 .user(user)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 

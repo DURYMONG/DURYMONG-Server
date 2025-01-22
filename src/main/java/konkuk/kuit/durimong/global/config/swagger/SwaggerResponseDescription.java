@@ -41,6 +41,11 @@ public enum SwaggerResponseDescription {
             JWT_ERROR_TOKEN,
             BAD_REQUEST
     ))),
+    USER_HOME(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            MONG_NOT_FOUND,
+            QUESTION_NOT_EXISTS
+    ))),
 
     //Mong
     MONG_NAME(new LinkedHashSet<>(Set.of(

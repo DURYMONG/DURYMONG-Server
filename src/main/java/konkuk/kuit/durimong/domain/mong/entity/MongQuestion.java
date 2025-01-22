@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MongAnswer {
+public class MongQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mongAnswerId;

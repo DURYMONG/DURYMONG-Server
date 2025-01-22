@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
-public class UserMyPageRes {
+public class UserHomeRes {
     @Schema(description = "오늘 날짜", example = "2025/01/01")
     private LocalDate date;
 

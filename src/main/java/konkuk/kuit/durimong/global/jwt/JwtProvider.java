@@ -57,7 +57,6 @@ public class JwtProvider {
                 .compact();
     }
     public void storeRefreshToken(String token, Long userId) {
-        log.info("Storing refresh token in Redis for userId: {}", userId);
         redisTemplate.opsForValue().set(String.valueOf(userId), token, REFRESH_TOKEN_EXPIRE_MILLIS, TimeUnit.MILLISECONDS);
     }
 

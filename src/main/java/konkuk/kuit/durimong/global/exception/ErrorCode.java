@@ -38,8 +38,9 @@ public enum ErrorCode {
     USER_PASSWORD_ENGLISH(-306,"비밀번호에 영문자가 포함되어야 합니다.",401),
     USER_EMAIL_VERIFY_FAILED(-307,"이메일 인증에 실패하였씁니다.",401),
     //Mong
-    MONG_NAME_LENGTH(-400,"이름은 1~6자로 입력해주세요.",401);
-
+    MONG_NAME_LENGTH(-400,"이름은 1~6자로 입력해주세요.",401),
+    MONG_NOT_FOUND(-401, "캐릭터를 생성하지 않았습니다.",406),
+    QUESTION_NOT_EXISTS(-402, "등록된 몽의 질문이 없습니다.",406);
 
     private final int errorCode;
     private final String message;
