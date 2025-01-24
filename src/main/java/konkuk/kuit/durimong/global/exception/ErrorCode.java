@@ -40,6 +40,7 @@ public enum ErrorCode {
     USER_EMAIL_VERIFY_FAILED(-307,"이메일 인증에 실패하였습니다.",401),
     USER_LOGOUTED(-308,"로그아웃 되어 있는 상태입니다.",401),
     USER_SAME_NAME(-309,"현재 사용자의 이름과 수정하시려는 이름이 일치합니다.",406),
+    USER_SAME_PASSWORD(-310,"현재 비밀번호와 새 비밀번호가 일치합니다.",406),
     //Mong
     MONG_NAME_LENGTH(-400,"이름은 1~6자로 입력해주세요.",401),
     MONG_NOT_FOUND(-401, "캐릭터를 생성하지 않았습니다.",406),

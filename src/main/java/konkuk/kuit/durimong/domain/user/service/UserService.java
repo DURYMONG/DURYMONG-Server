@@ -5,6 +5,7 @@ import konkuk.kuit.durimong.domain.mong.entity.Mong;
 import konkuk.kuit.durimong.domain.mong.entity.MongQuestion;
 import konkuk.kuit.durimong.domain.mong.repository.MongQuestionRepository;
 import konkuk.kuit.durimong.domain.mong.repository.MongRepository;
+import konkuk.kuit.durimong.domain.user.dto.request.UserEditPasswordReq;
 import konkuk.kuit.durimong.domain.user.dto.request.UserInfoReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
@@ -207,9 +208,33 @@ public class UserService {
         mong.setName(req.getNewMongName());
         mongRepository.save(mong);
         return "회원 정보 수정이 완료되었습니다.";
-
-
     }
+
+    public String editUserPassword(UserEditPasswordReq req, Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if(!req.getNowPassword().equals(user.getPassword())){
+            throw new CustomException(USER_NOT_MATCH_PASSWORD);
+        }
+        if(req.getNewPassword().equals(req.getNowPassword())){
+            throw new CustomException(USER_SAME_PASSWORD);
+        }
+
+        if (req.getNewPassword().length() < 6 || req.getNewPassword().length() > 10) {
+            throw new CustomException(USER_PASSWORD_SHORT);
+        }
+
+        if (!req.getNewPassword().matches(".*[0-9].*")) {
+            throw new CustomException(USER_PASSWORD_NONUM);
+        }
+
+        if (!req.getNewPassword().matches(".*[a-zA-Z].*")) {
+            throw new CustomException(USER_PASSWORD_ENGLISH);
+        }
+        user.setPassword(req.getNewPassword());
+        userRepository.save(user);
+        return "비밀번호 수정이 완료되었습니다.";
+    }
+
 
 
 

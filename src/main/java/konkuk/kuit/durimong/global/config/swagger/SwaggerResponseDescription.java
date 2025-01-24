@@ -56,6 +56,14 @@ public enum SwaggerResponseDescription {
             USER_SAME_NAME,
             MONG_SAME_NAME
     ))),
+    USER_EDIT_PWD(new LinkedHashSet<>(Set.of(
+            USER_NOT_MATCH_PASSWORD,
+            USER_NOT_FOUND,
+            USER_SAME_PASSWORD,
+            USER_PASSWORD_ENGLISH,
+            USER_PASSWORD_SHORT,
+            USER_PASSWORD_NONUM
+    ))),
 
     //Mong
     MONG_NAME(new LinkedHashSet<>(Set.of(

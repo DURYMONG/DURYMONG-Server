@@ -3,6 +3,7 @@ package konkuk.kuit.durimong.domain.user.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import konkuk.kuit.durimong.domain.user.dto.request.UserEditPasswordReq;
 import konkuk.kuit.durimong.domain.user.dto.request.UserInfoReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
@@ -112,6 +113,16 @@ public class UserController {
             @Parameter(hidden = true) @UserId Long userId,
             @Validated @RequestBody UserInfoReq req){
         return SuccessResponse.ok(userService.editUserInfo(req,userId));
+    }
+
+    @Operation(summary = "비밀번호 수정", description = "비밀번호를 수정합니다.")
+    @CustomExceptionDescription(USER_EDIT_PWD)
+    @PostMapping("password-modification")
+    public SuccessResponse<String> modifyPassword(
+            @Validated @RequestBody UserEditPasswordReq req,
+            @Parameter(hidden = true) @UserId Long userId
+    ){
+        return SuccessResponse.ok(userService.editUserPassword(req,userId));
     }
 
 }
