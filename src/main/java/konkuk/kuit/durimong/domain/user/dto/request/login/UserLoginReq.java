@@ -8,6 +8,6 @@ public class UserLoginReq {
     @Schema(description = "아이디", example ="durymong")
     private String id;
 
-    @Schema(description = "비밀번호", example = "durymong123")
+    @Schema(description = "비밀번호", example = "durymong12")
     private String password;
 }

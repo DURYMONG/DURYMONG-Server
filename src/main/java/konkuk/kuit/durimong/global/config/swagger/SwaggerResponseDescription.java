@@ -50,10 +50,34 @@ public enum SwaggerResponseDescription {
             JWT_LOGOUT_TOKEN,
             USER_LOGOUTED
     ))),
+    USER_EDIT(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            MONG_NOT_FOUND,
+            USER_SAME_NAME,
+            MONG_SAME_NAME
+    ))),
+    USER_EDIT_PWD(new LinkedHashSet<>(Set.of(
+            USER_NOT_MATCH_PASSWORD,
+            USER_NOT_FOUND,
+            USER_SAME_PASSWORD,
+            USER_PASSWORD_ENGLISH,
+            USER_PASSWORD_SHORT,
+            USER_PASSWORD_NONUM
+    ))),
+    USER_UNREGISTER(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            MONG_NOT_FOUND
+    ))),
+    USER_ELIMINATE(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND
+    ))),
 
     //Mong
     MONG_NAME(new LinkedHashSet<>(Set.of(
             MONG_NAME_LENGTH
+    ))),
+    MONG_CREATE(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND
     )));
 
 

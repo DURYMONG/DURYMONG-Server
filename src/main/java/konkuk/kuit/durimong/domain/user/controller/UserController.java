@@ -2,12 +2,16 @@ package konkuk.kuit.durimong.domain.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import konkuk.kuit.durimong.domain.user.dto.request.UserEditPasswordReq;
+import konkuk.kuit.durimong.domain.user.dto.request.UserInfoReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
 import konkuk.kuit.durimong.domain.user.dto.response.ReIssueTokenRes;
 import konkuk.kuit.durimong.domain.user.dto.response.UserHomeRes;
 import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
+import konkuk.kuit.durimong.domain.user.dto.response.UserUnRegisterRes;
 import konkuk.kuit.durimong.domain.user.service.UserService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
 import konkuk.kuit.durimong.global.annotation.UserId;
@@ -26,6 +30,7 @@ public class UserController {
 
     @Operation(summary = "아이디 중복검사", description = "아이디 중복여부를 확인합니다.")
     @CustomExceptionDescription(USER_ID)
+    @Tag(name = "UserSignUp", description = "회원가입 관련 API")
     @GetMapping("userid")
     public SuccessResponse<String> getId(UserIdReq req){
         return SuccessResponse.ok(userService.validateId(req.getId()));
@@ -54,7 +59,7 @@ public class UserController {
     @Operation(summary = "이메일 인증번호 확인", description = "유저에게 전송한 인증번호와 유저가 입력한 인증번호 일치 여부를 확인합니다.")
     @CustomExceptionDescription(USER_EMAIL_VERIFICATION)
     @GetMapping("email-verifications")
-    public SuccessResponse<String> emailVerification(EmailVerifyReq req){
+    public SuccessResponse<String> emailVerification(UserEmailVerifyReq req){
         return SuccessResponse.ok(userService.verifyCode(req.getEmail(),req.getAuthCode()));
     }
 
@@ -100,6 +105,44 @@ public class UserController {
 
         String accessToken = token.replace("Bearer ", "");
         return SuccessResponse.ok(userService.logout(accessToken,userId));
+    }
+
+    @Operation(summary = "회원 정보 수정", description = "유저의 이름과 몽의 이름을 수정합니다.")
+    @CustomExceptionDescription(USER_EDIT)
+    @PostMapping("info-modification")
+    public SuccessResponse<String> modifyUserInfo(
+            @Parameter(hidden = true) @UserId Long userId,
+            @Validated @RequestBody UserInfoReq req){
+        return SuccessResponse.ok(userService.editUserInfo(req,userId));
+    }
+
+    @Operation(summary = "비밀번호 수정", description = "비밀번호를 수정합니다.")
+    @CustomExceptionDescription(USER_EDIT_PWD)
+    @PostMapping("password-modification")
+    public SuccessResponse<String> modifyPassword(
+            @Validated @RequestBody UserEditPasswordReq req,
+            @Parameter(hidden = true) @UserId Long userId
+    ){
+        return SuccessResponse.ok(userService.editUserPassword(req,userId));
+    }
+
+    @Operation(summary = "회원 탈퇴 화면", description = "회원 탈퇴를 할 때 표시되는 화면에 대한 API입니다.")
+    @CustomExceptionDescription(USER_UNREGISTER)
+    @GetMapping("user-elimination")
+    public SuccessResponse<UserUnRegisterRes> userElimination(
+            @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.showUnRegister(userId));
+    }
+
+    @Operation(summary = "회원 탈퇴", description = "유저가 회원 탈퇴를 합니다.")
+    @CustomExceptionDescription(USER_ELIMINATE)
+    @PostMapping("user-elimination")
+    public SuccessResponse<String> unregister(
+            @Parameter(hidden = true) @RequestHeader(value = "Authorization",required = false) String token,
+            @Parameter(hidden = true) @UserId Long userId){
+
+        String accessToken = token.replace("Bearer ", "");
+        return SuccessResponse.ok(userService.unRegister(accessToken,userId));
     }
 
 }
