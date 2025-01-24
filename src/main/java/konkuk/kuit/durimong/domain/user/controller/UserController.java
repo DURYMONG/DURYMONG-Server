@@ -90,4 +90,16 @@ public class UserController {
             @Parameter(hidden = true) @UserId Long userId){
         return SuccessResponse.ok(userService.homePage(userId));
     }
+
+    @Operation(summary = "로그아웃", description = "유저가 로그아웃을 합니다.")
+    @CustomExceptionDescription(USER_LOGOUT)
+    @PostMapping("logout")
+    public SuccessResponse<String> logout(
+            @Parameter(hidden = true) @RequestHeader(value = "Authorization",required = false) String token,
+            @Parameter(hidden = true) @UserId Long userId){
+
+        String accessToken = token.replace("Bearer ", "");
+        return SuccessResponse.ok(userService.logout(accessToken,userId));
+    }
+
 }

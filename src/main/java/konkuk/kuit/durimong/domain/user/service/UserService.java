@@ -182,6 +182,24 @@ public class UserService {
         return mongAnswers.get(random.nextInt(size)).getQuestion();
     }
 
+    public String logout(String accessToken, Long userId){
+        if(accessToken == null) {
+            throw new CustomException(USER_LOGOUTED);
+        }
+        long accessTokenExpirationMillis = jwtProvider.getClaims(accessToken).getExpiration().getTime() - System.currentTimeMillis();
+        if (accessTokenExpirationMillis > 0) {
+            redisService.setValues("BLACKLIST:" + accessToken, "logout", Duration.ofMillis(accessTokenExpirationMillis));
+        }
+
+        if (jwtProvider.checkTokenExists(String.valueOf(userId))) {
+            jwtProvider.invalidateToken(userId);
+        }
+
+        log.info("User {} has logged out.", userId);
+        return "로그아웃이 완료되었습니다.";
+    }
+
+
 
 
 

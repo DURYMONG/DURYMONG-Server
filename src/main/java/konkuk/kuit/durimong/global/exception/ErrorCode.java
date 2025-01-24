@@ -28,6 +28,7 @@ public enum ErrorCode {
     INVALID_TOKEN(-208,"저장된 토큰과 일치하지 않습니다.",404),
     NOT_FOUND_AVAILABLE_PORT(-209,"이용 가능한 포트를 찾지 못했습니다.",406),
     ERROR_EXECUTING_EMBEDDED_REDIS(-210,"REDIS 서버 실행 중 오류가 발생했습니다.",406),
+    JWT_LOGOUT_TOKEN(-211,"로그아웃된 토큰입니다.",406),
     //User
     USER_NOT_FOUND(-300, "존재하지 않는 회원입니다.", 406),
     USER_DUPLICATE_ID(-301, "이미 존재하는 아이디입니다.", 401),
@@ -37,6 +38,7 @@ public enum ErrorCode {
     USER_PASSWORD_NONUM(-305,"비밀번호에 숫자가 포함되어야 합니다.",401),
     USER_PASSWORD_ENGLISH(-306,"비밀번호에 영문자가 포함되어야 합니다.",401),
     USER_EMAIL_VERIFY_FAILED(-307,"이메일 인증에 실패하였씁니다.",401),
+    USER_LOGOUTED(-308,"로그아웃 되어 있는 상태입니다.",401),
     //Mong
     MONG_NAME_LENGTH(-400,"이름은 1~6자로 입력해주세요.",401),
     MONG_NOT_FOUND(-401, "캐릭터를 생성하지 않았습니다.",406),
