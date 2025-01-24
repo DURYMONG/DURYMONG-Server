@@ -1,13 +1,16 @@
 package konkuk.kuit.durimong.domain.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
 import konkuk.kuit.durimong.domain.user.dto.response.ReIssueTokenRes;
+import konkuk.kuit.durimong.domain.user.dto.response.UserHomeRes;
 import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
 import konkuk.kuit.durimong.domain.user.service.UserService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
+import konkuk.kuit.durimong.global.annotation.UserId;
 import konkuk.kuit.durimong.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -78,5 +81,13 @@ public class UserController {
             @Validated @RequestBody ReIssueTokenReq req
     ){
         return SuccessResponse.ok(userService.reissueToken(req));
+    }
+
+    @Operation(summary = "홈 화면", description = "홈 화면을 조회합니다.")
+    @CustomExceptionDescription(USER_HOME)
+    @GetMapping("home")
+    public SuccessResponse<UserHomeRes> getHomePage(
+            @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.homePage(userId));
     }
 }
