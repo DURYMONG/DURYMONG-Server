@@ -7,6 +7,7 @@ import konkuk.kuit.durimong.domain.mong.repository.MongQuestionRepository;
 import konkuk.kuit.durimong.domain.mong.repository.MongRepository;
 import konkuk.kuit.durimong.domain.user.dto.request.UserEditPasswordReq;
 import konkuk.kuit.durimong.domain.user.dto.request.UserInfoReq;
+import konkuk.kuit.durimong.domain.user.dto.request.UserMongConversationReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.UserSignUpReq;
@@ -15,6 +16,8 @@ import konkuk.kuit.durimong.domain.user.dto.response.UserHomeRes;
 import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
 import konkuk.kuit.durimong.domain.user.dto.response.UserUnRegisterRes;
 import konkuk.kuit.durimong.domain.user.entity.User;
+import konkuk.kuit.durimong.domain.user.entity.UserMongConversation;
+import konkuk.kuit.durimong.domain.user.repository.UserMongConversationRepository;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
 import konkuk.kuit.durimong.global.annotation.UserId;
 import konkuk.kuit.durimong.global.exception.CustomException;
@@ -45,7 +48,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final MongRepository mongRepository;
     private final MongQuestionRepository mongAnswerRepository;
+    private final UserMongConversationRepository userMongConversationRepository;
     private final JwtProvider jwtProvider;
+    private final MongQuestionRepository mongQuestionRepository;
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
 
@@ -160,6 +165,7 @@ public class UserService {
         LocalDateTime createdAt = findMong.getCreatedAt();
         int dateWithMong = getDateWithMong(today,createdAt);
         String mongQuestion = getDailyQuestion(userId);
+        
 
         return new UserHomeRes(todayDate, dateWithMong, mongName, mongImage, mongQuestion);
     }
@@ -251,6 +257,15 @@ public class UserService {
         userRepository.delete(user);
         userRepository.flush();
         return "회원 탈퇴가 완료되었습니다," ;
+    }
+
+    public String userAnswer(UserMongConversationReq req, Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        int date = LocalDate.now().getDayOfMonth();
+        MongQuestion question = mongQuestionRepository.findMongQuestionByDate(date).orElseThrow(() -> new CustomException(QUESTION_NOT_EXISTS));
+        UserMongConversation conv = UserMongConversation.create(req.getUserAnswer(),user,question);
+        userMongConversationRepository.save(conv);
+        return "답변 생성이 완료되었습니다.";
     }
 
 }

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import konkuk.kuit.durimong.domain.user.dto.request.UserEditPasswordReq;
 import konkuk.kuit.durimong.domain.user.dto.request.UserInfoReq;
+import konkuk.kuit.durimong.domain.user.dto.request.UserMongConversationReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
@@ -157,4 +158,10 @@ public class UserController {
         return SuccessResponse.ok(userService.unRegister(accessToken,userId));
     }
 
+    @Operation(summary = "몽과의 대화", description = "유저가 몽의 질문에 답변을 작성합니다.")
+    @PostMapping("mong-conversation")
+    public SuccessResponse<String> mongConversation(@RequestBody @Validated UserMongConversationReq req,
+                                                    @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.userAnswer(req,userId));
+    }
 }

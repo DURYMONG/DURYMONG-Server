@@ -30,4 +30,13 @@ public class UserMongConversation {
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
+
+    public static UserMongConversation create(String userAnswer, User user, MongQuestion question) {
+        return UserMongConversation.builder().
+                userAnswer(userAnswer).
+                createdAt(LocalDate.now()).
+                question(question).
+                user(user).
+                build();
+    }
 }
