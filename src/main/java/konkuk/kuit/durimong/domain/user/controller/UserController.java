@@ -30,7 +30,7 @@ public class UserController {
 
     @Operation(summary = "아이디 중복검사", description = "아이디 중복여부를 확인합니다.")
     @CustomExceptionDescription(USER_ID)
-    @Tag(name = "UserSignUp", description = "회원가입 관련 API")
+    @Tag(name = "Sign Up", description = "회원가입 관련 API")
     @GetMapping("userid")
     public SuccessResponse<String> getId(UserIdReq req){
         return SuccessResponse.ok(userService.validateId(req.getId()));
@@ -38,6 +38,7 @@ public class UserController {
 
     @Operation(summary = "이메일 중복검사", description = "이메일 중복여부를 확인합니다.")
     @CustomExceptionDescription(USER_EMAIL)
+    @Tag(name = "Sign Up", description = "회원가입 관련 API")
     @GetMapping("email")
     public SuccessResponse<String> getEmail(UserEmailReq req){
         return SuccessResponse.ok(userService.validateEmail(req.getEmail()));
@@ -45,12 +46,14 @@ public class UserController {
 
     @Operation(summary = "비밀번호 유효성 검사", description = "비밀번호의 유효성(길이,영문 + 숫자)을 검사합니다.")
     @CustomExceptionDescription(USER_PASSWORD)
+    @Tag(name = "Sign Up", description = "회원가입 관련 API")
     @GetMapping("password")
     public SuccessResponse<String> getPassword(UserPasswordReq req){
         return SuccessResponse.ok(userService.validatePassword(req.getPassword()));
     }
 
     @Operation(summary = "이메일 인증번호 전송",description = "유저의 이메일로 인증번호를 전송합니다.")
+    @Tag(name = "Sign Up", description = "회원가입 관련 API")
     @PostMapping("email-requests")
     public SuccessResponse<String> requestEmail(UserEmailReq req){
         return SuccessResponse.ok(userService.sendCodeToEmail(req.getEmail()));
@@ -58,6 +61,7 @@ public class UserController {
 
     @Operation(summary = "이메일 인증번호 확인", description = "유저에게 전송한 인증번호와 유저가 입력한 인증번호 일치 여부를 확인합니다.")
     @CustomExceptionDescription(USER_EMAIL_VERIFICATION)
+    @Tag(name = "Sign Up", description = "회원가입 관련 API")
     @GetMapping("email-verifications")
     public SuccessResponse<String> emailVerification(UserEmailVerifyReq req){
         return SuccessResponse.ok(userService.verifyCode(req.getEmail(),req.getAuthCode()));
@@ -65,6 +69,7 @@ public class UserController {
 
     @Operation(summary = "회원가입",description = "유저가 회원가입을 합니다.")
     @CustomExceptionDescription(USER_SIGNUP)
+    @Tag(name = "Sign Up", description = "회원가입 관련 API")
     @PostMapping("signup")
     public SuccessResponse<String> signup(
             @Validated @RequestBody UserSignUpReq req){
@@ -73,6 +78,7 @@ public class UserController {
 
     @Operation(summary = "로그인", description = "유저가 로그인을 합니다.")
     @CustomExceptionDescription(USER_LOGIN)
+    @Tag(name = "Login", description = "로그인 관련 API")
     @PostMapping("login")
     public SuccessResponse<UserTokenRes> login(
             @Validated @RequestBody UserLoginReq req){
@@ -81,6 +87,7 @@ public class UserController {
 
     @Operation(summary = "토큰 재발급", description = "토큰 유효기간 만료 시 호출되는 API입니다.")
     @CustomExceptionDescription(REISSUE_TOKEN)
+    @Tag(name = "Login", description = "로그인 관련 API")
     @PostMapping("newtokens")
     public SuccessResponse<ReIssueTokenRes> reIssueTokens(
             @Validated @RequestBody ReIssueTokenReq req
@@ -98,6 +105,7 @@ public class UserController {
 
     @Operation(summary = "로그아웃", description = "유저가 로그아웃을 합니다.")
     @CustomExceptionDescription(USER_LOGOUT)
+    @Tag(name = "Login", description = "로그인 관련 API")
     @PostMapping("logout")
     public SuccessResponse<String> logout(
             @Parameter(hidden = true) @RequestHeader(value = "Authorization",required = false) String token,
@@ -109,6 +117,7 @@ public class UserController {
 
     @Operation(summary = "회원 정보 수정", description = "유저의 이름과 몽의 이름을 수정합니다.")
     @CustomExceptionDescription(USER_EDIT)
+    @Tag(name = "Edit Info", description = "정보 수정 관련 API")
     @PostMapping("info-modification")
     public SuccessResponse<String> modifyUserInfo(
             @Parameter(hidden = true) @UserId Long userId,
@@ -117,6 +126,7 @@ public class UserController {
     }
 
     @Operation(summary = "비밀번호 수정", description = "비밀번호를 수정합니다.")
+    @Tag(name = "Edit Info", description = "정보 수정 관련 API")
     @CustomExceptionDescription(USER_EDIT_PWD)
     @PostMapping("password-modification")
     public SuccessResponse<String> modifyPassword(
@@ -128,6 +138,7 @@ public class UserController {
 
     @Operation(summary = "회원 탈퇴 화면", description = "회원 탈퇴를 할 때 표시되는 화면에 대한 API입니다.")
     @CustomExceptionDescription(USER_UNREGISTER)
+    @Tag(name = "User UnRegister", description = "회원 탈퇴 관련 API")
     @GetMapping("user-elimination")
     public SuccessResponse<UserUnRegisterRes> userElimination(
             @Parameter(hidden = true) @UserId Long userId){
@@ -135,6 +146,7 @@ public class UserController {
     }
 
     @Operation(summary = "회원 탈퇴", description = "유저가 회원 탈퇴를 합니다.")
+    @Tag(name = "User UnRegister", description = "회원 탈퇴 관련 API")
     @CustomExceptionDescription(USER_ELIMINATE)
     @PostMapping("user-elimination")
     public SuccessResponse<String> unregister(
