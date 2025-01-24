@@ -64,10 +64,17 @@ public enum SwaggerResponseDescription {
             USER_PASSWORD_SHORT,
             USER_PASSWORD_NONUM
     ))),
+    USER_UNREGISTER(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            MONG_NOT_FOUND
+    ))),
 
     //Mong
     MONG_NAME(new LinkedHashSet<>(Set.of(
             MONG_NAME_LENGTH
+    ))),
+    MONG_CREATE(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND
     )));
 
 

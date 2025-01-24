@@ -11,6 +11,7 @@ import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
 import konkuk.kuit.durimong.domain.user.dto.response.ReIssueTokenRes;
 import konkuk.kuit.durimong.domain.user.dto.response.UserHomeRes;
 import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
+import konkuk.kuit.durimong.domain.user.dto.response.UserUnRegisterRes;
 import konkuk.kuit.durimong.domain.user.service.UserService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
 import konkuk.kuit.durimong.global.annotation.UserId;
@@ -123,6 +124,14 @@ public class UserController {
             @Parameter(hidden = true) @UserId Long userId
     ){
         return SuccessResponse.ok(userService.editUserPassword(req,userId));
+    }
+
+    @Operation(summary = "회원 탈퇴 화면", description = "회원 탈퇴를 할 때 표시되는 화면에 대한 API입니다.")
+    @CustomExceptionDescription(USER_UNREGISTER)
+    @GetMapping("user-elimination")
+    public SuccessResponse<UserUnRegisterRes> userElimination(
+            @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.unregister(userId));
     }
 
 }

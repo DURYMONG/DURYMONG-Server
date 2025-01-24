@@ -13,6 +13,7 @@ import konkuk.kuit.durimong.domain.user.dto.request.signup.UserSignUpReq;
 import konkuk.kuit.durimong.domain.user.dto.response.ReIssueTokenRes;
 import konkuk.kuit.durimong.domain.user.dto.response.UserHomeRes;
 import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
+import konkuk.kuit.durimong.domain.user.dto.response.UserUnRegisterRes;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
 import konkuk.kuit.durimong.global.annotation.UserId;
@@ -233,6 +234,15 @@ public class UserService {
         user.setPassword(req.getNewPassword());
         userRepository.save(user);
         return "비밀번호 수정이 완료되었습니다.";
+    }
+
+    public UserUnRegisterRes unregister(Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Mong mong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
+        LocalDateTime createdAt = mong.getCreatedAt();
+        LocalDateTime today = LocalDateTime.now();
+        int dateWithMong = getDateWithMong(today,createdAt);
+        return new UserUnRegisterRes(user.getName(),dateWithMong,mong.getImage());
     }
 
 
