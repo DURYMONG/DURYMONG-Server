@@ -37,12 +37,14 @@ public enum ErrorCode {
     USER_PASSWORD_SHORT(-304,"비밀번호는 6자 이상 10자 이하입니다.", 401),
     USER_PASSWORD_NONUM(-305,"비밀번호에 숫자가 포함되어야 합니다.",401),
     USER_PASSWORD_ENGLISH(-306,"비밀번호에 영문자가 포함되어야 합니다.",401),
-    USER_EMAIL_VERIFY_FAILED(-307,"이메일 인증에 실패하였씁니다.",401),
+    USER_EMAIL_VERIFY_FAILED(-307,"이메일 인증에 실패하였습니다.",401),
     USER_LOGOUTED(-308,"로그아웃 되어 있는 상태입니다.",401),
+    USER_SAME_NAME(-309,"현재 사용자의 이름과 수정하시려는 이름이 일치합니다.",406),
     //Mong
     MONG_NAME_LENGTH(-400,"이름은 1~6자로 입력해주세요.",401),
     MONG_NOT_FOUND(-401, "캐릭터를 생성하지 않았습니다.",406),
-    QUESTION_NOT_EXISTS(-402, "등록된 몽의 질문이 없습니다.",406);
+    QUESTION_NOT_EXISTS(-402, "등록된 몽의 질문이 없습니다.",406),
+    MONG_SAME_NAME(-403,"현재 몽의 이름과 수정하시려는 몽의 이름이 일치합니다.",406);
 
     private final int errorCode;
     private final String message;

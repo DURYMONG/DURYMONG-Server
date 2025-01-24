@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EmailVerifyReq {
+public class UserEmailVerifyReq {
     @Email
     @Schema(description = "이메일", example = "dlwjddus1112@naver.com")
     private String email;

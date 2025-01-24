@@ -5,6 +5,7 @@ import konkuk.kuit.durimong.domain.mong.entity.Mong;
 import konkuk.kuit.durimong.domain.mong.entity.MongQuestion;
 import konkuk.kuit.durimong.domain.mong.repository.MongQuestionRepository;
 import konkuk.kuit.durimong.domain.mong.repository.MongRepository;
+import konkuk.kuit.durimong.domain.user.dto.request.UserInfoReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.UserSignUpReq;
@@ -186,13 +187,28 @@ public class UserService {
         if (accessTokenExpirationMillis > 0) {
             redisService.setValues("BLACKLIST:" + accessToken, "logout", Duration.ofMillis(accessTokenExpirationMillis));
         }
-
         if (jwtProvider.checkTokenExists(String.valueOf(userId))) {
             jwtProvider.invalidateToken(userId);
         }
-
-        log.info("User {} has logged out.", userId);
         return "로그아웃이 완료되었습니다.";
+    }
+
+    public String editUserInfo(UserInfoReq req, Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if(req.getNewUserName().equals(user.getName())){
+            throw new CustomException(USER_SAME_NAME);
+        }
+        user.setName(req.getNewUserName());
+        userRepository.save(user);
+        Mong mong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
+        if(req.getNewMongName().equals(mong.getName())){
+            throw new CustomException(MONG_SAME_NAME);
+        }
+        mong.setName(req.getNewMongName());
+        mongRepository.save(mong);
+        return "회원 정보 수정이 완료되었습니다.";
+
+
     }
 
 

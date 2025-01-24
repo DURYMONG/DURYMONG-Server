@@ -50,6 +50,12 @@ public enum SwaggerResponseDescription {
             JWT_LOGOUT_TOKEN,
             USER_LOGOUTED
     ))),
+    USER_EDIT(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            MONG_NOT_FOUND,
+            USER_SAME_NAME,
+            MONG_SAME_NAME
+    ))),
 
     //Mong
     MONG_NAME(new LinkedHashSet<>(Set.of(
