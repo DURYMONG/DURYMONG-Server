@@ -68,6 +68,9 @@ public enum SwaggerResponseDescription {
             USER_NOT_FOUND,
             MONG_NOT_FOUND
     ))),
+    USER_ELIMINATE(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND
+    ))),
 
     //Mong
     MONG_NAME(new LinkedHashSet<>(Set.of(

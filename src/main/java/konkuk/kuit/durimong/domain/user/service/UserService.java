@@ -236,13 +236,21 @@ public class UserService {
         return "비밀번호 수정이 완료되었습니다.";
     }
 
-    public UserUnRegisterRes unregister(Long userId){
+    public UserUnRegisterRes showUnRegister(Long userId){
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Mong mong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
         LocalDateTime createdAt = mong.getCreatedAt();
         LocalDateTime today = LocalDateTime.now();
         int dateWithMong = getDateWithMong(today,createdAt);
         return new UserUnRegisterRes(user.getName(),dateWithMong,mong.getImage());
+    }
+
+    public String unRegister(String accessToken,Long userId){
+        logout(accessToken,userId); // 토큰 정보 무효화 시키기 위함.
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        userRepository.delete(user);
+        userRepository.flush();
+        return "회원 탈퇴가 완료되었습니다," ;
     }
 
 

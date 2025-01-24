@@ -131,7 +131,18 @@ public class UserController {
     @GetMapping("user-elimination")
     public SuccessResponse<UserUnRegisterRes> userElimination(
             @Parameter(hidden = true) @UserId Long userId){
-        return SuccessResponse.ok(userService.unregister(userId));
+        return SuccessResponse.ok(userService.showUnRegister(userId));
+    }
+
+    @Operation(summary = "회원 탈퇴", description = "유저가 회원 탈퇴를 합니다.")
+    @CustomExceptionDescription(USER_ELIMINATE)
+    @PostMapping("user-elimination")
+    public SuccessResponse<String> unregister(
+            @Parameter(hidden = true) @RequestHeader(value = "Authorization",required = false) String token,
+            @Parameter(hidden = true) @UserId Long userId){
+
+        String accessToken = token.replace("Bearer ", "");
+        return SuccessResponse.ok(userService.unRegister(accessToken,userId));
     }
 
 }
