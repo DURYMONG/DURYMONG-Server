@@ -46,6 +46,10 @@ public enum SwaggerResponseDescription {
             MONG_NOT_FOUND,
             QUESTION_NOT_EXISTS
     ))),
+    USER_LOGOUT(new LinkedHashSet<>(Set.of(
+            JWT_LOGOUT_TOKEN,
+            USER_LOGOUTED
+    ))),
 
     //Mong
     MONG_NAME(new LinkedHashSet<>(Set.of(
