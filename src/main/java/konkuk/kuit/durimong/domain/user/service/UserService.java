@@ -26,7 +26,6 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -157,7 +156,7 @@ public class UserService {
         String mongName = findMong.getName();
         LocalDateTime createdAt = findMong.getCreatedAt();
         int dateWithMong = getDateWithMong(today,createdAt);
-        String mongQuestion = getMongQuestion(findMong,userId);
+        String mongQuestion = getDailyQuestion(userId);
 
         return new UserHomeRes(todayDate, dateWithMong, mongName, mongImage, mongQuestion);
     }
@@ -166,20 +165,17 @@ public class UserService {
         return (int) Duration.between(createdAt, today).toDays() + 1;
     }
 
-    private String getMongQuestion(Mong mong, @UserId Long userId){
+    private String getDailyQuestion(@UserId Long userId){
         List<MongQuestion> mongAnswers = mongAnswerRepository.findAll();
-        List<MongQuestion> realAnswers = new ArrayList<>();
-        for (MongQuestion mongAnswer : mongAnswers) {
-            if(mongAnswer.getMong().getUser().getUserId().equals(userId)){
-                realAnswers.add(mongAnswer);
-            }
-        }
-        int size = realAnswers.size();
-        if(size == 0){
+        if(mongAnswers.isEmpty()){
             throw new CustomException(QUESTION_NOT_EXISTS);
         }
-        Random random = new Random();
-        return mongAnswers.get(random.nextInt(size)).getQuestion();
+        LocalDate today = LocalDate.now();
+        int date = today.getDayOfMonth();
+        return mongAnswerRepository.findQuestionByDate(date).orElseThrow(
+                () -> new CustomException(QUESTION_NOT_EXISTS)
+        );
+
     }
 
     public String logout(String accessToken, Long userId){

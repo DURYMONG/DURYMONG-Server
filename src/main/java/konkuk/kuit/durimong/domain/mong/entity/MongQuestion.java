@@ -15,12 +15,9 @@ import lombok.NoArgsConstructor;
 public class MongQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long mongAnswerId;
+    private Long mongQuestionId;
 
     @Schema(nullable = false)
     private String question;
 
-    @ManyToOne
-    @JoinColumn(name = "MongId")
-    private Mong mong;
 }
