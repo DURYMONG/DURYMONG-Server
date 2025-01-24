@@ -158,23 +158,37 @@ public class UserService {
     public UserHomeRes homePage(@UserId Long userId) {
         LocalDate todayDate = LocalDate.now();
         LocalDateTime today = LocalDateTime.now();
+
+        // 유저 및 몽 조회
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Mong findMong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
         String mongImage = findMong.getImage();
         String mongName = findMong.getName();
         LocalDateTime createdAt = findMong.getCreatedAt();
-        int dateWithMong = getDateWithMong(today,createdAt);
-        String mongQuestion = getDailyQuestion(userId);
-        
+        int dateWithMong = getDateWithMong(today, createdAt);
 
-        return new UserHomeRes(todayDate, dateWithMong, mongName, mongImage, mongQuestion);
+        // 오늘의 질문 조회
+        String mongQuestion = getDailyQuestion();
+        MongQuestion question = mongQuestionRepository.findMongQuestionByDate(todayDate.getDayOfMonth())
+                .orElseThrow(() -> new CustomException(QUESTION_NOT_EXISTS));
+
+        // 유저의 답변 조회
+        UserMongConversation conversation = userMongConversationRepository.findByUserAndQuestion(user, question);
+
+        // 답변 여부에 따라 다른 Response 반환
+        if (conversation != null) {
+            return new UserHomeRes(todayDate, dateWithMong, mongName, mongImage, mongQuestion, conversation.getUserAnswer());
+        } else {
+            return new UserHomeRes(todayDate, dateWithMong, mongName, mongImage, mongQuestion);
+        }
     }
+
 
     private int getDateWithMong(LocalDateTime today, LocalDateTime createdAt){
         return (int) Duration.between(createdAt, today).toDays() + 1;
     }
 
-    private String getDailyQuestion(@UserId Long userId){
+    private String getDailyQuestion(){
         List<MongQuestion> mongAnswers = mongAnswerRepository.findAll();
         if(mongAnswers.isEmpty()){
             throw new CustomException(QUESTION_NOT_EXISTS);

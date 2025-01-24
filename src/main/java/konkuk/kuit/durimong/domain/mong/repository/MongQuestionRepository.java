@@ -19,6 +19,4 @@ public interface MongQuestionRepository extends JpaRepository<MongQuestion, Long
     Optional<MongQuestion> findMongQuestionByDate(int date);
 
 
-
-
 }
