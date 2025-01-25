@@ -266,7 +266,7 @@ public class UserService {
     }
 
     public String unRegister(String accessToken,Long userId){
-        logout(accessToken,userId); // 토큰 정보 무효화 시키기 위함.
+        invalidateTokens(accessToken,userId);
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         userRepository.delete(user);
         userRepository.flush();
@@ -281,5 +281,19 @@ public class UserService {
         userMongConversationRepository.save(conv);
         return "답변 생성이 완료되었습니다.";
     }
+    private void invalidateTokens(String accessToken, Long userId) {
+        if (accessToken != null) {
+            long accessTokenExpirationMillis = jwtProvider.getClaims(accessToken).getExpiration().getTime() - System.currentTimeMillis();
+            if (accessTokenExpirationMillis > 0) {
+                redisService.setValues("BLACKLIST:" + accessToken, "logout", Duration.ofMillis(accessTokenExpirationMillis));
+            }
+        }
+
+        if (jwtProvider.checkTokenExists(String.valueOf(userId))) {
+            jwtProvider.invalidateToken(userId);
+        }
+    }
+
+
 
 }
