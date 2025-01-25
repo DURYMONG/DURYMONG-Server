@@ -79,7 +79,9 @@ public enum SwaggerResponseDescription {
             USER_NOT_FOUND,
             CONVERSATION_NOT_EXISTS
     ))),
-
+    USER_CHAT_HISTORY(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND
+    ))),
 
 
     //Mong

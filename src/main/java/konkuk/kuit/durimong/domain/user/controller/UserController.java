@@ -10,10 +10,7 @@ import konkuk.kuit.durimong.domain.user.dto.request.UserMongConversationReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
-import konkuk.kuit.durimong.domain.user.dto.response.ReIssueTokenRes;
-import konkuk.kuit.durimong.domain.user.dto.response.UserHomeRes;
-import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
-import konkuk.kuit.durimong.domain.user.dto.response.UserUnRegisterRes;
+import konkuk.kuit.durimong.domain.user.dto.response.*;
 import konkuk.kuit.durimong.domain.user.service.UserService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
 import konkuk.kuit.durimong.global.annotation.UserId;
@@ -21,6 +18,8 @@ import konkuk.kuit.durimong.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.*;
 
@@ -176,5 +175,15 @@ public class UserController {
                                                       @Parameter(hidden = true) @UserId Long userId){
         return SuccessResponse.ok(userService.editAnswer(req,userId));
     }
+
+    @Operation(summary = "몽과의 대화 기록 보기", description = "몽과의 대화 기록을 조회합니다.")
+    @Tag(name = "Mong Conversation", description = "몽과의 대화 관련 API")
+    @CustomExceptionDescription(USER_CHAT_HISTORY)
+    @GetMapping("chat-history")
+    public SuccessResponse<List<UserChatHistoryRes>> showChatHistory(
+            @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.showChatHistory(userId));
+    }
+
 
 }

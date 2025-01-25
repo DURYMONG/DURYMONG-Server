@@ -18,6 +18,9 @@ public class UserMongConversation {
     private Long userMongConversationId;
 
     @Column(nullable = false)
+    private String mongQuestion;
+
+    @Column(nullable = false)
     private String userAnswer;
 
     @Column(nullable = false)
@@ -31,11 +34,12 @@ public class UserMongConversation {
     @JoinColumn(name = "userId")
     private User user;
 
-    public static UserMongConversation create(String userAnswer, User user, MongQuestion question) {
+    public static UserMongConversation create(String userAnswer, User user, MongQuestion question, String mongQuestion) {
         return UserMongConversation.builder().
                 userAnswer(userAnswer).
                 createdAt(LocalDate.now()).
                 question(question).
+                mongQuestion(mongQuestion).
                 user(user).
                 build();
     }

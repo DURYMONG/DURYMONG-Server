@@ -5,17 +5,11 @@ import konkuk.kuit.durimong.domain.mong.entity.Mong;
 import konkuk.kuit.durimong.domain.mong.entity.MongQuestion;
 import konkuk.kuit.durimong.domain.mong.repository.MongQuestionRepository;
 import konkuk.kuit.durimong.domain.mong.repository.MongRepository;
-import konkuk.kuit.durimong.domain.user.dto.request.UserEditAnswerReq;
-import konkuk.kuit.durimong.domain.user.dto.request.UserEditPasswordReq;
-import konkuk.kuit.durimong.domain.user.dto.request.UserInfoReq;
-import konkuk.kuit.durimong.domain.user.dto.request.UserMongConversationReq;
+import konkuk.kuit.durimong.domain.user.dto.request.*;
 import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.UserSignUpReq;
-import konkuk.kuit.durimong.domain.user.dto.response.ReIssueTokenRes;
-import konkuk.kuit.durimong.domain.user.dto.response.UserHomeRes;
-import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
-import konkuk.kuit.durimong.domain.user.dto.response.UserUnRegisterRes;
+import konkuk.kuit.durimong.domain.user.dto.response.*;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.domain.user.entity.UserMongConversation;
 import konkuk.kuit.durimong.domain.user.repository.UserMongConversationRepository;
@@ -279,7 +273,7 @@ public class UserService {
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         int date = LocalDate.now().getDayOfMonth();
         MongQuestion question = mongQuestionRepository.findMongQuestionByDate(date).orElseThrow(() -> new CustomException(QUESTION_NOT_EXISTS));
-        UserMongConversation conv = UserMongConversation.create(req.getUserAnswer(),user,question);
+        UserMongConversation conv = UserMongConversation.create(req.getUserAnswer(),user,question,question.getQuestion());
         userMongConversationRepository.save(conv);
         return "답변 생성이 완료되었습니다.";
     }
@@ -305,6 +299,15 @@ public class UserService {
             jwtProvider.invalidateToken(userId);
         }
     }
+
+    public List<UserChatHistoryRes> showChatHistory(Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        return userMongConversationRepository.findAllByUser(user);
+    }
+
+    public String deleteChat(UserDeleteChatReq req){
+    }
+
 
 
 
