@@ -5,6 +5,7 @@ import konkuk.kuit.durimong.domain.mong.entity.Mong;
 import konkuk.kuit.durimong.domain.mong.entity.MongQuestion;
 import konkuk.kuit.durimong.domain.mong.repository.MongQuestionRepository;
 import konkuk.kuit.durimong.domain.mong.repository.MongRepository;
+import konkuk.kuit.durimong.domain.user.dto.request.UserEditAnswerReq;
 import konkuk.kuit.durimong.domain.user.dto.request.UserEditPasswordReq;
 import konkuk.kuit.durimong.domain.user.dto.request.UserInfoReq;
 import konkuk.kuit.durimong.domain.user.dto.request.UserMongConversationReq;
@@ -173,7 +174,8 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(QUESTION_NOT_EXISTS));
 
         // 유저의 답변 조회
-        UserMongConversation conversation = userMongConversationRepository.findByUserAndQuestion(user, question);
+        UserMongConversation conversation = userMongConversationRepository.findByUserAndQuestion(user, question).orElseThrow(
+                () -> new CustomException(CONVERSATION_NOT_EXISTS));
 
         // 답변 여부에 따라 다른 Response 반환
         if (conversation != null) {
@@ -281,6 +283,16 @@ public class UserService {
         userMongConversationRepository.save(conv);
         return "답변 생성이 완료되었습니다.";
     }
+
+    public String editAnswer(UserEditAnswerReq req, Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        UserMongConversation conversation = userMongConversationRepository.findByCreatedAtAndUser(LocalDate.now(), user).orElseThrow(
+                () -> new CustomException(CONVERSATION_NOT_EXISTS));
+        conversation.setUserAnswer(req.getNewAnswer());
+        userMongConversationRepository.save(conversation);
+        return "답변 수정이 완료되었습니다.";
+    }
+
     private void invalidateTokens(String accessToken, Long userId) {
         if (accessToken != null) {
             long accessTokenExpirationMillis = jwtProvider.getClaims(accessToken).getExpiration().getTime() - System.currentTimeMillis();
@@ -293,6 +305,8 @@ public class UserService {
             jwtProvider.invalidateToken(userId);
         }
     }
+
+
 
 
 

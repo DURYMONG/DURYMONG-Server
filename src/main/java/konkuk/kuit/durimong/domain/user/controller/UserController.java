@@ -3,6 +3,7 @@ package konkuk.kuit.durimong.domain.user.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import konkuk.kuit.durimong.domain.user.dto.request.UserEditAnswerReq;
 import konkuk.kuit.durimong.domain.user.dto.request.UserEditPasswordReq;
 import konkuk.kuit.durimong.domain.user.dto.request.UserInfoReq;
 import konkuk.kuit.durimong.domain.user.dto.request.UserMongConversationReq;
@@ -159,9 +160,21 @@ public class UserController {
     }
 
     @Operation(summary = "몽과의 대화", description = "유저가 몽의 질문에 답변을 작성합니다.")
+    @Tag(name = "Mong Conversation", description = "몽과의 대화 관련 API")
+    @CustomExceptionDescription(USER_ANSWER)
     @PostMapping("mong-conversation")
     public SuccessResponse<String> mongConversation(@RequestBody @Validated UserMongConversationReq req,
                                                     @Parameter(hidden = true) @UserId Long userId){
         return SuccessResponse.ok(userService.userAnswer(req,userId));
     }
+
+    @Operation(summary = "답변 다시하기", description = "유저가 몽의 질문에 했던 답변을 수정합니다.")
+    @Tag(name = "Mong Conversation", description = "몽과의 대화 관련 API")
+    @CustomExceptionDescription(USER_EDIT_ANSWER)
+    @PostMapping("answer-modification")
+    public SuccessResponse<String> answerModification(@RequestBody @Validated UserEditAnswerReq req,
+                                                      @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.editAnswer(req,userId));
+    }
+
 }
