@@ -3,15 +3,11 @@ package konkuk.kuit.durimong.domain.user.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import konkuk.kuit.durimong.domain.user.dto.request.UserEditPasswordReq;
-import konkuk.kuit.durimong.domain.user.dto.request.UserInfoReq;
+import konkuk.kuit.durimong.domain.user.dto.request.*;
 import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
-import konkuk.kuit.durimong.domain.user.dto.response.ReIssueTokenRes;
-import konkuk.kuit.durimong.domain.user.dto.response.UserHomeRes;
-import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
-import konkuk.kuit.durimong.domain.user.dto.response.UserUnRegisterRes;
+import konkuk.kuit.durimong.domain.user.dto.response.*;
 import konkuk.kuit.durimong.domain.user.service.UserService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
 import konkuk.kuit.durimong.global.annotation.UserId;
@@ -19,6 +15,8 @@ import konkuk.kuit.durimong.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.*;
 
@@ -157,4 +155,47 @@ public class UserController {
         return SuccessResponse.ok(userService.unRegister(accessToken,userId));
     }
 
+    @Operation(summary = "몽과의 대화", description = "유저가 몽의 질문에 답변을 작성합니다.")
+    @Tag(name = "Mong Conversation", description = "몽과의 대화 관련 API")
+    @CustomExceptionDescription(USER_ANSWER)
+    @PostMapping("mong-conversation")
+    public SuccessResponse<String> mongConversation(@RequestBody @Validated UserMongConversationReq req,
+                                                    @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.userAnswer(req,userId));
+    }
+
+    @Operation(summary = "답변 다시하기", description = "유저가 몽의 질문에 했던 답변을 수정합니다.")
+    @Tag(name = "Mong Conversation", description = "몽과의 대화 관련 API")
+    @CustomExceptionDescription(USER_EDIT_ANSWER)
+    @PostMapping("answer-modification")
+    public SuccessResponse<String> answerModification(@RequestBody @Validated UserEditAnswerReq req,
+                                                      @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.editAnswer(req,userId));
+    }
+
+    @Operation(summary = "몽과의 대화 기록 보기", description = "몽과의 대화 기록을 조회합니다.")
+    @Tag(name = "Mong Conversation", description = "몽과의 대화 관련 API")
+    @CustomExceptionDescription(USER_CHAT_HISTORY)
+    @GetMapping("chat-history")
+    public SuccessResponse<List<UserChatHistoryRes>> showChatHistory(
+            @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.showChatHistory(userId));
+    }
+
+    @Operation(summary = "몽과의 대화 기록 삭제", description = "몽과의 대화 기록을 삭제합니다.")
+    @Tag(name = "Mong Conversation", description = "몽과의 대화 관련 API")
+    @CustomExceptionDescription(USER_DELETE_CHAT)
+    @PostMapping("conversation-elimination")
+    public SuccessResponse<String> deleteChat(@RequestBody @Validated UserDeleteChatReq req){
+        return SuccessResponse.ok(userService.deleteChat(req));
+    }
+
+    @Operation(summary = "알림 설정 화면",description = "알림 설정 화면 접속 시 호출되는 API입니다.")
+    @CustomExceptionDescription(USER_NOTIFICATION)
+    @GetMapping("notification")
+    public SuccessResponse<NotificationSettingFormRes> notificationSettingForm(
+            @Parameter(hidden = true) @UserId Long userId
+    ){
+        return SuccessResponse.ok(userService.notificationSettingForm(userId));
+    }
 }
