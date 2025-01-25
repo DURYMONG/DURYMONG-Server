@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface UserMongConversationRepository extends JpaRepository<UserMongConversation, Long> {
     UserMongConversation save(UserMongConversation conversation);
-    Optional<UserMongConversation> findByUserAndQuestion(User user, MongQuestion mongQuestion);
+    UserMongConversation findByUserAndQuestion(User user, MongQuestion mongQuestion);
     Optional<UserMongConversation> findByCreatedAtAndUser(LocalDate createdAt, User user);
     @Query("SELECT new konkuk.kuit.durimong.domain.user.dto.response.UserChatHistoryRes(c.createdAt, c.mongQuestion, c.userAnswer) " +
             "FROM UserMongConversation c " +

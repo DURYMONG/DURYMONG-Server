@@ -189,4 +189,13 @@ public class UserController {
     public SuccessResponse<String> deleteChat(@RequestBody @Validated UserDeleteChatReq req){
         return SuccessResponse.ok(userService.deleteChat(req));
     }
+
+    @Operation(summary = "알림 설정 화면",description = "알림 설정 화면 접속 시 호출되는 API입니다.")
+    @CustomExceptionDescription(USER_NOTIFICATION)
+    @GetMapping("notification")
+    public SuccessResponse<NotificationSettingFormRes> notificationSettingForm(
+            @Parameter(hidden = true) @UserId Long userId
+    ){
+        return SuccessResponse.ok(userService.notificationSettingForm(userId));
+    }
 }

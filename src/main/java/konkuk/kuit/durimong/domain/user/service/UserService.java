@@ -154,7 +154,6 @@ public class UserService {
         LocalDate todayDate = LocalDate.now();
         LocalDateTime today = LocalDateTime.now();
 
-        // 유저 및 몽 조회
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Mong findMong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
         String mongImage = findMong.getImage();
@@ -162,16 +161,11 @@ public class UserService {
         LocalDateTime createdAt = findMong.getCreatedAt();
         int dateWithMong = getDateWithMong(today, createdAt);
 
-        // 오늘의 질문 조회
         String mongQuestion = getDailyQuestion();
         MongQuestion question = mongQuestionRepository.findMongQuestionByDate(todayDate.getDayOfMonth())
                 .orElseThrow(() -> new CustomException(QUESTION_NOT_EXISTS));
 
-        // 유저의 답변 조회
-        UserMongConversation conversation = userMongConversationRepository.findByUserAndQuestion(user, question).orElseThrow(
-                () -> new CustomException(CONVERSATION_NOT_EXISTS));
-
-        // 답변 여부에 따라 다른 Response 반환
+        UserMongConversation conversation = userMongConversationRepository.findByUserAndQuestion(user, question);
         if (conversation != null) {
             return new UserHomeRes(todayDate, dateWithMong, mongName, mongImage, mongQuestion, conversation.getUserAnswer());
         } else {
@@ -314,6 +308,11 @@ public class UserService {
         return "선택하신 대화가 삭제되었습니다.";
     }
 
+    public NotificationSettingFormRes notificationSettingForm(Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Mong mong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
+        return new NotificationSettingFormRes(mong.getName(),user.getName());
+    }
 
 
 

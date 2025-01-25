@@ -85,6 +85,10 @@ public enum SwaggerResponseDescription {
     USER_DELETE_CHAT(new LinkedHashSet<>(Set.of(
             CONVERSATION_NOT_EXISTS
     ))),
+    USER_NOTIFICATION(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            MONG_NOT_FOUND
+    ))),
 
     //Mong
     MONG_NAME(new LinkedHashSet<>(Set.of(
