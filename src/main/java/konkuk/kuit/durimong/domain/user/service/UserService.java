@@ -306,6 +306,12 @@ public class UserService {
     }
 
     public String deleteChat(UserDeleteChatReq req){
+        UserMongConversation conversation = userMongConversationRepository.findByUserMongConversationId(req.getConversationId()).orElseThrow(
+                () -> new CustomException(CONVERSATION_NOT_EXISTS)
+        );
+        userMongConversationRepository.delete(conversation);
+        userMongConversationRepository.flush();
+        return "선택하신 대화가 삭제되었습니다.";
     }
 
 

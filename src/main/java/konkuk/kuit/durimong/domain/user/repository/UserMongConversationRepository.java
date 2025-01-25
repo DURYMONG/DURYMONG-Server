@@ -21,5 +21,5 @@ public interface UserMongConversationRepository extends JpaRepository<UserMongCo
             "WHERE c.user = :user " +
             "ORDER BY c.createdAt")
     List<UserChatHistoryRes> findAllByUser(User user);
-
+    Optional<UserMongConversation> findByUserMongConversationId(Long conversationId);
 }

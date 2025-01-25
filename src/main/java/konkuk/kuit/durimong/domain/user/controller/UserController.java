@@ -3,10 +3,7 @@ package konkuk.kuit.durimong.domain.user.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import konkuk.kuit.durimong.domain.user.dto.request.UserEditAnswerReq;
-import konkuk.kuit.durimong.domain.user.dto.request.UserEditPasswordReq;
-import konkuk.kuit.durimong.domain.user.dto.request.UserInfoReq;
-import konkuk.kuit.durimong.domain.user.dto.request.UserMongConversationReq;
+import konkuk.kuit.durimong.domain.user.dto.request.*;
 import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
@@ -185,5 +182,11 @@ public class UserController {
         return SuccessResponse.ok(userService.showChatHistory(userId));
     }
 
-
+    @Operation(summary = "몽과의 대화 기록 삭제", description = "몽과의 대화 기록을 삭제합니다.")
+    @Tag(name = "Mong Conversation", description = "몽과의 대화 관련 API")
+    @CustomExceptionDescription(USER_DELETE_CHAT)
+    @PostMapping("conversation-elimination")
+    public SuccessResponse<String> deleteChat(@RequestBody @Validated UserDeleteChatReq req){
+        return SuccessResponse.ok(userService.deleteChat(req));
+    }
 }
