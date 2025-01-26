@@ -54,6 +54,11 @@ public enum SwaggerResponseDescription {
     //Mong
     MONG_NAME(new LinkedHashSet<>(Set.of(
             MONG_NAME_LENGTH
+    ))),
+
+    //COLUMN
+    COLUMN_CATEGORY(new LinkedHashSet<>(Set.of(
+            COLUMN_CATEGORY_NOT_FOUND
     )));
 
 

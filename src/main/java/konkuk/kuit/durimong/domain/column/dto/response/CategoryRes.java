@@ -21,14 +21,11 @@ public class CategoryRes {
     @Builder
     @Schema(description = "단일 카테고리 DTO")
     public static class CategoryDTO {
-        @Schema(description = "카테고리 id", example = "1")
-        private Long categoryId;
-
         @Schema(description = "카테고리 이름", example = "수면장애")
         private String name;
 
-        @Schema(description = "카테고리 썸네일", example = "https://durimong.com/category/image.jpg")
-        private String thumbnail;
+        @Schema(description = "카테고리 이미지", example = "https://durimong.com/category/image.jpg")
+        private String image;
     }
 
 }
