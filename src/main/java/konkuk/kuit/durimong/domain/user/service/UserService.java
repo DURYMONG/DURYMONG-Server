@@ -5,13 +5,14 @@ import konkuk.kuit.durimong.domain.mong.entity.Mong;
 import konkuk.kuit.durimong.domain.mong.entity.MongQuestion;
 import konkuk.kuit.durimong.domain.mong.repository.MongQuestionRepository;
 import konkuk.kuit.durimong.domain.mong.repository.MongRepository;
+import konkuk.kuit.durimong.domain.user.dto.request.*;
 import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.UserSignUpReq;
-import konkuk.kuit.durimong.domain.user.dto.response.ReIssueTokenRes;
-import konkuk.kuit.durimong.domain.user.dto.response.UserHomeRes;
-import konkuk.kuit.durimong.domain.user.dto.response.UserTokenRes;
+import konkuk.kuit.durimong.domain.user.dto.response.*;
 import konkuk.kuit.durimong.domain.user.entity.User;
+import konkuk.kuit.durimong.domain.user.entity.UserMongConversation;
+import konkuk.kuit.durimong.domain.user.repository.UserMongConversationRepository;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
 import konkuk.kuit.durimong.global.annotation.UserId;
 import konkuk.kuit.durimong.global.exception.CustomException;
@@ -42,7 +43,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final MongRepository mongRepository;
     private final MongQuestionRepository mongAnswerRepository;
+    private final UserMongConversationRepository userMongConversationRepository;
     private final JwtProvider jwtProvider;
+    private final MongQuestionRepository mongQuestionRepository;
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
 
@@ -150,22 +153,32 @@ public class UserService {
     public UserHomeRes homePage(@UserId Long userId) {
         LocalDate todayDate = LocalDate.now();
         LocalDateTime today = LocalDateTime.now();
+
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Mong findMong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
         String mongImage = findMong.getImage();
         String mongName = findMong.getName();
         LocalDateTime createdAt = findMong.getCreatedAt();
-        int dateWithMong = getDateWithMong(today,createdAt);
-        String mongQuestion = getDailyQuestion(userId);
+        int dateWithMong = getDateWithMong(today, createdAt);
 
-        return new UserHomeRes(todayDate, dateWithMong, mongName, mongImage, mongQuestion);
+        String mongQuestion = getDailyQuestion();
+        MongQuestion question = mongQuestionRepository.findMongQuestionByDate(todayDate.getDayOfMonth())
+                .orElseThrow(() -> new CustomException(QUESTION_NOT_EXISTS));
+
+        UserMongConversation conversation = userMongConversationRepository.findByUserAndQuestion(user, question);
+        if (conversation != null) {
+            return new UserHomeRes(todayDate, dateWithMong, mongName, mongImage, mongQuestion, conversation.getUserAnswer());
+        } else {
+            return new UserHomeRes(todayDate, dateWithMong, mongName, mongImage, mongQuestion);
+        }
     }
+
 
     private int getDateWithMong(LocalDateTime today, LocalDateTime createdAt){
         return (int) Duration.between(createdAt, today).toDays() + 1;
     }
 
-    private String getDailyQuestion(@UserId Long userId){
+    private String getDailyQuestion(){
         List<MongQuestion> mongAnswers = mongAnswerRepository.findAll();
         if(mongAnswers.isEmpty()){
             throw new CustomException(QUESTION_NOT_EXISTS);
@@ -186,13 +199,119 @@ public class UserService {
         if (accessTokenExpirationMillis > 0) {
             redisService.setValues("BLACKLIST:" + accessToken, "logout", Duration.ofMillis(accessTokenExpirationMillis));
         }
+        if (jwtProvider.checkTokenExists(String.valueOf(userId))) {
+            jwtProvider.invalidateToken(userId);
+        }
+        return "로그아웃이 완료되었습니다.";
+    }
+
+    public String editUserInfo(UserInfoReq req, Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if(req.getNewUserName().equals(user.getName())){
+            throw new CustomException(USER_SAME_NAME);
+        }
+        user.setName(req.getNewUserName());
+        userRepository.save(user);
+        Mong mong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
+        if(req.getNewMongName().equals(mong.getName())){
+            throw new CustomException(MONG_SAME_NAME);
+        }
+        mong.setName(req.getNewMongName());
+        mongRepository.save(mong);
+        return "회원 정보 수정이 완료되었습니다.";
+    }
+
+    public String editUserPassword(UserEditPasswordReq req, Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if(!req.getNowPassword().equals(user.getPassword())){
+            throw new CustomException(USER_NOT_MATCH_PASSWORD);
+        }
+        if(req.getNewPassword().equals(req.getNowPassword())){
+            throw new CustomException(USER_SAME_PASSWORD);
+        }
+
+        if (req.getNewPassword().length() < 6 || req.getNewPassword().length() > 10) {
+            throw new CustomException(USER_PASSWORD_SHORT);
+        }
+
+        if (!req.getNewPassword().matches(".*[0-9].*")) {
+            throw new CustomException(USER_PASSWORD_NONUM);
+        }
+
+        if (!req.getNewPassword().matches(".*[a-zA-Z].*")) {
+            throw new CustomException(USER_PASSWORD_ENGLISH);
+        }
+        user.setPassword(req.getNewPassword());
+        userRepository.save(user);
+        return "비밀번호 수정이 완료되었습니다.";
+    }
+
+    public UserUnRegisterRes showUnRegister(Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Mong mong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
+        LocalDateTime createdAt = mong.getCreatedAt();
+        LocalDateTime today = LocalDateTime.now();
+        int dateWithMong = getDateWithMong(today,createdAt);
+        return new UserUnRegisterRes(user.getName(),dateWithMong,mong.getImage());
+    }
+
+    public String unRegister(String accessToken,Long userId){
+        invalidateTokens(accessToken,userId);
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        userRepository.delete(user);
+        userRepository.flush();
+        return "회원 탈퇴가 완료되었습니다," ;
+    }
+
+    public String userAnswer(UserMongConversationReq req, Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        int date = LocalDate.now().getDayOfMonth();
+        MongQuestion question = mongQuestionRepository.findMongQuestionByDate(date).orElseThrow(() -> new CustomException(QUESTION_NOT_EXISTS));
+        UserMongConversation conv = UserMongConversation.create(req.getUserAnswer(),user,question,question.getQuestion());
+        userMongConversationRepository.save(conv);
+        return "답변 생성이 완료되었습니다.";
+    }
+
+    public String editAnswer(UserEditAnswerReq req, Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        UserMongConversation conversation = userMongConversationRepository.findByCreatedAtAndUser(LocalDate.now(), user).orElseThrow(
+                () -> new CustomException(CONVERSATION_NOT_EXISTS));
+        conversation.setUserAnswer(req.getNewAnswer());
+        userMongConversationRepository.save(conversation);
+        return "답변 수정이 완료되었습니다.";
+    }
+
+    private void invalidateTokens(String accessToken, Long userId) {
+        if (accessToken != null) {
+            long accessTokenExpirationMillis = jwtProvider.getClaims(accessToken).getExpiration().getTime() - System.currentTimeMillis();
+            if (accessTokenExpirationMillis > 0) {
+                redisService.setValues("BLACKLIST:" + accessToken, "logout", Duration.ofMillis(accessTokenExpirationMillis));
+            }
+        }
 
         if (jwtProvider.checkTokenExists(String.valueOf(userId))) {
             jwtProvider.invalidateToken(userId);
         }
+    }
 
-        log.info("User {} has logged out.", userId);
-        return "로그아웃이 완료되었습니다.";
+    public List<UserChatHistoryRes> showChatHistory(Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        return userMongConversationRepository.findAllByUser(user);
+    }
+
+    public String deleteChat(UserDeleteChatReq req){
+        UserMongConversation conversation = userMongConversationRepository.findByUserMongConversationId(req.getConversationId()).orElseThrow(
+                () -> new CustomException(CONVERSATION_NOT_EXISTS)
+        );
+        userMongConversationRepository.delete(conversation);
+        userMongConversationRepository.flush();
+        return "선택하신 대화가 삭제되었습니다.";
+    }
+
+    public NotificationSettingFormRes notificationSettingForm(Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Mong mong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
+        return new NotificationSettingFormRes(mong.getName(),user.getName());
     }
 
 

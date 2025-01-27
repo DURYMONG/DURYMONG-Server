@@ -3,10 +3,7 @@ package konkuk.kuit.durimong.domain.mong.entity;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import konkuk.kuit.durimong.domain.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 @JsonDeserialize(builder = Mong.MongBuilder.class)
 public class Mong {
     @Id

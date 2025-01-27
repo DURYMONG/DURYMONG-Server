@@ -24,4 +24,15 @@ public class UserHomeRes {
     @Schema(description = "몽 질문", example = "오늘 무엇을 먹었나요?")
     private String mongQuestion;
 
+    @Schema(description = "유저의 대답", example = "오늘 아침은 토스트")
+    private String userAnswer;
+
+
+    public UserHomeRes(LocalDate date, int withMongDate, String mongName, String mongImage, String mongQuestion) {
+        this.date = date;
+        this.withMongDate = withMongDate;
+        this.mongName = mongName;
+        this.mongImage = mongImage;
+        this.mongQuestion = mongQuestion;
+    }
 }

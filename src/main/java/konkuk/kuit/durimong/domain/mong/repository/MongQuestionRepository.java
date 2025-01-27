@@ -10,8 +10,13 @@ import java.util.Optional;
 
 public interface MongQuestionRepository extends JpaRepository<MongQuestion, Long> {
     List<MongQuestion> findAll();
-
+    Optional<MongQuestion> findByQuestion(String question);
 
     @Query("SELECT m.question FROM MongQuestion m WHERE m.mongQuestionId = :date")
     Optional<String> findQuestionByDate(int date);
+
+    @Query("SELECT m FROM MongQuestion m WHERE m.mongQuestionId = :date")
+    Optional<MongQuestion> findMongQuestionByDate(int date);
+
+
 }
