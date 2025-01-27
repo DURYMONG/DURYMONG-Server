@@ -10,9 +10,7 @@ import org.checkerframework.checker.units.qual.A;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Schema(description = "키워드 검색 Response DTO")
 public class KeywordSearchRes {
     @Schema(description = "검색 결과 칼럼 목록")
@@ -36,7 +34,7 @@ public class KeywordSearchRes {
         @Schema(description = "미리보기(최대 50자)", example = "잠드는 데 어려움을 겪거나, 잠을 유지하는데...")
         private String preview;
 
-        @Schema(description = "칼럼 썸네일", example = "https://durimong.com/columns/images/sleep.jpg")
-        private String thumbnail;
+        @Schema(description = "칼럼 이미지", example = "https://durimong.com/columns/images/sleep.jpg")
+        private String image;
     }
 }

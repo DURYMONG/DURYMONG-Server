@@ -7,8 +7,6 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Schema(description = "카테고리 목록 Response DTO")
 public class CategoryRes {
 

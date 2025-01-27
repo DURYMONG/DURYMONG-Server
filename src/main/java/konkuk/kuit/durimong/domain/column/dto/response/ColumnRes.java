@@ -7,13 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Schema(description = "칼럼 조회 Response DTO")
+@Schema(description = "개별 칼럼 조회 Response DTO")
 public class ColumnRes {
-    @Schema(description = "칼럼 id", example = "1")
-    private Long id;
+    @Schema(description = "카테고리 이름", example = "불면증")
+    private String categoryName;
 
     @Schema(description = "칼럼 제목", example = "수면장애에 대한 이야기")
     private String title;
@@ -21,10 +19,10 @@ public class ColumnRes {
     @Schema(description = "칼럼 소제목", example = "잠 못 드는 하루하루, 수면장애")
     private String subtitle;
 
-    @Schema(description = "칼럼 내용", example = "수면장애에 대한 이야기")
+    @Schema(description = "칼럼 내용 (최대 3000자 제한)", example = "잠드는데 어려움을 겪거나...")
     private String content;
 
     @Schema(description = "칼럼 이미지", example = "https://durimong.com/column/1/image.jpg")
-    private String contentImage;
+    private String image;
 
 }

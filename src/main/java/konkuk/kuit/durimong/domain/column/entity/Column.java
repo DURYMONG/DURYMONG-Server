@@ -26,7 +26,7 @@ public class Column {
     @jakarta.persistence.Column(nullable = true)
     private String image;
 
-    @jakarta.persistence.Column(nullable = false)
+    @jakarta.persistence.Column(nullable = false, length = 90000)
     private String content;
 
     @OneToOne(fetch = FetchType.LAZY)
