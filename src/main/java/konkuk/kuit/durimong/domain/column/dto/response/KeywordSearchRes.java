@@ -15,7 +15,7 @@ import java.util.List;
 public class KeywordSearchRes {
     @Schema(description = "검색 결과 칼럼 목록")
     private List<ColumnDTO> columns;
-
+    // DTO 변경하기
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

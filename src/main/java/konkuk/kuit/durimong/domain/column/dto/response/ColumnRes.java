@@ -25,4 +25,5 @@ public class ColumnRes {
     @Schema(description = "칼럼 이미지", example = "https://durimong.com/column/1/image.jpg")
     private String image;
 
+
 }

@@ -1,7 +1,9 @@
 package konkuk.kuit.durimong.domain.column.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import konkuk.kuit.durimong.domain.column.dto.response.CategoryDetailRes;
 import konkuk.kuit.durimong.domain.column.dto.response.CategoryRes;
+import konkuk.kuit.durimong.domain.column.dto.response.ColumnRes;
 import konkuk.kuit.durimong.domain.column.service.ColumnService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
 import konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription;
@@ -10,12 +12,14 @@ import konkuk.kuit.durimong.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.COLUMN_CATEGORY;
+import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.COLUMN_VIEW;
 
 @Slf4j
 @RestController
@@ -30,6 +34,22 @@ public class ColumnController {
     public SuccessResponse<CategoryRes> getCategoryPage() {
 
         return SuccessResponse.ok(columnService.getAllCategories());
+    }
+
+    @GetMapping("/categories/{categoryId}/details")
+    @Operation(summary = "카테고리 상세설명 조회", description = "단일 카테고리 상세설명을 조회합니다.")
+    @CustomExceptionDescription(COLUMN_CATEGORY)
+    public SuccessResponse<CategoryDetailRes> getEachCategoryDetail(@PathVariable Long categoryId) {
+
+        return SuccessResponse.ok(columnService.getCategoryDetail(categoryId));
+    }
+
+    @GetMapping("/categories/{categoryId}")
+    @Operation(summary = "칼럼 조회", description = "각 칼럼을 조회합니다.")
+    @CustomExceptionDescription(COLUMN_VIEW)
+    public SuccessResponse<ColumnRes> getCategory(@PathVariable Long categoryId) {
+
+        return SuccessResponse.ok(columnService.viewColumn(categoryId));
     }
 
 }

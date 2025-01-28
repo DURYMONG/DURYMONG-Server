@@ -58,7 +58,9 @@ public enum ErrorCode {
     //UserMongConversation
     CONVERSATION_NOT_EXISTS(-500,"몽과의 대화가 존재하지 않습니다,",404),
     //Column
-    COLUMN_CATEGORY_NOT_FOUND(-500, "등록된 카테고리가 없습니다",404);
+    COLUMN_CATEGORY_NOT_FOUND(-600, "등록된 카테고리가 없습니다",404),
+    COLUMN_CATEGORY_DETAIL_NOT_FOUND(-601, "등록된 카테고리 설명이 없습니다", 404),
+    COLUMN_NOT_FOUND(-602,"등록된 칼럼이 없습니다.", 404);
 
     private final int errorCode;
     private final String message;
