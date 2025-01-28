@@ -96,6 +96,11 @@ public enum SwaggerResponseDescription {
     ))),
     MONG_CREATE(new LinkedHashSet<>(Set.of(
             USER_NOT_FOUND
+    ))),
+
+    //COLUMN
+    COLUMN_CATEGORY(new LinkedHashSet<>(Set.of(
+            COLUMN_CATEGORY_NOT_FOUND
     )));
 
 

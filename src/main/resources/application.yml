@@ -3,7 +3,7 @@ spring:
     name: durymong
   web:
     resources:
-      add-mappings: false
+      add-mappings: true
   profiles:
     group:
       local: local-db, dev-port, common
