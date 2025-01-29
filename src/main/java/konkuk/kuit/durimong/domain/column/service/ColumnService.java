@@ -70,6 +70,7 @@ public class ColumnService {
 
         List<KeywordSearchRes.ColumnDTO> columnList = resultColumns.stream()
                 .map(column -> new KeywordSearchRes.ColumnDTO(
+                        column.getCategory().getCategoryId(),
                         column.getCategory().getName(),
                         extractPreview(column,keyword)
                 ))

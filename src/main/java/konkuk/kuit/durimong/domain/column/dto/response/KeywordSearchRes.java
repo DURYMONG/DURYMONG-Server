@@ -22,6 +22,9 @@ public class KeywordSearchRes {
     @Builder
     @Schema(description = "단일 칼럼 DTO")
     public static class ColumnDTO {
+        @Schema(description = "카테고리 id", example = "1")
+        private Long categoryId;
+
         @Schema(description = "카테고리 이름", example = "불면증")
         private String categoryName;
 
