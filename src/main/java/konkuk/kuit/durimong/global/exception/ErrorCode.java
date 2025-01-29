@@ -60,7 +60,10 @@ public enum ErrorCode {
     //Column
     COLUMN_CATEGORY_NOT_FOUND(-600, "등록된 카테고리가 없습니다",404),
     COLUMN_CATEGORY_DETAIL_NOT_FOUND(-601, "등록된 카테고리 설명이 없습니다", 404),
-    COLUMN_NOT_FOUND(-602,"등록된 칼럼이 없습니다.", 404);
+    COLUMN_NOT_EXISTS(-602,"등록된 칼럼이 없습니다.", 404),
+    KEYWORD_NOT_EXISTS(-603,"키워드가 존재하지 않습니다.", 404),
+    KEYWORD_LENGTH_OVER(-604, "키워드 길이는 10자 이내여야 합니다.", 400),
+    KEYWORD_RESULT_NOT_EXISTS(-605,"키워드에 해당하는 내용이 없습니다", 404);
 
     private final int errorCode;
     private final String message;
