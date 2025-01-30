@@ -1,10 +1,10 @@
-package konkuk.kuit.durimong.domain.bot.controller;
+package konkuk.kuit.durimong.domain.chatbot.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
 @RequiredArgsConstructor
 @Controller
-public class BotController {
+public class ChatBotController {
 
 }
