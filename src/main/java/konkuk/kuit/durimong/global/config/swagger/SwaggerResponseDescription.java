@@ -100,7 +100,16 @@ public enum SwaggerResponseDescription {
 
     //COLUMN
     COLUMN_CATEGORY(new LinkedHashSet<>(Set.of(
-            COLUMN_CATEGORY_NOT_FOUND
+            COLUMN_CATEGORY_NOT_FOUND,
+            COLUMN_CATEGORY_DETAIL_NOT_FOUND
+    ))),
+    COLUMN_SEARCH(new LinkedHashSet<>(Set.of(
+            KEYWORD_NOT_EXISTS,
+            KEYWORD_LENGTH_OVER,
+            KEYWORD_RESULT_NOT_EXISTS
+    ))),
+    COLUMN_VIEW(new LinkedHashSet<>(Set.of(
+            COLUMN_NOT_EXISTS
     )));
 
 

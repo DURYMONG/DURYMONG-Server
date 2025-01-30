@@ -19,6 +19,9 @@ public class CategoryRes {
     @Builder
     @Schema(description = "단일 카테고리 DTO")
     public static class CategoryDTO {
+        @Schema(description = "카테고리 id", example = "1")
+        private Long categoryId;
+
         @Schema(description = "카테고리 이름", example = "수면장애")
         private String name;
 
