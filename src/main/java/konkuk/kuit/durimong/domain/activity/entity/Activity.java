@@ -1,27 +1,30 @@
 package konkuk.kuit.durimong.domain.activity.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
-@Builder
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Table(name = "activity")
 public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "activity_id")
     private Long activityId;
 
     @Column(nullable = false)
     private String name;
 
-    private String description;
+    @Column(nullable = true)
+    private String intro;
 
+    @Column(nullable = true)
     private String tip;
 
+    @Column(nullable = true)
     private String effect;
 }
