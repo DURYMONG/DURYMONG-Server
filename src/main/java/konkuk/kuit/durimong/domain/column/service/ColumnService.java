@@ -31,6 +31,7 @@ public class ColumnService {
     public CategoryRes getAllCategories() {
         List<CategoryRes.CategoryDTO> categoryList = categoryRepository.findAll().stream()
                 .map(category -> new CategoryRes.CategoryDTO(
+                        category.getCategoryId(),
                         category.getName(),
                         category.getImage()
                 ))
