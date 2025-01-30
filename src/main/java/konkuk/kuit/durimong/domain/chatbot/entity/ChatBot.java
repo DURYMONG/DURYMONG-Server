@@ -31,4 +31,7 @@ public class ChatBot {
     @Column(nullable = false)
     private String nickname;
 
+    @Column(nullable = false)
+    private String image;
+
 }

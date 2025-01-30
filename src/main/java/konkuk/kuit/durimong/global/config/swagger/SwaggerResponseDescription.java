@@ -96,6 +96,10 @@ public enum SwaggerResponseDescription {
     ))),
     MONG_CREATE(new LinkedHashSet<>(Set.of(
             USER_NOT_FOUND
+    ))),
+
+    CHAT_BOT(new LinkedHashSet<>(Set.of(
+            CHATBOT_NOT_EXISTS
     )));
 
 
