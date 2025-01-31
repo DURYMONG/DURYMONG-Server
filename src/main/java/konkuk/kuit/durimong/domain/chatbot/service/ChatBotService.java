@@ -25,7 +25,9 @@ public class ChatBotService {
         List<ChatBot> chatBots = chatBotRepository.findAll();
         List<ChatBotRes> chatBotResList = new ArrayList<>();
         for (ChatBot chatBot : chatBots) {
-            ChatBotRes chatBotRes = new ChatBotRes(chatBot.getName(),
+            ChatBotRes chatBotRes = new ChatBotRes(
+                    chatBot.getChatBotId(),
+                    chatBot.getName(),
                     chatBot.getMbti(),
                     chatBot.getAccent(),
                     chatBot.getNickname(),

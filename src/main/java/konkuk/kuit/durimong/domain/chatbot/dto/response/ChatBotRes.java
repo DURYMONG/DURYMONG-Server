@@ -7,6 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class ChatBotRes {
+    @Schema(description = "채팅봇 ID", example = "1")
+    private Long chatBotId;
+
     @Schema(description = "채팅봇 이름", example = "바둑이")
     private String name;
 
