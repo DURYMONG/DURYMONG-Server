@@ -113,8 +113,11 @@ public enum SwaggerResponseDescription {
     ))),
     CHAT_BOT(new LinkedHashSet<>(Set.of(
             CHATBOT_NOT_EXISTS
+    ))),
+    CHAT_START(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            CHATBOT_NOT_FOUND
     )));
-
 
     private Set<ErrorCode> errorCodeList;
 
