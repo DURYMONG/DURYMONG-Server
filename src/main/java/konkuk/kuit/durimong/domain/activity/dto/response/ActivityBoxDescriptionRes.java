@@ -33,7 +33,7 @@ public class ActivityBoxDescriptionRes {
         @Schema(description = "효과", example = "수면장애")
         private String effect;
 
-        @Schema(description = "카테고리 이미지", example = "https://durimong.com/category/image.jpg")
+        @Schema(description = "활동 이미지", example = "https://durimong.com/activity/image.jpg")
         private String image;
     }
 }
