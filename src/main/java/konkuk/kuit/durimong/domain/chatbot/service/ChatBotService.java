@@ -73,12 +73,7 @@ public class ChatBotService {
 
         String userName = user.getName();
 
-        String systemPrompt = String.format(
-                "당신은 %s라는 이름의 가상 챗봇입니다. 당신의 성격은 %s입니다. "
-                        + "사용자에게 처음 말을 걸 때 %s 말투로 질문을 해야 합니다. "
-                        + "사용자의 이름은 %s입니다. 사용자에게 증상을 물어보세요.",
-                chatBot.getName(), chatBot.getSlogan(), chatBot.getAccent(), userName
-        );
+        String systemPrompt = createGreetingPrompt(chatBot, userName);
 
         String userPrompt = String.format("%s에게 인사를 건네고 증상을 물어봐.", userName);
 
@@ -87,17 +82,25 @@ public class ChatBotService {
         return new ChatBotChattingRes(chatBot.getImage(), responseMessage);
     }
 
+    private String createGreetingPrompt(ChatBot chatBot, String userName) {
+        String systemPrompt = String.format(
+                "당신은 %s라는 이름의 가상 챗봇입니다. 당신의 성격은 %s입니다. "
+                        + "사용자에게 처음 말을 걸 때 %s 말투로 질문을 해야 합니다. "
+                        + "사용자의 이름은 %s입니다. 사용자에게 증상을 물어보세요.",
+                chatBot.getName(), chatBot.getSlogan(), chatBot.getAccent(), userName
+        );
+        return systemPrompt;
+    }
+
 
     private String getChatGptResponse(String systemPrompt, String userPrompt) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(openAiApiKey);
 
-        // JSON 객체 생성
         JSONObject requestBody = new JSONObject();
         requestBody.put("model", "gpt-3.5-turbo");
 
-        // 메시지 리스트 구성
         JSONArray messages = new JSONArray();
         messages.put(new JSONObject().put("role", "system").put("content", systemPrompt));
         messages.put(new JSONObject().put("role", "user").put("content", userPrompt));
@@ -105,7 +108,6 @@ public class ChatBotService {
         requestBody.put("messages", messages);
         requestBody.put("temperature", 0.7);
 
-        // HTTP 요청 생성
         HttpEntity<String> request = new HttpEntity<>(requestBody.toString(), headers);
         ResponseEntity<String> response = restTemplate.postForEntity(openAiApiUrl, request, String.class);
 
@@ -138,7 +140,7 @@ public class ChatBotService {
             allSymptoms += ", " + additionalSymptoms;
         }
 
-        String systemPrompt = createPrompt(chatBot);
+        String systemPrompt = createPredictionPrompt(chatBot);
         String gptResponse = getChatGptResponse(systemPrompt, allSymptoms);
 
         List<String> predictedDisorders = extractPredictedDisorders(gptResponse);
@@ -167,8 +169,7 @@ public class ChatBotService {
         return detectedDisorders;
     }
 
-
-    private String createPrompt(ChatBot chatBot) {
+    private String createPredictionPrompt(ChatBot chatBot) {
         String toneInstruction = chatBot.getAccent().equals("반말")
                 ? "반말을 무조건 사용해야 해. 존댓말을 절대 사용하지 마. '요'를 절대 사용하면 안 돼. 모든 문장을 반말로 끝내."
                 : "무조건 존댓말을 사용해야 합니다. 절대 반말을 사용하지 마세요.";
