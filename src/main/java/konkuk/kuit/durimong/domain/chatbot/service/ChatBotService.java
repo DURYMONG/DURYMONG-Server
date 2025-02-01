@@ -8,6 +8,8 @@ import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotPredictRes;
 import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotRes;
 import konkuk.kuit.durimong.domain.chatbot.entity.ChatBot;
 import konkuk.kuit.durimong.domain.chatbot.repository.ChatBotRepository;
+import konkuk.kuit.durimong.domain.column.entity.ColumnCategory;
+import konkuk.kuit.durimong.domain.column.repository.CategoryRepository;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
 import konkuk.kuit.durimong.global.exception.CustomException;
@@ -36,6 +38,7 @@ import static konkuk.kuit.durimong.global.exception.ErrorCode.*;
 public class ChatBotService {
     private final ChatBotRepository chatBotRepository;
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
     @Value("${spring.openai.api.url}")
     private String openAiApiUrl;
@@ -122,9 +125,11 @@ public class ChatBotService {
     public ChatBotPredictRes analyzeMentalHealth(ChatBotPredictReq req) {
         ChatBot chatBot = chatBotRepository.findById(req.getChatBotId())
                 .orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
-        if(req.getSymptoms() == null && req.getAdditionalSymptoms() == null) {
+
+        if (req.getSymptoms() == null && req.getAdditionalSymptoms() == null) {
             throw new CustomException(CHATBOT_SYMPOMS_EMPTY);
         }
+
         List<String> selectedSymptoms = req.getSymptoms();
         String additionalSymptoms = req.getAdditionalSymptoms();
 
@@ -135,13 +140,33 @@ public class ChatBotService {
 
         String systemPrompt = createPrompt(chatBot);
         String gptResponse = getChatGptResponse(systemPrompt, allSymptoms);
-        if(chatBot.getAccent().equals("반말")){
-            gptResponse += " 관련 정보를 확인하거나, 활동을 추천해줄게!";
-            return new ChatBotPredictRes(gptResponse, chatBot.getImage());
+
+        List<String> predictedDisorders = extractPredictedDisorders(gptResponse);
+        if (predictedDisorders.isEmpty()) {
+            throw new CustomException(CHATBOT_PREDICT_ERROR);
         }
-        gptResponse += " 관련 정보를 확인하거나, 활동을 추천해줄게요.";
-        return new ChatBotPredictRes(gptResponse, chatBot.getImage());
+
+        List<Long> categoryIds = categoryRepository.findByNameIn(predictedDisorders).stream()
+                .map(ColumnCategory::getCategoryId)
+                .toList();
+
+        String finalMessage = appendRecommendationMessage(gptResponse, chatBot.getAccent());
+
+        return new ChatBotPredictRes(finalMessage, chatBot.getImage(), categoryIds);
     }
+
+    private List<String> extractPredictedDisorders(String gptResponse) {
+        List<String> validDisorders = List.of("불면증", "우울증", "공황장애", "조울증", "대인기피증", "폭식증");
+        List<String> detectedDisorders = new ArrayList<>();
+
+        for (String disorder : validDisorders) {
+            if (gptResponse.contains(disorder)) {
+                detectedDisorders.add(disorder);
+            }
+        }
+        return detectedDisorders;
+    }
+
 
     private String createPrompt(ChatBot chatBot) {
         String toneInstruction = chatBot.getAccent().equals("반말")
@@ -156,6 +181,15 @@ public class ChatBotService {
                 chatBot.getName(), chatBot.getSlogan(), chatBot.getAccent(), toneInstruction
         );
     }
+
+    private String appendRecommendationMessage(String message, String accent) {
+        String recommendation = accent.equals("반말")
+                ? " 관련 정보를 확인하거나, 활동을 추천해줄게!"
+                : " 관련 정보를 확인하거나, 활동을 추천해드릴게요.";
+
+        return message + recommendation;
+    }
+
 
 
 }

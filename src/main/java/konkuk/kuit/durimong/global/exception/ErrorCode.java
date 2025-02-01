@@ -68,7 +68,8 @@ public enum ErrorCode {
     CHATBOT_NOT_EXISTS(-700,"등록된 채팅봇이 없습니다.",404),
     CHATBOT_NOT_FOUND(-701,"존재하지 않는 채팅봇입니다.",404),
     CHATBOT_PARSE_ERROR(-702,"메시지 파싱중 오류가 발생했습니다.",500),
-    CHATBOT_SYMPOMS_EMPTY(-703,"선택된 증상이 없습니다.",422);
+    CHATBOT_SYMPOMS_EMPTY(-703,"선택된 증상이 없습니다.",422),
+    CHATBOT_PREDICT_ERROR(-704,"GPT의 응답에서 질환을 추출하지 못했습니다.",404);
     private final int errorCode;
     private final String message;
     private final int httpCode;

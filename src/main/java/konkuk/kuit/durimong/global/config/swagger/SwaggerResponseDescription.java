@@ -122,7 +122,8 @@ public enum SwaggerResponseDescription {
             USER_NOT_FOUND,
             CHATBOT_NOT_FOUND,
             CHATBOT_PARSE_ERROR,
-            CHATBOT_SYMPOMS_EMPTY
+            CHATBOT_SYMPOMS_EMPTY,
+            CHATBOT_PREDICT_ERROR
     )));
 
     private Set<ErrorCode> errorCodeList;
