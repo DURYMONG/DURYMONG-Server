@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class CheckActivityReq {
     @Schema(description = "활동 id", example = "1")
-    private String activityId;
+    private Long activityId;
 }

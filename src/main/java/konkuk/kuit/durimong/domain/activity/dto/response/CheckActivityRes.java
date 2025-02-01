@@ -11,14 +11,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Schema(description = "활동 체크 Response DTO")
 public class CheckActivityRes {
-    @Schema(description = "활동 id", example = "1")
-    private Long activityId;
-
-    @Schema(description = "유저 id", example = "3")
-    private Long userId;
-
-    @Schema(description = "체크 여부", example = "true")
-    private boolean isChecked;
+    @Schema(description = "유저기록 id", example = "123")
+    private Long userRecordId;
 
     // 년도-월-일 형식으로 (역)직렬화
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

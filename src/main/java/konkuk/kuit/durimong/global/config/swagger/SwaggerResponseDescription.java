@@ -129,14 +129,20 @@ public enum SwaggerResponseDescription {
     //ACTIVITY
     ACTIVITY_TEST_LIST(new LinkedHashSet<>(Set.of(
             ACTIVITY_NOT_FOUND,
-            TEST_NOT_FOUND
+            TEST_NOT_FOUND,
+            USER_NOT_FOUND,
+            MONG_NOT_FOUND
     ))),
     ACTIVITY_EXIST(new LinkedHashSet<>(Set.of(
-            ACTIVITY_ID_NOT_EXISTS
+            ACTIVITY_ID_NOT_EXISTS,
+            USER_NOT_FOUND
     ))),
-    ACTIVITY_RECORD(new LinkedHashSet<>(Set.of(
-            ACTIVITY_USER_RECORD_EXISTS_OVER,
-            ACTIVITY_USER_RECORD_NOT_FOUND
+
+    //USER RECORD
+    USER_RECORD(new LinkedHashSet<>(Set.of(
+            USER_RECORD_NOT_FOUND,
+            USER_RECORD_EXISTS_OVER,
+            UNAUTHORIZED
     )));
 
     private Set<ErrorCode> errorCodeList;
