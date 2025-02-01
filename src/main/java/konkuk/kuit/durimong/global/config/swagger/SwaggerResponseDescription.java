@@ -124,6 +124,19 @@ public enum SwaggerResponseDescription {
             CHATBOT_PARSE_ERROR,
             CHATBOT_SYMPOMS_EMPTY,
             CHATBOT_PREDICT_ERROR
+    ))),
+
+    //ACTIVITY
+    ACTIVITY_TEST_LIST(new LinkedHashSet<>(Set.of(
+            ACTIVITY_NOT_FOUND,
+            TEST_NOT_FOUND
+    ))),
+    ACTIVITY_EXIST(new LinkedHashSet<>(Set.of(
+            ACTIVITY_ID_NOT_EXISTS
+    ))),
+    ACTIVITY_RECORD(new LinkedHashSet<>(Set.of(
+            ACTIVITY_USER_RECORD_EXISTS_OVER,
+            ACTIVITY_USER_RECORD_NOT_FOUND
     )));
 
     private Set<ErrorCode> errorCodeList;

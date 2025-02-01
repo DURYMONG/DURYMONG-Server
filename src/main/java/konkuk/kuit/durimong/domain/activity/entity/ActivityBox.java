@@ -15,7 +15,7 @@ import java.util.List;
 public class ActivityBox {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "activity_box")
+    @Column(name = "activity_box_id")
     private Long activityBoxId;
 
     @Column(name = "box_name", nullable = false)
@@ -31,6 +31,6 @@ public class ActivityBox {
     private String image;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "activity", nullable = false)
+    @JoinColumn(name = "activity_id", nullable = false)
     private Activity activity;
 }

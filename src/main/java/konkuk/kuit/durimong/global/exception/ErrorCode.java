@@ -69,7 +69,18 @@ public enum ErrorCode {
     CHATBOT_NOT_FOUND(-701,"존재하지 않는 채팅봇입니다.",404),
     CHATBOT_PARSE_ERROR(-702,"메시지 파싱중 오류가 발생했습니다.",500),
     CHATBOT_SYMPOMS_EMPTY(-703,"선택된 증상이 없습니다.",422),
-    CHATBOT_PREDICT_ERROR(-704,"GPT의 응답에서 질환을 추출하지 못했습니다.",404);
+    CHATBOT_PREDICT_ERROR(-704,"GPT의 응답에서 질환을 추출하지 못했습니다.",404),
+    //Activity
+    ACTIVITY_NOT_FOUND(-801, "등록된 활동이 없습니다", 404),
+    ACTIVITY_INVALID_STATUS(-802, "활동이 유효한 상태가 아닙니다", 400),
+    ACTIVITY_USER_RECORD_NOT_FOUND(-803, "사용자의 활동 기록이 없습니다", 404),
+    ACTIVITY_USER_RECORD_EXISTS_OVER(-804, "완료한 활동 개수가 전체보다 많습니다", 400),
+    ACTIVITY_SAME_NAME(-805, "활동 이름이 중복됩니다", 409),
+    ACTIVITY_PERMISSION_DENIED(-806, "활동을 수정 할 권한이 없습니다", 403),
+    ACTIVITY_ID_NOT_EXISTS(-807,"해당 id의 활동이 존재하지 않습니다",404),
+    //Test
+    TEST_NOT_FOUND(-901,"등록된 테스트가 없습니다", 404);
+
     private final int errorCode;
     private final String message;
     private final int httpCode;

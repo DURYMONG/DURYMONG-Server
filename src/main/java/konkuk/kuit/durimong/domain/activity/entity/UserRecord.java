@@ -22,9 +22,6 @@ public class UserRecord {
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
-    @Column(name = "is_checked", nullable = false)
-    private Boolean isChecked;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "activity_id", nullable = false)
     private Activity activity;
