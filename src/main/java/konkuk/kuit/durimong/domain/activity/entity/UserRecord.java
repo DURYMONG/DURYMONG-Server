@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -20,7 +21,7 @@ public class UserRecord {
     private Long userRecordId;
 
     @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    private LocalDate createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "activity_id", nullable = false)

@@ -1,10 +1,13 @@
 package konkuk.kuit.durimong.domain.activity.service;
 
+import konkuk.kuit.durimong.domain.activity.dto.request.CheckActivityReq;
 import konkuk.kuit.durimong.domain.activity.dto.response.ActivityBoxDescriptionRes;
 import konkuk.kuit.durimong.domain.activity.dto.response.ActivityDescriptionRes;
 import konkuk.kuit.durimong.domain.activity.dto.response.ActivityTestListRes;
+import konkuk.kuit.durimong.domain.activity.dto.response.CheckActivityRes;
 import konkuk.kuit.durimong.domain.activity.entity.Activity;
 import konkuk.kuit.durimong.domain.activity.entity.ActivityBox;
+import konkuk.kuit.durimong.domain.activity.entity.UserRecord;
 import konkuk.kuit.durimong.domain.activity.repository.ActivityBoxRepository;
 import konkuk.kuit.durimong.domain.activity.repository.ActivityRepository;
 import konkuk.kuit.durimong.domain.activity.repository.UserRecordRepository;
@@ -23,6 +26,8 @@ import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -111,6 +116,44 @@ public class ActivityService {
                     activity.getTip()
             );
         }
+    }
+
+    // 활동 체크
+    public CheckActivityRes makeUserRecord(CheckActivityReq req, Long userId) {
+        // 현재 날짜 얻는 로직
+        LocalDate today = LocalDate.now();
+        Activity activity = activityRepository.findById(req.getActivityId())
+                .orElseThrow(() -> new CustomException(ErrorCode.ACTIVITY_ID_NOT_EXISTS));
+
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // userRecord 생성
+        UserRecord userRecord = UserRecord.builder()
+                .createdAt(LocalDate.now())
+                .activity(activity)
+                .user(user)
+                .build();
+
+        // 생성된 userRecord 저장
+        UserRecord madeUserRecord = userRecordRepository.save(userRecord);
+
+        return new CheckActivityRes(madeUserRecord.getUserRecordId(),today);
+    }
+
+    // 활동 체크 취소
+    public void deleteUserRecord(Long userRecordId, Long userId) {
+        // 해당 userRecordId에 대한 userRecord삭제
+
+        UserRecord userRecord = userRecordRepository.findById(userRecordId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_RECORD_NOT_FOUND));
+
+        // userRecordId가 userId의 user소유가 아니라면
+        if(! userRecord.getUser().getUserId().equals(userId)){
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
+        }
+
+        userRecordRepository.delete(userRecord);
     }
 
 
