@@ -11,6 +11,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserChatHistoryRes {
+    @Schema(description = "대화 ID", example = "1")
+    private Long conversationId;
+
     @Schema(description = "대화 날짜", example = "2025/01/01")
     private LocalDate createdAt;
 

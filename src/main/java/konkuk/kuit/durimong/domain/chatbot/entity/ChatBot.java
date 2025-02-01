@@ -1,6 +1,5 @@
-package konkuk.kuit.durimong.domain.bot.entity;
+package konkuk.kuit.durimong.domain.chatbot.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Getter
-public class Bot {
+public class ChatBot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long botId;
+    private Long chatBotId;
 
     @Column(nullable = false)
     private String name;
@@ -32,6 +31,7 @@ public class Bot {
     @Column(nullable = false)
     private String nickname;
 
-    @Builder.Default
-    private boolean isBookMarked = false;
+    @Column(nullable = false)
+    private String image;
+
 }
