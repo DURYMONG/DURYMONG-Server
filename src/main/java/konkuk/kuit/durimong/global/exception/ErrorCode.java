@@ -66,7 +66,9 @@ public enum ErrorCode {
     KEYWORD_RESULT_NOT_EXISTS(-605,"키워드에 해당하는 내용이 없습니다", 404),
     //ChatBot
     CHATBOT_NOT_EXISTS(-700,"등록된 채팅봇이 없습니다.",404),
-    CHATBOT_NOT_FOUND(-701,"존재하지 않는 채팅봇입니다.",404);
+    CHATBOT_NOT_FOUND(-701,"존재하지 않는 채팅봇입니다.",404),
+    CHATBOT_PARSE_ERROR(-702,"메시지 파싱중 오류가 발생했습니다.",500),
+    CHATBOT_SYMPOMS_EMPTY(-703,"선택된 증상이 없습니다.",422);
     private final int errorCode;
     private final String message;
     private final int httpCode;

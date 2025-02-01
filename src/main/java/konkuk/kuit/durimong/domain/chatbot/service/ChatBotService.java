@@ -2,7 +2,9 @@ package konkuk.kuit.durimong.domain.chatbot.service;
 
 import jakarta.transaction.Transactional;
 import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotChattingReq;
+import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotPredictReq;
 import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotChattingRes;
+import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotPredictRes;
 import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotRes;
 import konkuk.kuit.durimong.domain.chatbot.entity.ChatBot;
 import konkuk.kuit.durimong.domain.chatbot.repository.ChatBotRepository;
@@ -18,14 +20,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static konkuk.kuit.durimong.global.exception.ErrorCode.CHATBOT_NOT_FOUND;
-import static konkuk.kuit.durimong.global.exception.ErrorCode.USER_NOT_FOUND;
+import static konkuk.kuit.durimong.global.exception.ErrorCode.*;
 
 @Service
 @Slf4j
@@ -59,7 +61,7 @@ public class ChatBotService {
         }
         return chatBotResList;
     }
-    
+
     public ChatBotChattingRes getChatBotGreeting(ChatBotChattingReq req, Long userId) {
         ChatBot chatBot = chatBotRepository.findById(req.getChatBotId())
                 .orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
@@ -88,19 +90,25 @@ public class ChatBotService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(openAiApiKey);
 
-        String requestBody = String.format(
-                "{ \"model\": \"gpt-3.5-turbo\", \"messages\": ["
-                        + "{ \"role\": \"system\", \"content\": \"%s\" },"
-                        + "{ \"role\": \"user\", \"content\": \"%s\" }],"
-                        + "\"temperature\": 0.7 }",
-                systemPrompt, userPrompt
-        );
+        // JSON 객체 생성
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("model", "gpt-3.5-turbo");
 
-        HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
-        String response = restTemplate.postForObject(openAiApiUrl, request, String.class);
+        // 메시지 리스트 구성
+        JSONArray messages = new JSONArray();
+        messages.put(new JSONObject().put("role", "system").put("content", systemPrompt));
+        messages.put(new JSONObject().put("role", "user").put("content", userPrompt));
 
-        return extractMessageFromResponse(response);
+        requestBody.put("messages", messages);
+        requestBody.put("temperature", 0.7);
+
+        // HTTP 요청 생성
+        HttpEntity<String> request = new HttpEntity<>(requestBody.toString(), headers);
+        ResponseEntity<String> response = restTemplate.postForEntity(openAiApiUrl, request, String.class);
+
+        return extractMessageFromResponse(response.getBody());
     }
+
 
     private String extractMessageFromResponse(String response) {
         try {
@@ -108,9 +116,45 @@ public class ChatBotService {
             JSONArray choices = jsonResponse.getJSONArray("choices");
             return choices.getJSONObject(0).getJSONObject("message").getString("content");
         } catch (JSONException e) {
-            log.error("❌ ChatGPT 응답 파싱 오류", e);
-            return "기본 메시지를 생성하는 중 오류가 발생했습니다.";
+            throw new CustomException(CHATBOT_PARSE_ERROR);
         }
+    }
+    public ChatBotPredictRes analyzeMentalHealth(ChatBotPredictReq req) {
+        ChatBot chatBot = chatBotRepository.findById(req.getChatBotId())
+                .orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
+        if(req.getSymptoms() == null && req.getAdditionalSymptoms() == null) {
+            throw new CustomException(CHATBOT_SYMPOMS_EMPTY);
+        }
+        List<String> selectedSymptoms = req.getSymptoms();
+        String additionalSymptoms = req.getAdditionalSymptoms();
+
+        String allSymptoms = String.join(", ", selectedSymptoms);
+        if (additionalSymptoms != null && !additionalSymptoms.isEmpty()) {
+            allSymptoms += ", " + additionalSymptoms;
+        }
+
+        String systemPrompt = createPrompt(chatBot);
+        String gptResponse = getChatGptResponse(systemPrompt, allSymptoms);
+        if(chatBot.getAccent().equals("반말")){
+            gptResponse += " 관련 정보를 확인하거나, 활동을 추천해줄게!";
+            return new ChatBotPredictRes(gptResponse, chatBot.getImage());
+        }
+        gptResponse += " 관련 정보를 확인하거나, 활동을 추천해줄게요.";
+        return new ChatBotPredictRes(gptResponse, chatBot.getImage());
+    }
+
+    private String createPrompt(ChatBot chatBot) {
+        String toneInstruction = chatBot.getAccent().equals("반말")
+                ? "반말을 무조건 사용해야 해. 존댓말을 절대 사용하지 마. '요'를 절대 사용하면 안 돼. 모든 문장을 반말로 끝내."
+                : "무조건 존댓말을 사용해야 합니다. 절대 반말을 사용하지 마세요.";
+
+        return String.format(
+                "당신은 %s라는 이름의 챗봇입니다. 당신의 성격은 %s이며, %s 말투를 사용해야 합니다. "
+                        + "%s "
+                        + "사용자가 입력한 증상을 바탕으로 심적 질환을 예측하세요. "
+                        + "반드시 불면증, 우울증, 공황장애, 조울증, 대인기피증, 폭식증 중 하나만 선택해야 합니다. ",
+                chatBot.getName(), chatBot.getSlogan(), chatBot.getAccent(), toneInstruction
+        );
     }
 
 

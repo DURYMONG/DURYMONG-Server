@@ -3,7 +3,9 @@ package konkuk.kuit.durimong.domain.chatbot.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotChattingReq;
+import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotPredictReq;
 import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotChattingRes;
+import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotPredictRes;
 import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotRes;
 import konkuk.kuit.durimong.domain.chatbot.service.ChatBotService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
@@ -40,4 +42,13 @@ public class ChatBotController {
             @UserId @Parameter(hidden = true) Long userId, @Validated ChatBotChattingReq req){
         return SuccessResponse.ok(chatBotService.getChatBotGreeting(req,userId));
     }
+
+    @Operation(summary = "채팅봇 질환 추측", description = "유저가 선택한 증상을 기반으로 심적 질환을 추측합니다.")
+    @CustomExceptionDescription(CHAT_START)
+    @GetMapping("prediction")
+    public SuccessResponse<ChatBotPredictRes> botPrediction(
+           @Validated ChatBotPredictReq req){
+        return SuccessResponse.ok(chatBotService.analyzeMentalHealth(req));
+    }
+
 }
