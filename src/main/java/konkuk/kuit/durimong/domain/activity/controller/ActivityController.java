@@ -3,10 +3,7 @@ package konkuk.kuit.durimong.domain.activity.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import konkuk.kuit.durimong.domain.activity.dto.request.CheckActivityReq;
-import konkuk.kuit.durimong.domain.activity.dto.response.ActivityBoxDescriptionRes;
-import konkuk.kuit.durimong.domain.activity.dto.response.ActivityDescriptionRes;
-import konkuk.kuit.durimong.domain.activity.dto.response.ActivityTestListRes;
-import konkuk.kuit.durimong.domain.activity.dto.response.CheckActivityRes;
+import konkuk.kuit.durimong.domain.activity.dto.response.*;
 import konkuk.kuit.durimong.domain.activity.service.ActivityService;
 import konkuk.kuit.durimong.domain.test.entity.Test;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
@@ -67,5 +64,15 @@ public class ActivityController {
         activityService.deleteUserRecord(userRecordId, userId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/records")
+    @Operation(summary = "월별 성장 일지 조회", description = "월별 성장일지를 조회합니다.")
+    @CustomExceptionDescription(USER_RECORD_DATE)
+    public SuccessResponse<ActivityRecordRes> viewMonthActivityRecord(
+            @RequestParam @Parameter(description = "년도", example = "2024") int year, @Parameter(description = "월", example = "11") int month, @UserId Long userId) {
+
+        return SuccessResponse.ok(activityService.getMonthActivityRecord(year, month, userId));
+    }
+
 
 }

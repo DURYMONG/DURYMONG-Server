@@ -1,10 +1,7 @@
 package konkuk.kuit.durimong.domain.activity.service;
 
 import konkuk.kuit.durimong.domain.activity.dto.request.CheckActivityReq;
-import konkuk.kuit.durimong.domain.activity.dto.response.ActivityBoxDescriptionRes;
-import konkuk.kuit.durimong.domain.activity.dto.response.ActivityDescriptionRes;
-import konkuk.kuit.durimong.domain.activity.dto.response.ActivityTestListRes;
-import konkuk.kuit.durimong.domain.activity.dto.response.CheckActivityRes;
+import konkuk.kuit.durimong.domain.activity.dto.response.*;
 import konkuk.kuit.durimong.domain.activity.entity.Activity;
 import konkuk.kuit.durimong.domain.activity.entity.ActivityBox;
 import konkuk.kuit.durimong.domain.activity.entity.UserRecord;
@@ -23,13 +20,16 @@ import konkuk.kuit.durimong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @Slf4j
@@ -42,6 +42,7 @@ public class ActivityService {
     private final UserRecordRepository userRecordRepository;
     private final UserRepository userRepository;
     private final MongRepository mongRepository;
+
 
     // 모든 활동 & 테스트 리스트 조회
     public ActivityTestListRes getActivityTestList(Long userId) {
@@ -156,5 +157,65 @@ public class ActivityService {
         userRecordRepository.delete(userRecord);
     }
 
+    // 성장일지 조회 기능
+    public ActivityRecordRes getMonthActivityRecord(int targetYear, int targetMonth, Long userId) {
+        log.info("bring activity records for user {} year {} month {}", userId, targetYear, targetMonth);
+
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        String nickName = user.getNickname();
+
+        // 현재 시간의 년/월
+        LocalDate today = LocalDate.now().withDayOfMonth(1); // 끝
+        int currentYear = today.getYear();
+        int currentMonth = today.getMonthValue();
+
+        // 유저가 가입한 년/월
+        LocalDate createdAt = LocalDate.from(user.getCreatedAt().withDayOfMonth(1));
+
+        // 타겟일의 년/월
+        LocalDate targetDate = LocalDate.of(targetYear,targetMonth,1);
+
+        if(! isValidRange(targetDate,createdAt,today)){
+            throw  new CustomException(ErrorCode.USER_RECORD_DATE_NOT_VALID);
+        }
+        // userId가 특정 targetDate의 모든 월에 대한 날짜를 가져온다.
+        Map<LocalDate, Integer> countPerDays = userRecordRepository.findActivityCountByMonth(userId, targetYear, targetMonth).stream()
+                .collect(Collectors.toMap(row -> (LocalDate) row[0], row -> ((Number) row[1]).intValue()));
+
+        int lastDayofMonth = targetDate.lengthOfMonth();
+        List<ActivityRecordRes.DayActivityCountDTO> activityCountList = IntStream.rangeClosed(1, lastDayofMonth)
+                .mapToObj(day -> {
+                    LocalDate date = LocalDate.of(targetYear,targetMonth,day);
+                    return new ActivityRecordRes.DayActivityCountDTO(date, countPerDays.getOrDefault(date,0));
+                })
+                .toList();
+
+        return new ActivityRecordRes(nickName, activityCountList);
+    }
+
+    // 년도 유효성 검사
+    public static boolean isValidRange(LocalDate targetDate, LocalDate createdDate, LocalDate todayDate) {
+
+        return !targetDate.isBefore(createdDate) && !targetDate.isAfter(todayDate);
+    }
+
+    // 일지 월별 조회
+//    public ActivityDayRecordRes getDayActivityRecord(LocalDate date, Long userId) {
+//        User user = userRepository.findByUserId(userId)
+//                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+//
+//        String nickName = user.getNickname();
+//
+//        Mong mong = mongRepository.findByUser(user)
+//                .orElseThrow(() -> new CustomException(ErrorCode.MONG_NOT_FOUND));
+//
+//        String mongName = mong.getName();
+//        String mongImage = mong.getImage();
+//
+//
+//
+//    }
 
 }
