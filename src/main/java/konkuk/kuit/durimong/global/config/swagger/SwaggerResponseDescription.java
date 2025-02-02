@@ -143,6 +143,10 @@ public enum SwaggerResponseDescription {
             USER_RECORD_NOT_FOUND,
             USER_RECORD_EXISTS_OVER,
             UNAUTHORIZED
+    ))),
+    USER_RECORD_DATE(new LinkedHashSet<>(Set.of(
+            USER_RECORD_DATE_NOT_VALID,
+            USER_NOT_FOUND
     )));
 
     private Set<ErrorCode> errorCodeList;

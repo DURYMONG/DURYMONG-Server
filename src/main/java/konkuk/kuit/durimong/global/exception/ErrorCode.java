@@ -79,8 +79,9 @@ public enum ErrorCode {
     ACTIVITY_PERMISSION_DENIED(-805, "활동을 수정 할 권한이 없습니다", 403),
     ACTIVITY_ID_NOT_EXISTS(-806,"해당 id의 활동이 존재하지 않습니다",404),
     // UserRecord
-    USER_RECORD_NOT_FOUND(-900, "사용자의 활동 기록이 없습니다", 404),
+    USER_RECORD_NOT_FOUND(-900, "유저의 활동 기록이 없습니다", 404),
     USER_RECORD_EXISTS_OVER(-901, "완료한 활동 개수가 전체보다 많습니다", 400),
+    USER_RECORD_DATE_NOT_VALID(-902, "유저 기록을 조회할 수 없는 기간입니다.", 404),
     //Test
     TEST_NOT_FOUND(-1000,"등록된 테스트가 없습니다", 404);
 
