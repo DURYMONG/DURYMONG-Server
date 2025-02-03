@@ -3,6 +3,7 @@ package konkuk.kuit.durimong.domain.activity.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import konkuk.kuit.durimong.domain.activity.dto.request.CheckActivityReq;
+import konkuk.kuit.durimong.domain.activity.dto.request.WriteDiaryReq;
 import konkuk.kuit.durimong.domain.activity.dto.response.*;
 import konkuk.kuit.durimong.domain.activity.service.ActivityService;
 import konkuk.kuit.durimong.domain.test.entity.Test;
@@ -15,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.*;
 
@@ -69,10 +72,34 @@ public class ActivityController {
     @Operation(summary = "월별 성장 일지 조회", description = "월별 성장일지를 조회합니다.")
     @CustomExceptionDescription(USER_RECORD_DATE)
     public SuccessResponse<ActivityRecordRes> viewMonthActivityRecord(
-            @RequestParam @Parameter(description = "년도", example = "2024") int year, @Parameter(description = "월", example = "11") int month, @UserId Long userId) {
+            @RequestParam @Parameter(description = "년도", example = "2024") int year, @Parameter(description = "월", example = "11") int month, @Parameter(hidden = true) @UserId Long userId) {
 
         return SuccessResponse.ok(activityService.getMonthActivityRecord(year, month, userId));
     }
 
+    @GetMapping("/records/{date}")
+    @Operation(summary = "일별 성장 일지 조회", description = "일별 성장일지를 조회합니다.")
+    @CustomExceptionDescription(USER_RECORD_DAY)
+    public SuccessResponse<ActivityDayRecordRes> viewDayActivityRecord(@PathVariable LocalDate date, @Parameter(hidden = true) @UserId Long userId) {
+
+        return SuccessResponse.ok(activityService.getDayActivityRecord(date, userId));
+    }
+
+    @GetMapping("/records/{date}/diaries")
+    @Operation(summary = "하루 일기 조회", description = "하루 일기를 조회합니다.")
+    @CustomExceptionDescription(Diary)
+    public SuccessResponse<DiaryRes> viewDayDiary(@PathVariable LocalDate date, @Parameter(hidden = true) @UserId Long userId) {
+
+        return SuccessResponse.ok(activityService.getDiary(date, userId));
+    }
+
+    @PostMapping("/records/diaries")
+    @Operation(summary = "일기 작성", description = "당일에 일기를 작성합니다.")
+    @CustomExceptionDescription(Diary)
+    public SuccessResponse<DiaryRes> writeDayDiary(
+            @Validated @RequestBody WriteDiaryReq req, @Parameter(hidden = true) @UserId Long userId) {
+
+        return SuccessResponse.ok(activityService.writeDiary(req,userId));
+    }
 
 }
