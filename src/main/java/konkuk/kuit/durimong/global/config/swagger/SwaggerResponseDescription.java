@@ -147,7 +147,20 @@ public enum SwaggerResponseDescription {
     USER_RECORD_DATE(new LinkedHashSet<>(Set.of(
             USER_RECORD_DATE_NOT_VALID,
             USER_NOT_FOUND
-    )));
+    ))),
+    USER_RECORD_DAY(new LinkedHashSet<>(Set.of(
+            USER_RECORD_DATE_NOT_VALID,
+            USER_NOT_FOUND,
+            MONG_NOT_FOUND
+    ))),
+    // Diary
+    Diary(new LinkedHashSet<>(Set.of(
+            DIARY_CAN_NOT_WRITTEN_DATE,
+            USER_NOT_FOUND,
+            MONG_NOT_FOUND,
+            USER_RECORD_DATE_NOT_VALID
+    )))
+    ;
 
     private Set<ErrorCode> errorCodeList;
 

@@ -23,7 +23,4 @@ public class ActivityDayRecordRes {
 
     @Schema(description = "몽 이미지", example = "url-to-mongImage")
     private String mongImage;
-
-    @Schema(description = "채팅봇 이름", example = "바둑이")
-    private String botName;
 }
