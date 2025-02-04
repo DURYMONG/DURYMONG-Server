@@ -69,6 +69,7 @@ public class GlobalExceptionHandler {
         return ErrorResponse.of(ErrorCode.PARAMETER_VALIDATION_ERROR, list);
     }
 
+
     /**
      * 파라미터 문법 예외
      */

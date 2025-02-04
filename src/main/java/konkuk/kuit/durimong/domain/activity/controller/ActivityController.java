@@ -2,6 +2,7 @@ package konkuk.kuit.durimong.domain.activity.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import konkuk.kuit.durimong.domain.activity.dto.request.CheckActivityReq;
 import konkuk.kuit.durimong.domain.activity.dto.request.WriteDiaryReq;
 import konkuk.kuit.durimong.domain.activity.dto.response.*;
@@ -50,17 +51,17 @@ public class ActivityController {
     @Operation(summary = "활동 완료 체크", description = "완료한 활동에 대해 체크표시 합니다.")
     @CustomExceptionDescription(ACTIVITY_EXIST)
     public SuccessResponse<CheckActivityRes> checkActivity(
-            @Validated @RequestBody CheckActivityReq req, @UserId Long userId) {
+            @Validated @RequestBody CheckActivityReq req, @Parameter(hidden = true) @UserId Long userId) {
         log.info("Extracted userId from JWT: {}", userId);  // userId 확인 로그 추가
 
         return SuccessResponse.ok(activityService.makeUserRecord(req, userId));
     }
 
-    @DeleteMapping("/user-records/{userRecordId}")
+    @PostMapping("/user-records/{userRecordId}/deactivation")
     @Operation(summary = "활동 체크 취소", description = "활동 완료체크를 취소합니다")
     @CustomExceptionDescription(USER_RECORD)
     public ResponseEntity<Void> deleteActivity(
-            @PathVariable Long userRecordId, @UserId Long userId) {
+            @PathVariable Long userRecordId, @Parameter(hidden = true) @UserId Long userId) {
         log.info("Extracted userId from JWT: {}", userId);
         log.info("Deleting user record with ID: {}", userRecordId);
 
@@ -72,7 +73,7 @@ public class ActivityController {
     @Operation(summary = "월별 성장 일지 조회", description = "월별 성장일지를 조회합니다.")
     @CustomExceptionDescription(USER_RECORD_DATE)
     public SuccessResponse<ActivityRecordRes> viewMonthActivityRecord(
-            @RequestParam @Parameter(description = "년도", example = "2024") int year, @Parameter(description = "월", example = "11") int month, @Parameter(hidden = true) @UserId Long userId) {
+            @RequestParam @Parameter(description = "년도", example = "2025") int year, @Parameter(description = "월", example = "2") int month, @Parameter(hidden = true) @UserId Long userId) {
 
         return SuccessResponse.ok(activityService.getMonthActivityRecord(year, month, userId));
     }
@@ -97,7 +98,7 @@ public class ActivityController {
     @Operation(summary = "일기 작성", description = "당일에 일기를 작성합니다.")
     @CustomExceptionDescription(Diary)
     public SuccessResponse<DiaryRes> writeDayDiary(
-            @Validated @RequestBody WriteDiaryReq req, @Parameter(hidden = true) @UserId Long userId) {
+            @Valid @RequestBody WriteDiaryReq req, @Parameter(hidden = true) @UserId Long userId) {
 
         return SuccessResponse.ok(activityService.writeDiary(req,userId));
     }
