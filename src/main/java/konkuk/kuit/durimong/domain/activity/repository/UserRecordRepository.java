@@ -7,10 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRecordRepository extends JpaRepository<UserRecord, Long> {
-    boolean existsByUser_UserIdAndActivity_ActivityId(Long userId, Long activityId);
+    boolean existsByUser_UserIdAndActivity_ActivityIdAndCreatedAt(Long userId, Long activityId, LocalDate createdAt);
+
+    Optional<UserRecord> findByUserRecordIdAndCreatedAt(Long userRecordId, LocalDate createdAt);
 
     // 활동이 있는 날짜만 조회 (활동을 해야 UserRecord가 생기므로)
     @Query("SELECT ur.createdAt, COUNT(ur) " +

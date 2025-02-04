@@ -135,7 +135,8 @@ public enum SwaggerResponseDescription {
     ))),
     ACTIVITY_EXIST(new LinkedHashSet<>(Set.of(
             ACTIVITY_ID_NOT_EXISTS,
-            USER_NOT_FOUND
+            USER_NOT_FOUND,
+            ACTIVITY_ALREADY_CHECKED
     ))),
 
     //USER RECORD

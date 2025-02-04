@@ -66,11 +66,12 @@ public class ActivityService {
 
         String mongImage = mong.getImage();
         String mongName = mong.getName();
+        // 오늘 날짜에 체크됐는 지 확인
 
         List<ActivityTestListRes.ActivityListDTO> activityList = activityRepository.findAll().stream()
                 .map(activity -> {
                             // 이 activity를 넘기면 이 아이디 및 현재 유저id 해당하는 userRecordId가 있는지 확인
-                            boolean isChecked = userRecordRepository.existsByUser_UserIdAndActivity_ActivityId(userId, activity.getActivityId());
+                            boolean isChecked = userRecordRepository.existsByUser_UserIdAndActivity_ActivityIdAndCreatedAt(userId, activity.getActivityId(), LocalDate.now());
                             return new ActivityTestListRes.ActivityListDTO(activity.getName(), isChecked);
                 })
                 .toList();
@@ -126,13 +127,18 @@ public class ActivityService {
 
     // 활동 체크
     public CheckActivityRes makeUserRecord(CheckActivityReq req, Long userId) {
-        // 현재 날짜 얻는 로직
-        LocalDate today = LocalDate.now();
         Activity activity = activityRepository.findById(req.getActivityId())
                 .orElseThrow(() -> new CustomException(ErrorCode.ACTIVITY_ID_NOT_EXISTS));
 
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        boolean alreadyChecked = userRecordRepository.existsByUser_UserIdAndActivity_ActivityIdAndCreatedAt(
+                userId, activity.getActivityId(), LocalDate.now());
+
+        if(alreadyChecked){
+            throw new CustomException(ErrorCode.ACTIVITY_ALREADY_CHECKED);
+        }
 
         // userRecord 생성
         UserRecord userRecord = UserRecord.builder()
@@ -144,14 +150,12 @@ public class ActivityService {
         // 생성된 userRecord 저장
         UserRecord madeUserRecord = userRecordRepository.save(userRecord);
 
-        return new CheckActivityRes(madeUserRecord.getUserRecordId(),today);
+        return new CheckActivityRes(madeUserRecord.getUserRecordId(),LocalDate.now());
     }
 
     // 활동 체크 취소
     public void deleteUserRecord(Long userRecordId, Long userId) {
-        // 해당 userRecordId에 대한 userRecord삭제
-
-        UserRecord userRecord = userRecordRepository.findById(userRecordId)
+        UserRecord userRecord = userRecordRepository.findByUserRecordIdAndCreatedAt(userRecordId, LocalDate.now())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_RECORD_NOT_FOUND));
 
         // userRecordId가 userId의 user소유가 아니라면
@@ -162,7 +166,7 @@ public class ActivityService {
         userRecordRepository.delete(userRecord);
     }
 
-    // 성장일지 조회 기능
+    // 성장일지 조회
     public ActivityRecordRes getMonthActivityRecord(int targetYear, int targetMonth, Long userId) {
         log.info("bring activity records for user {} year {} month {}", userId, targetYear, targetMonth);
 
@@ -260,16 +264,16 @@ public class ActivityService {
 
         // 작성하려는 날짜
         LocalDate targetDate = req.getDate();
-        // 현재 시간의 년/월
-        LocalDate today = LocalDate.now();
         // 유저가 가입한 날짜
         LocalDate createdAt = LocalDate.from(user.getCreatedAt());
+
         // 날짜 유효성 검사
-        if(! isValidRange(targetDate,createdAt,today)){
+            if(! isValidRange(targetDate,createdAt,LocalDate.now())){
             throw  new CustomException(ErrorCode.USER_RECORD_DATE_NOT_VALID);
         }
+
         // 반드시 오늘 날짜랑 같아야 함
-        if(! isAvailableToWrite(targetDate)) {
+        if(! isToday(targetDate)) {
             throw  new CustomException(ErrorCode.DIARY_CAN_NOT_WRITTEN_DATE);
         }
 
@@ -297,7 +301,7 @@ public class ActivityService {
         return !targetDate.isBefore(createdDate) && !targetDate.isAfter(today);
     }
 
-    public boolean isAvailableToWrite(LocalDate targetDate) {
+    public boolean isToday(LocalDate targetDate) {
         LocalDate today = LocalDate.now();
         return targetDate.isEqual(today);
     }
