@@ -39,7 +39,7 @@ public class ChatBotService {
     private final ChatBotRepository chatBotRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-
+//    private final TestRepository testRepository;  아직 Test 미개발
     @Value("${spring.openai.api.url}")
     private String openAiApiUrl;
 
@@ -190,6 +190,14 @@ public class ChatBotService {
 
         return message + recommendation;
     }
+
+//    public ChatBotRecommendTestRes recommendTest(ChatBotRecommendTestReq req, Long userId){
+//        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+//        ChatBot bot = chatBotRepository.findById(req.getChatBotId()).orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
+//
+//    } Test 개발 뒤에 구현 예정
+    
+
 
 
 
