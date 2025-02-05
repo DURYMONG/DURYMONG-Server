@@ -15,9 +15,6 @@ public class ActivityDayRecordRes {
     @Schema(description = "날짜", example = "2024-11-28")
     private LocalDate date;
 
-    @Schema(description = "유저 닉네임", example = "엘리자베스")
-    private String nickname;
-
     @Schema(description = "몽 이름", example = "쿠쿠몽")
     private String mongName;
 

@@ -30,6 +30,9 @@ public class ActivityTestListRes {
     @Builder
     @Schema(description = "단일 활동 DTO")
     public static class ActivityListDTO {
+        @Schema(description = "활동 id", example = "1")
+        private Long activityId;
+
         @Schema(description = "활동 이름", example = "침구 정리하기")
         private String activityName;
 
@@ -41,12 +44,12 @@ public class ActivityTestListRes {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "단일 활동 DTO")
+    @Schema(description = "단일 테스트 DTO")
     public static class TestListDTO {
-        @Schema(description = "활동 id", example = "1")
+        @Schema(description = "테스트 id", example = "1")
         private Long testId;
 
-        @Schema(description = "활동 이름", example = "침구 정리하기")
+        @Schema(description = "테스트 이름", example = "외상 후 스트레스 검사")
         private String testName;
 
     }

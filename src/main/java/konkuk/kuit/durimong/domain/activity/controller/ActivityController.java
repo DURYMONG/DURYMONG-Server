@@ -7,14 +7,12 @@ import konkuk.kuit.durimong.domain.activity.dto.request.CheckActivityReq;
 import konkuk.kuit.durimong.domain.activity.dto.request.WriteDiaryReq;
 import konkuk.kuit.durimong.domain.activity.dto.response.*;
 import konkuk.kuit.durimong.domain.activity.service.ActivityService;
-import konkuk.kuit.durimong.domain.test.entity.Test;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
 import konkuk.kuit.durimong.global.annotation.UserId;
 import konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription;
 import konkuk.kuit.durimong.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +32,6 @@ public class ActivityController {
     @CustomExceptionDescription(ACTIVITY_TEST_LIST)
     public SuccessResponse<ActivityTestListRes> viewActivityTestList(
             @Parameter(hidden = true) @UserId Long userId) {
-        log.info("Extracted userId from JWT: {}", userId);  // userId 확인 로그 추가
 
         return SuccessResponse.ok(activityService.getActivityTestList(userId));
     }
@@ -50,23 +47,21 @@ public class ActivityController {
     @PostMapping("/user-records")
     @Operation(summary = "활동 완료 체크", description = "완료한 활동에 대해 체크표시 합니다.")
     @CustomExceptionDescription(ACTIVITY_EXIST)
-    public SuccessResponse<CheckActivityRes> checkActivity(
+    public SuccessResponse<Void> checkActivity(
             @Validated @RequestBody CheckActivityReq req, @Parameter(hidden = true) @UserId Long userId) {
-        log.info("Extracted userId from JWT: {}", userId);  // userId 확인 로그 추가
 
-        return SuccessResponse.ok(activityService.makeUserRecord(req, userId));
+        activityService.makeUserRecord(req, userId);
+        return SuccessResponse.ok(null);
     }
 
-    @PostMapping("/user-records/{userRecordId}/deactivation")
+    @PostMapping("/user-records/{activityId}/deactivation")
     @Operation(summary = "활동 체크 취소", description = "활동 완료체크를 취소합니다")
     @CustomExceptionDescription(USER_RECORD)
-    public ResponseEntity<Void> deleteActivity(
-            @PathVariable Long userRecordId, @Parameter(hidden = true) @UserId Long userId) {
-        log.info("Extracted userId from JWT: {}", userId);
-        log.info("Deleting user record with ID: {}", userRecordId);
+    public SuccessResponse<Void> deleteActivity(
+            @PathVariable Long activityId, @Parameter(hidden = true) @UserId Long userId) {
 
-        activityService.deleteUserRecord(userRecordId, userId);
-        return ResponseEntity.noContent().build();
+        activityService.deleteUserRecord(activityId, userId);
+        return SuccessResponse.ok(null);
     }
 
     @GetMapping("/records")
