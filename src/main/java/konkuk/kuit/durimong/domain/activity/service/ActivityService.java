@@ -4,32 +4,25 @@ import konkuk.kuit.durimong.domain.activity.dto.request.CheckActivityReq;
 import konkuk.kuit.durimong.domain.activity.dto.request.WriteDiaryReq;
 import konkuk.kuit.durimong.domain.activity.dto.response.*;
 import konkuk.kuit.durimong.domain.activity.entity.Activity;
-import konkuk.kuit.durimong.domain.activity.entity.ActivityBox;
 import konkuk.kuit.durimong.domain.activity.entity.Diary;
 import konkuk.kuit.durimong.domain.activity.entity.UserRecord;
 import konkuk.kuit.durimong.domain.activity.repository.ActivityBoxRepository;
 import konkuk.kuit.durimong.domain.activity.repository.ActivityRepository;
 import konkuk.kuit.durimong.domain.activity.repository.DiaryRepository;
 import konkuk.kuit.durimong.domain.activity.repository.UserRecordRepository;
-import konkuk.kuit.durimong.domain.chatbot.repository.ChatBotRepository;
 import konkuk.kuit.durimong.domain.mong.entity.Mong;
 import konkuk.kuit.durimong.domain.mong.repository.MongRepository;
-import konkuk.kuit.durimong.domain.test.entity.Test;
 import konkuk.kuit.durimong.domain.test.repository.TestRepository;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
-import konkuk.kuit.durimong.global.annotation.UserId;
 import konkuk.kuit.durimong.global.exception.CustomException;
 import konkuk.kuit.durimong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -53,16 +46,10 @@ public class ActivityService {
     public ActivityTestListRes getActivityTestList(Long userId) {
 
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> {
-                    log.error("User not found with id: {}", userId);
-                    return new CustomException(ErrorCode.USER_NOT_FOUND);
-                });
+                .orElseThrow(() ->  new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Mong mong = mongRepository.findByUser(user)
-                .orElseThrow(() -> {
-                    log.error("Mong data not found for userId: {}", userId);
-                    return new CustomException(ErrorCode.MONG_NOT_FOUND);
-                });
+                .orElseThrow(() -> new CustomException(ErrorCode.MONG_NOT_FOUND));
 
         String mongImage = mong.getImage();
         String mongName = mong.getName();
@@ -72,7 +59,7 @@ public class ActivityService {
                 .map(activity -> {
                             // 이 activity를 넘기면 이 아이디 및 현재 유저id 해당하는 userRecordId가 있는지 확인
                             boolean isChecked = userRecordRepository.existsByUser_UserIdAndActivity_ActivityIdAndCreatedAt(userId, activity.getActivityId(), LocalDate.now());
-                            return new ActivityTestListRes.ActivityListDTO(activity.getName(), isChecked);
+                            return new ActivityTestListRes.ActivityListDTO(activity.getActivityId(),activity.getName(), isChecked);
                 })
                 .toList();
 
@@ -126,7 +113,7 @@ public class ActivityService {
     }
 
     // 활동 체크
-    public CheckActivityRes makeUserRecord(CheckActivityReq req, Long userId) {
+    public void makeUserRecord(CheckActivityReq req, Long userId) {
         Activity activity = activityRepository.findById(req.getActivityId())
                 .orElseThrow(() -> new CustomException(ErrorCode.ACTIVITY_ID_NOT_EXISTS));
 
@@ -148,28 +135,19 @@ public class ActivityService {
                 .build();
 
         // 생성된 userRecord 저장
-        UserRecord madeUserRecord = userRecordRepository.save(userRecord);
-
-        return new CheckActivityRes(madeUserRecord.getUserRecordId(),LocalDate.now());
+        userRecordRepository.save(userRecord);
     }
 
     // 활동 체크 취소
-    public void deleteUserRecord(Long userRecordId, Long userId) {
-        UserRecord userRecord = userRecordRepository.findByUserRecordIdAndCreatedAt(userRecordId, LocalDate.now())
+    public void deleteUserRecord(Long activityId, Long userId) {
+        UserRecord userRecord = userRecordRepository.findByActivity_ActivityIdAndCreatedAtAndUser_UserId(activityId, LocalDate.now(), userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_RECORD_NOT_FOUND));
-
-        // userRecordId가 userId의 user소유가 아니라면
-        if(! userRecord.getUser().getUserId().equals(userId)){
-            throw new CustomException(ErrorCode.UNAUTHORIZED);
-        }
 
         userRecordRepository.delete(userRecord);
     }
 
     // 성장일지 조회
     public ActivityRecordRes getMonthActivityRecord(int targetYear, int targetMonth, Long userId) {
-        log.info("bring activity records for user {} year {} month {}", userId, targetYear, targetMonth);
-
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -197,7 +175,7 @@ public class ActivityService {
                 })
                 .toList();
 
-        return new ActivityRecordRes(nickName, activityCountList);
+        return new ActivityRecordRes(nickName, targetMonth, activityCountList);
     }
 
     //일지 일별 조회
@@ -214,15 +192,13 @@ public class ActivityService {
             throw  new CustomException(ErrorCode.USER_RECORD_DATE_NOT_VALID);
         }
 
-        String nickName = user.getNickname();
-
         Mong mong = mongRepository.findByUser(user)
                 .orElseThrow(() -> new CustomException(ErrorCode.MONG_NOT_FOUND));
 
         String mongName = mong.getName();
         String mongImage = mong.getImage();
 
-        return new ActivityDayRecordRes(targetDate,nickName,mongName,mongImage);
+        return new ActivityDayRecordRes(targetDate,mongName,mongImage);
     }
 
     // 일기 조회
@@ -262,22 +238,7 @@ public class ActivityService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MONG_NOT_FOUND));
         String mongImage = mong.getImage();
 
-        // 작성하려는 날짜
-        LocalDate targetDate = req.getDate();
-        // 유저가 가입한 날짜
-        LocalDate createdAt = LocalDate.from(user.getCreatedAt());
-
-        // 날짜 유효성 검사
-            if(! isValidRange(targetDate,createdAt,LocalDate.now())){
-            throw  new CustomException(ErrorCode.USER_RECORD_DATE_NOT_VALID);
-        }
-
-        // 반드시 오늘 날짜랑 같아야 함
-        if(! isToday(targetDate)) {
-            throw  new CustomException(ErrorCode.DIARY_CAN_NOT_WRITTEN_DATE);
-        }
-
-        Optional<Diary> existingDiary = diaryRepository.findByUserAndCreatedAt(user,targetDate);
+        Optional<Diary> existingDiary = diaryRepository.findByUserAndCreatedAt(user,LocalDate.now());
         Diary diary;
         if (existingDiary.isPresent()) {
             diary = existingDiary.get();
@@ -286,14 +247,14 @@ public class ActivityService {
         else {
             diary = Diary.builder()
                     .content(content)
-                    .createdAt(targetDate)
+                    .createdAt(LocalDate.now())
                     .user(user)
                     .build();
         }
 
         diaryRepository.save(diary);
 
-        return new DiaryRes(targetDate, content, mongImage);
+        return new DiaryRes(LocalDate.now(), content, mongImage);
     }
 
     // 날짜  유효성 검사
@@ -301,8 +262,4 @@ public class ActivityService {
         return !targetDate.isBefore(createdDate) && !targetDate.isAfter(today);
     }
 
-    public boolean isToday(LocalDate targetDate) {
-        LocalDate today = LocalDate.now();
-        return targetDate.isEqual(today);
-    }
 }

@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface UserRecordRepository extends JpaRepository<UserRecord, Long> {
     boolean existsByUser_UserIdAndActivity_ActivityIdAndCreatedAt(Long userId, Long activityId, LocalDate createdAt);
 
-    Optional<UserRecord> findByUserRecordIdAndCreatedAt(Long userRecordId, LocalDate createdAt);
+    Optional<UserRecord> findByActivity_ActivityIdAndCreatedAtAndUser_UserId(Long activityId, LocalDate createdAt, Long userId);
 
     // 활동이 있는 날짜만 조회 (활동을 해야 UserRecord가 생기므로)
     @Query("SELECT ur.createdAt, COUNT(ur) " +
