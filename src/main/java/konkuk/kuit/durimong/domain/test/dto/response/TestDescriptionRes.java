@@ -29,48 +29,32 @@ public class TestDescriptionRes {
     private int minNumber;
 
     @Schema(description = "최소 선택지 문구", example = "그렇지 않다")
-    private String  minOption;
+    private String  minOptionResponse;
 
     @Schema(description = "최대 선택지 번호", example = "3")
     private int maxNumber;
 
     @Schema(description = "최대 선택지 문구", example = "매우 그렇다")
-    private String  maxOption;
+    private String  maxOptionResponse;
 
     @Schema(description = "임계 점수", example = "22")
     private int criticalScore;
 
-    @Schema(description = "문항 수 / 소요시간 리스트", example = "5 ~ 10문항 / 5 ~ 10분")
-    private List<QuestionAndTimeListDTO> questionAndTimeList;
+    @Schema(description = "문항 수", example = "11")
+    private int countOfQuestions;
 
-    @Schema(description = "직전 검사 기록")
-    private List<LastTestListDTO> lastTestInfo;
+    @Schema(description = "소요시간", example = "5")
+    private int requiredTime;
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    @Schema(description = "문항 수 / 소요시간 DTO")
-    public static class QuestionAndTimeListDTO {
-        @Schema(description = "최소 문항 수", example = "11")
-        private int minQuestion;
-
-        @Schema(description = "최대 문항 수", example = "20 (nullable")
-        private Integer maxQuestion;
-
-        @Schema(description = "최소 소요시간", example = "3")
-        private int minTime;
-
-        @Schema(description = "최대 소요시간", example = "5 (nullable")
-        private Integer maxTime;
-    }
+    @Schema(description = "직전 테스트 결과 정보")
+    private LastTestDTO lastTestDTO;
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
     @Schema(description = "직전 테스트 결과 DTO")
-    public static class LastTestListDTO {
+    public static class LastTestDTO {
         @Schema(description = "직전 검사 날짜", example = "2025-02-06")
         private LocalDate date;
 
@@ -78,6 +62,6 @@ public class TestDescriptionRes {
         private String userName;
 
         @Schema(description = "직전 테스트 점수", example = "15")
-        private int lastScore;
+        private Integer lastScore;
     }
 }

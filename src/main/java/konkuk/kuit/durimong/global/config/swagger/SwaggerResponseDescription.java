@@ -157,6 +157,10 @@ public enum SwaggerResponseDescription {
             USER_NOT_FOUND,
             MONG_NOT_FOUND,
             USER_RECORD_DATE_NOT_VALID
+    ))),
+    // Test
+    TEST_DESCRIPTION(new LinkedHashSet<>(Set.of(
+            TEST_ID_NOT_EXISTS
     )));
 
     private Set<ErrorCode> errorCodeList;

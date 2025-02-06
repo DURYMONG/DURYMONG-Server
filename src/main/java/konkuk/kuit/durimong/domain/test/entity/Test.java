@@ -25,17 +25,17 @@ public class Test {
     @Column(nullable = false, length = 500)
     private String content;
 
-    @Column(nullable = false)
-    private String number;
+    @Column(name = "count_of_questions", nullable = false)
+    private int countOfQuestions;
 
     @Column(name = "required_time", nullable = false)
-    private String requiredTime;
+    private int requiredTime;
 
-    @Column(name = "min_option", nullable = false)
-    private Integer minOption;
+    @Column(name = "min_number", nullable = false)
+    private Integer minNumber;
 
-    @Column(name = "max_option", nullable = false)
-    private Integer maxOption;
+    @Column(name = "max_number", nullable = false)
+    private Integer maxNumber;
 
     @Column(name = "critical_score", nullable = false)
     private Integer criticalScore;

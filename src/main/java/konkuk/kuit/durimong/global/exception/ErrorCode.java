@@ -84,7 +84,10 @@ public enum ErrorCode {
     USER_RECORD_EXISTS_OVER(-901, "완료한 활동 개수가 전체보다 많습니다", 400),
     USER_RECORD_DATE_NOT_VALID(-902, "유저 기록을 조회할 수 없는 기간입니다.", 404),
     //Test
-    TEST_NOT_FOUND(-1000,"등록된 테스트가 없습니다", 404);
+    TEST_NOT_FOUND(-1000,"등록된 테스트가 없습니다", 404),
+    TEST_ID_NOT_EXISTS(-1001, "해당 id의 테스트가 존재하지 않습니다", 404),
+    TEST_MIN_RESPONSE_NOT_EXISTS(-1002, "해당 테스트의 최소 점수 응답을 찾을 수 없습니다", 404),
+    TEST_MAX_RESPONSE_NOT_EXISTS(-1003, "해당 테스트의 최고 점수 응답을 찾을 수 없습니다", 404);
 
     private final int errorCode;
     private final String message;
