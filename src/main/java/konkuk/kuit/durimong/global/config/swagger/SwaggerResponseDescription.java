@@ -124,6 +124,39 @@ public enum SwaggerResponseDescription {
             CHATBOT_PARSE_ERROR,
             CHATBOT_SYMPOMS_EMPTY,
             CHATBOT_PREDICT_ERROR
+    ))),
+
+    //ACTIVITY
+    ACTIVITY_TEST_LIST(new LinkedHashSet<>(Set.of(
+            ACTIVITY_NOT_FOUND,
+            TEST_NOT_FOUND,
+            USER_NOT_FOUND,
+            MONG_NOT_FOUND
+    ))),
+    ACTIVITY_EXIST(new LinkedHashSet<>(Set.of(
+            ACTIVITY_ID_NOT_EXISTS,
+            USER_NOT_FOUND,
+            ACTIVITY_ALREADY_CHECKED
+    ))),
+
+    //USER RECORD
+    USER_RECORD(new LinkedHashSet<>(Set.of(
+            USER_RECORD_NOT_FOUND
+    ))),
+    USER_RECORD_DATE(new LinkedHashSet<>(Set.of(
+            USER_RECORD_DATE_NOT_VALID,
+            USER_NOT_FOUND
+    ))),
+    USER_RECORD_DAY(new LinkedHashSet<>(Set.of(
+            USER_RECORD_DATE_NOT_VALID,
+            USER_NOT_FOUND,
+            MONG_NOT_FOUND
+    ))),
+    // Diary
+    Diary(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            MONG_NOT_FOUND,
+            USER_RECORD_DATE_NOT_VALID
     )));
 
     private Set<ErrorCode> errorCodeList;
