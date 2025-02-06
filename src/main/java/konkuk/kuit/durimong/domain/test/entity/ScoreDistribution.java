@@ -13,7 +13,7 @@ import lombok.*;
 public class ScoreDistribution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "score_distribution")
+    @Column(name = "score_distribution_id")
     private Long scoreDistributionId;
 
     @Column(name = "start_score", nullable = false)
