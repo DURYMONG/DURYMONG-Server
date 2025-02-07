@@ -38,16 +38,22 @@ public class ColumnService {
                 .collect(Collectors.toList());
 
         if (categoryList.isEmpty()) {
-            throw new CustomException(ErrorCode.COLUMN_CATEGORY_NOT_FOUND);
+            throw new CustomException(ErrorCode.COLUMN_CATEGORY_NOT_EXISTS);
         }
 
         return new CategoryRes(categoryList);
     }
 
     public CategoryDetailRes getCategoryDetail(Long id) {
-        ColumnCategory category = categoryRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.COLUMN_CATEGORY_NOT_FOUND));
+        ColumnCategory category = categoryRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.COLUMN_CATEGORY_NOT_EXISTS));
 
-        return new CategoryDetailRes(category.getDetail());
+        String categoryDetail = category.getDetail();
+
+        if (categoryDetail == null || categoryDetail.trim().isEmpty()) {
+            throw new CustomException(ErrorCode.COLUMN_CATEGORY_DETAIL_NOT_EXISTS);
+        }
+
+        return new CategoryDetailRes(categoryDetail);
     }
 
     public KeywordSearchRes searchColumnsByKeyword(String keyword) {
@@ -66,7 +72,7 @@ public class ColumnService {
         List<Column> resultColumns = columnRepository.searchByKeyword(keyword);
 
         if(resultColumns.isEmpty()) {
-            throw new CustomException(ErrorCode.KEYWORD_RESULT_NOT_EXISTS);
+            throw new CustomException(ErrorCode.KEYWORD_RESULT_NOT_FOUND);
         }
 
         List<KeywordSearchRes.ColumnDTO> columnList = resultColumns.stream()
@@ -102,7 +108,7 @@ public class ColumnService {
 
     public ColumnRes viewColumn(Long categoryId) {
         Column column = columnRepository.findByCategory_CategoryId(categoryId)
-                .orElseThrow(() -> new CustomException(ErrorCode.COLUMN_NOT_EXISTS));
+                .orElseThrow(() -> new CustomException(ErrorCode.COLUMN_NOT_FOUND));
 
         return new ColumnRes(
                 column.getCategory().getName(),

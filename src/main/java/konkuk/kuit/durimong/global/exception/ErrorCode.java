@@ -58,12 +58,12 @@ public enum ErrorCode {
     //UserMongConversation
     CONVERSATION_NOT_EXISTS(-500,"몽과의 대화가 존재하지 않습니다,",404),
     //Column
-    COLUMN_CATEGORY_NOT_FOUND(-600, "등록된 카테고리가 없습니다",404),
-    COLUMN_CATEGORY_DETAIL_NOT_FOUND(-601, "등록된 카테고리 설명이 없습니다", 404),
-    COLUMN_NOT_EXISTS(-602,"등록된 칼럼이 없습니다.", 404),
+    COLUMN_CATEGORY_NOT_EXISTS(-600, "등록된 카테고리가 없습니다",404),
+    COLUMN_CATEGORY_DETAIL_NOT_EXISTS(-601, "등록된 카테고리 설명이 없습니다", 404),
+    COLUMN_NOT_FOUND(-602,"해당 id의 칼럼이 없습니다.", 404),
     KEYWORD_NOT_EXISTS(-603,"키워드가 존재하지 않습니다.", 404),
     KEYWORD_LENGTH_OVER(-604, "키워드 길이는 10자 이내여야 합니다.", 400),
-    KEYWORD_RESULT_NOT_EXISTS(-605,"키워드에 해당하는 내용이 없습니다", 404),
+    KEYWORD_RESULT_NOT_FOUND(-605,"키워드에 해당하는 내용이 없습니다", 404),
     //ChatBot
     CHATBOT_NOT_EXISTS(-700,"등록된 채팅봇이 없습니다.",404),
     CHATBOT_NOT_FOUND(-701,"존재하지 않는 채팅봇입니다.",404),
@@ -71,20 +71,23 @@ public enum ErrorCode {
     CHATBOT_SYMPOMS_EMPTY(-703,"선택된 증상이 없습니다.",422),
     CHATBOT_PREDICT_ERROR(-704,"GPT의 응답에서 질환을 추출하지 못했습니다.",404),
     //Activity
-    ACTIVITY_NOT_FOUND(-800, "등록된 활동이 없습니다", 404),
+    ACTIVITY_NOT_EXSITS(-800, "등록된 활동이 없습니다", 404),
     ACTIVITY_INVALID_STATUS(-801, "활동이 유효한 상태가 아닙니다", 400),
     ACTIVITY_USER_RECORD_NOT_FOUND(-802, "사용자의 활동 기록이 없습니다", 404),
     ACTIVITY_USER_RECORD_EXISTS_OVER(-803, "완료한 활동 개수가 전체보다 많습니다", 400),
     ACTIVITY_SAME_NAME(-804, "활동 이름이 중복됩니다", 409),
     ACTIVITY_PERMISSION_DENIED(-805, "활동을 수정 할 권한이 없습니다", 403),
-    ACTIVITY_ID_NOT_EXISTS(-806,"해당 id의 활동이 존재하지 않습니다",404),
+    ACTIVITY_NOT_FOUND(-806,"해당 id의 활동이 존재하지 않습니다",404),
     ACTIVITY_ALREADY_CHECKED(-807, "해당 날짜에 이미 완료한 활동입니다", 409),
     //UserRecord
     USER_RECORD_NOT_FOUND(-900, "유저의 활동 기록이 없습니다", 404),
     USER_RECORD_EXISTS_OVER(-901, "완료한 활동 개수가 전체보다 많습니다", 400),
     USER_RECORD_DATE_NOT_VALID(-902, "유저 기록을 조회할 수 없는 기간입니다.", 404),
     //Test
-    TEST_NOT_FOUND(-1000,"등록된 테스트가 없습니다", 404);
+    TEST_NOT_EXISTS(-1000,"등록된 테스트가 없습니다", 404),
+    TEST_NOT_FOUND(-1001, "해당 id의 테스트가 존재하지 않습니다", 404),
+    TEST_MIN_RESPONSE_NOT_EXISTS(-1002, "해당 테스트의 최소 점수 응답을 찾을 수 없습니다", 404),
+    TEST_MAX_RESPONSE_NOT_EXISTS(-1003, "해당 테스트의 최고 점수 응답을 찾을 수 없습니다", 404);
 
     private final int errorCode;
     private final String message;
