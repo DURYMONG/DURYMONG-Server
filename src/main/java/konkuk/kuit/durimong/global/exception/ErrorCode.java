@@ -87,8 +87,10 @@ public enum ErrorCode {
     TEST_NOT_EXISTS(-1000,"등록된 테스트가 없습니다", 404),
     TEST_NOT_FOUND(-1001, "해당 id의 테스트가 존재하지 않습니다", 404),
     TEST_MIN_RESPONSE_NOT_EXISTS(-1002, "해당 테스트의 최소 점수 응답을 찾을 수 없습니다", 404),
-    TEST_MAX_RESPONSE_NOT_EXISTS(-1003, "해당 테스트의 최고 점수 응답을 찾을 수 없습니다", 404);
+    TEST_MAX_RESPONSE_NOT_EXISTS(-1003, "해당 테스트의 최고 점수 응답을 찾을 수 없습니다", 404),
 
+    //기타
+    DATE_IS_FUTURE(-1100,"미래의 시간을 입력하셨습니다",422);
     private final int errorCode;
     private final String message;
     private final int httpCode;

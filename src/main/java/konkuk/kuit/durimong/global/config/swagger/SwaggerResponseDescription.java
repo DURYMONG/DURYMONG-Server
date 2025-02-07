@@ -89,6 +89,11 @@ public enum SwaggerResponseDescription {
             USER_NOT_FOUND,
             MONG_NOT_FOUND
     ))),
+    USER_DAILY_CHAT(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            CONVERSATION_NOT_EXISTS,
+            DATE_IS_FUTURE
+    ))),
 
     //Mong
     MONG_NAME(new LinkedHashSet<>(Set.of(

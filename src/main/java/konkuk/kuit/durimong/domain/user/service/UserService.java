@@ -314,6 +314,17 @@ public class UserService {
         return new NotificationSettingFormRes(mong.getName(),user.getName());
     }
 
+    public UserDailyChatRes userDailyChat(Long userId, UserDailyChatReq req){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if(req.getTargetDate().isAfter(LocalDate.now())){
+            throw new CustomException(DATE_IS_FUTURE);
+        }
+        UserMongConversation chat = userMongConversationRepository.findByCreatedAtAndUser(req.getTargetDate(), user).orElseThrow(
+                () -> new CustomException(CONVERSATION_NOT_EXISTS)
+        );
+        return new UserDailyChatRes(req.getTargetDate(),chat.getMongQuestion(),chat.getUserAnswer());
+    }
+
 
 
 }
