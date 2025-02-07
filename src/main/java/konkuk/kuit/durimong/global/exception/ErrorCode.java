@@ -71,7 +71,7 @@ public enum ErrorCode {
     CHATBOT_SYMPOMS_EMPTY(-703,"선택된 증상이 없습니다.",422),
     CHATBOT_PREDICT_ERROR(-704,"GPT의 응답에서 질환을 추출하지 못했습니다.",404),
     //Activity
-    ACTIVITY_NOT_EXSITS(-800, "등록된 활동이 없습니다", 404),
+    ACTIVITY_NOT_EXISTS(-800, "등록된 활동이 없습니다", 404),
     ACTIVITY_INVALID_STATUS(-801, "활동이 유효한 상태가 아닙니다", 400),
     ACTIVITY_USER_RECORD_NOT_FOUND(-802, "사용자의 활동 기록이 없습니다", 404),
     ACTIVITY_USER_RECORD_EXISTS_OVER(-803, "완료한 활동 개수가 전체보다 많습니다", 400),
@@ -87,8 +87,10 @@ public enum ErrorCode {
     TEST_NOT_EXISTS(-1000,"등록된 테스트가 없습니다", 404),
     TEST_NOT_FOUND(-1001, "해당 id의 테스트가 존재하지 않습니다", 404),
     TEST_MIN_RESPONSE_NOT_EXISTS(-1002, "해당 테스트의 최소 점수 응답을 찾을 수 없습니다", 404),
-    TEST_MAX_RESPONSE_NOT_EXISTS(-1003, "해당 테스트의 최고 점수 응답을 찾을 수 없습니다", 404);
+    TEST_MAX_RESPONSE_NOT_EXISTS(-1003, "해당 테스트의 최고 점수 응답을 찾을 수 없습니다", 404),
 
+    //기타
+    DATE_IS_FUTURE(-1100,"미래의 시간을 입력하셨습니다",422);
     private final int errorCode;
     private final String message;
     private final int httpCode;

@@ -198,4 +198,13 @@ public class UserController {
     ){
         return SuccessResponse.ok(userService.notificationSettingForm(userId));
     }
+
+    @Operation(summary = "일별 몽 대화기록 조회", description = "원하는 날짜의 몽과의 대화 내역을 조회합니다.")
+    @CustomExceptionDescription(USER_DAILY_CHAT)
+    @GetMapping("users/daily-chat")
+    public SuccessResponse<UserDailyChatRes> dailyChat(
+            UserDailyChatReq req,
+            @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.userDailyChat(userId,req));
+    }
 }

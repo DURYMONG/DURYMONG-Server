@@ -3,13 +3,14 @@ package konkuk.kuit.durimong.domain.chatbot.service;
 import jakarta.transaction.Transactional;
 import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotChattingReq;
 import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotPredictReq;
-import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotChattingRes;
-import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotPredictRes;
-import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotRes;
+import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotRecommendDiaryReq;
+import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotRecommendTestReq;
+import konkuk.kuit.durimong.domain.chatbot.dto.response.*;
 import konkuk.kuit.durimong.domain.chatbot.entity.ChatBot;
 import konkuk.kuit.durimong.domain.chatbot.repository.ChatBotRepository;
 import konkuk.kuit.durimong.domain.column.entity.ColumnCategory;
 import konkuk.kuit.durimong.domain.column.repository.CategoryRepository;
+import konkuk.kuit.durimong.domain.test.repository.TestRepository;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
 import konkuk.kuit.durimong.global.exception.CustomException;
@@ -39,7 +40,7 @@ public class ChatBotService {
     private final ChatBotRepository chatBotRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-
+    private final TestRepository testRepository;
     @Value("${spring.openai.api.url}")
     private String openAiApiUrl;
 
@@ -190,6 +191,30 @@ public class ChatBotService {
 
         return message + recommendation;
     }
+
+    public ChatBotRecommendTestRes recommendTest(ChatBotRecommendTestReq req, Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        ChatBot bot = chatBotRepository.findById(req.getChatBotId()).orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
+        List<TestListDto> tests = testRepository.findTestIdAndName();
+        return new ChatBotRecommendTestRes(makeRecommendMessage(user,bot),bot.getImage(),tests);
+    }
+
+    public String makeRecommendMessage(User user, ChatBot bot){
+        if(bot.getAccent().equals("반말")){
+            return user.getNickname() +"을 위한 테스트도 준비해봤어!";
+        }
+        return user.getNickname()+ "님을 위한 테스트를 준비해봤어요.";
+
+    }
+
+    public ChatBotRecommendDiaryRes recommendDiary(ChatBotRecommendDiaryReq req){
+        ChatBot bot = chatBotRepository.findById(req.getChatBotId()).orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
+        if(bot.getAccent().equals("반말")){
+            return new ChatBotRecommendDiaryRes(bot.getImage(),"오늘 하루는 어땠어? 하루 기록을 남겨봐");
+        }
+        return new ChatBotRecommendDiaryRes(bot.getImage(),"오늘 하루는 어떠셨나요? 하루 기록을 남겨보세요.");
+    }
+
 
 
 
