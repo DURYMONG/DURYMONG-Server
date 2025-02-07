@@ -36,7 +36,7 @@ public class ColumnController {
 
     @GetMapping("/categories/{categoryId}/details")
     @Operation(summary = "카테고리 상세설명 조회", description = "단일 카테고리 상세설명을 조회합니다.")
-    @CustomExceptionDescription(COLUMN_CATEGORY)
+    @CustomExceptionDescription(COLUMN_CATEGORY_DETAIL)
     public SuccessResponse<CategoryDetailRes> getEachCategoryDetail(@PathVariable Long categoryId) {
 
         return SuccessResponse.ok(columnService.getCategoryDetail(categoryId));
