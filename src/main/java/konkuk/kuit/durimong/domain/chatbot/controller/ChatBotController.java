@@ -4,11 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotChattingReq;
 import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotPredictReq;
+import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotRecommendDiaryReq;
 import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotRecommendTestReq;
-import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotChattingRes;
-import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotPredictRes;
-import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotRecommendTestRes;
-import konkuk.kuit.durimong.domain.chatbot.dto.response.ChatBotRes;
+import konkuk.kuit.durimong.domain.chatbot.dto.response.*;
 import konkuk.kuit.durimong.domain.chatbot.service.ChatBotService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
 import konkuk.kuit.durimong.global.annotation.UserId;
@@ -59,6 +57,13 @@ public class ChatBotController {
             ChatBotRecommendTestReq req,
             @UserId @Parameter(hidden = true) Long userId){
         return SuccessResponse.ok(chatBotService.recommendTest(req,userId));
+    }
+
+    @Operation(summary = "채팅봇 일기 추천", description = "유저에게 일기를 작성할 것을 권유합니다.")
+    @CustomExceptionDescription(CHATBOT_RECOMMEND_DIARY)
+    @GetMapping("diary-recommendation")
+    public SuccessResponse<ChatBotRecommendDiaryRes> diaryRecommendation(ChatBotRecommendDiaryReq req){
+        return SuccessResponse.ok(chatBotService.recommendDiary(req));
     }
 
 }

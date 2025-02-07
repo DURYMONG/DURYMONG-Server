@@ -132,6 +132,9 @@ public enum SwaggerResponseDescription {
             USER_NOT_FOUND,
             CHATBOT_NOT_FOUND
     ))),
+    CHATBOT_RECOMMEND_DIARY(new LinkedHashSet<>(Set.of(
+            CHATBOT_NOT_FOUND
+    ))),
 
     //ACTIVITY
     ACTIVITY_TEST_LIST(new LinkedHashSet<>(Set.of(
