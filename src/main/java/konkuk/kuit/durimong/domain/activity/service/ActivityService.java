@@ -64,7 +64,7 @@ public class ActivityService {
                 .toList();
 
         if(activityList.isEmpty() ){
-            throw new CustomException(ErrorCode.ACTIVITY_NOT_EXSITS);
+            throw new CustomException(ErrorCode.ACTIVITY_NOT_EXISTS);
         }
 
         List<ActivityTestListRes.TestListDTO> testList = testRepository.findAll().stream()

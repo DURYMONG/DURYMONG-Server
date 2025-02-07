@@ -128,10 +128,14 @@ public enum SwaggerResponseDescription {
             CHATBOT_SYMPOMS_EMPTY,
             CHATBOT_PREDICT_ERROR
     ))),
+    CHATBOT_RECOMMEND_TEST(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            CHATBOT_NOT_FOUND
+    ))),
 
     //ACTIVITY
     ACTIVITY_TEST_LIST(new LinkedHashSet<>(Set.of(
-            ACTIVITY_NOT_EXSITS,
+            ACTIVITY_NOT_EXISTS,
             TEST_NOT_EXISTS,
             USER_NOT_FOUND,
             MONG_NOT_FOUND
