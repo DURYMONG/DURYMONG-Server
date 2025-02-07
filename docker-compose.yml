@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: /home/ec2-user
+      dockerfile: Dockerfile
+    container_name: spring-app
+    restart: always
+    depends_on:
+      - db
+      - cache
+    env_file:
+      - DockerEnv.env
+    ports:
+      - 9002:8080
+    networks:
+      - durimong-network
+
+  db:
+    image: mysql:latest
+    container_name: mysql-container
+    restart: always
+    env_file:
+      - DockerEnv.env
+    ports:
+      - 3307:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - durimong-network
+
+  cache:
+    image: redis:latest
+    container_name: redis-container
+    restart: always
+    env_file:
+      - DockerEnv.env
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+    networks:
+      - durimong-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  durimong-network:
