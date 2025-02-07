@@ -2,8 +2,8 @@ version: '3.8'
 services:
   app:
     build:
-      context: /home/ec2-user
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: ./Dockerfile
     container_name: spring-app
     restart: always
     depends_on:
