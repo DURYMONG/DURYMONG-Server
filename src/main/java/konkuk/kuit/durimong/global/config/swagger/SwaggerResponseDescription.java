@@ -100,16 +100,19 @@ public enum SwaggerResponseDescription {
 
     //COLUMN
     COLUMN_CATEGORY(new LinkedHashSet<>(Set.of(
-            COLUMN_CATEGORY_NOT_FOUND,
-            COLUMN_CATEGORY_DETAIL_NOT_FOUND
+            COLUMN_CATEGORY_NOT_EXISTS
+    ))),
+    COLUMN_CATEGORY_DETAIL(new LinkedHashSet<>(Set.of(
+            COLUMN_CATEGORY_NOT_EXISTS,
+            COLUMN_CATEGORY_DETAIL_NOT_EXISTS
     ))),
     COLUMN_SEARCH(new LinkedHashSet<>(Set.of(
             KEYWORD_NOT_EXISTS,
             KEYWORD_LENGTH_OVER,
-            KEYWORD_RESULT_NOT_EXISTS
+            KEYWORD_RESULT_NOT_FOUND
     ))),
     COLUMN_VIEW(new LinkedHashSet<>(Set.of(
-            COLUMN_NOT_EXISTS
+            COLUMN_NOT_FOUND
     ))),
     CHAT_BOT(new LinkedHashSet<>(Set.of(
             CHATBOT_NOT_EXISTS
@@ -128,13 +131,13 @@ public enum SwaggerResponseDescription {
 
     //ACTIVITY
     ACTIVITY_TEST_LIST(new LinkedHashSet<>(Set.of(
-            ACTIVITY_NOT_FOUND,
-            TEST_NOT_FOUND,
+            ACTIVITY_NOT_EXSITS,
+            TEST_NOT_EXISTS,
             USER_NOT_FOUND,
             MONG_NOT_FOUND
     ))),
     ACTIVITY_EXIST(new LinkedHashSet<>(Set.of(
-            ACTIVITY_ID_NOT_EXISTS,
+            ACTIVITY_NOT_FOUND,
             USER_NOT_FOUND,
             ACTIVITY_ALREADY_CHECKED
     ))),
@@ -160,7 +163,8 @@ public enum SwaggerResponseDescription {
     ))),
     // Test
     TEST_DESCRIPTION(new LinkedHashSet<>(Set.of(
-            TEST_ID_NOT_EXISTS
+            TEST_NOT_FOUND,
+            USER_NOT_FOUND
     )));
 
     private Set<ErrorCode> errorCodeList;

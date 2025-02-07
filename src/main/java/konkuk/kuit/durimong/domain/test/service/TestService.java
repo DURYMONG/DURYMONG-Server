@@ -38,7 +38,7 @@ public class TestService {
         String nickname = user.getNickname();
 
         Test test = testRepository.findById(testId)
-                        .orElseThrow(() -> new CustomException(ErrorCode.TEST_ID_NOT_EXISTS));
+                        .orElseThrow(() -> new CustomException(ErrorCode.TEST_NOT_FOUND));
 
         // userTest에서 직전 검사 결과 가져오기 (직전 날짜, 직전 점수)
         Optional<UserTest> userTestOptional = userTestRepository.findFirstByUserAndTestOrderByCreatedAtDesc(user, test);

@@ -64,7 +64,7 @@ public class ActivityService {
                 .toList();
 
         if(activityList.isEmpty() ){
-            throw new CustomException(ErrorCode.ACTIVITY_NOT_FOUND);
+            throw new CustomException(ErrorCode.ACTIVITY_NOT_EXSITS);
         }
 
         List<ActivityTestListRes.TestListDTO> testList = testRepository.findAll().stream()
@@ -84,7 +84,7 @@ public class ActivityService {
     // 활동 설명화면 조회
     public Object getActivityDetails(Long activityId) {
         Activity activity = activityRepository.findById(activityId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ACTIVITY_ID_NOT_EXISTS));
+                .orElseThrow(() -> new CustomException(ErrorCode.ACTIVITY_NOT_FOUND));
 
         boolean hasBoxes = activityBoxRepository.existsByActivity(activity);
 
@@ -115,7 +115,7 @@ public class ActivityService {
     // 활동 체크
     public void makeUserRecord(CheckActivityReq req, Long userId) {
         Activity activity = activityRepository.findById(req.getActivityId())
-                .orElseThrow(() -> new CustomException(ErrorCode.ACTIVITY_ID_NOT_EXISTS));
+                .orElseThrow(() -> new CustomException(ErrorCode.ACTIVITY_NOT_FOUND));
 
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

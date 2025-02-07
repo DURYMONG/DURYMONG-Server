@@ -12,9 +12,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class SubmitTestRes {
-    @Schema(description = "테스트 ID", example = "1")
-    private int testId;
-
     @Schema(description = "테스트 이름", example = "스트레스 수치 검사")
     private String testName;
 
