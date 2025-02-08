@@ -37,4 +37,12 @@ public enum TestResponseOption {
                 .map(TestResponseOption::getResponse)
                 .orElseThrow(() -> new CustomException(ErrorCode.TEST_MAX_RESPONSE_NOT_EXISTS));
     }
+
+    public static boolean isEqualResponseOption(int testId, int score) {
+        long count = Arrays.stream(values())
+                .filter(option -> option.getTestId() == testId)
+                .count();
+
+        return count == score;
+    }
 }
