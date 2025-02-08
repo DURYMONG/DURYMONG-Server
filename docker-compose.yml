@@ -4,7 +4,8 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
-    container_name: spring-app
+    container_name: durymong-app
+    image: dlwjddus1112/durimong:latest
     restart: always
     depends_on:
       - cache
