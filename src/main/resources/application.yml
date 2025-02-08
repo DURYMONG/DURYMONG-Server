@@ -131,6 +131,14 @@ spring:
     api:
       url: https://api.openai.com/v1/chat/completions
       key: ${OPENAI_API_KEY}
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  pathsToMatch: /**
 
 jwt:
   secret: ${JWT_SECRET}
