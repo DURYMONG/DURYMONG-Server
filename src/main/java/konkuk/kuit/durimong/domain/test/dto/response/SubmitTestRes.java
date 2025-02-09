@@ -25,7 +25,7 @@ public class SubmitTestRes {
     private UserResult userResult;
 
     @Schema(description = "점수 분포 정보 리스트")
-    private List<ScoreDistribution> scoreDistribution;
+    private List<ScoreDistributionInfo> scoreDistributionList;
 
     @Data
     @NoArgsConstructor
@@ -33,8 +33,11 @@ public class SubmitTestRes {
     @Builder
     @Schema(description = "사용자의 스트레스 검사 결과 DTO")
     public static class UserResult {
-        @Schema(description = "해당 점수 범위", example = "14-16")
-        private String scoreRange;
+        @Schema(description = "최소 점수", example = "14")
+        private int minScore;
+
+        @Schema(description = "최대 점수", example = "16(nullable)")
+        private Integer maxScore;
 
         @Schema(description = "사용자의 스트레스 수준 설명", example = "스트레스 지수 40% 비교적 심한 스트레스")
         private String description;
@@ -45,7 +48,7 @@ public class SubmitTestRes {
     @AllArgsConstructor
     @Builder
     @Schema(description = "스트레스 점수 분포 DTO")
-    public static class ScoreDistribution {
+    public static class ScoreDistributionInfo {
         @Schema(description = "최소 점수", example = "14")
         private int minScore;
 

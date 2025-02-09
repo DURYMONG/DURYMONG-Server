@@ -2,7 +2,9 @@ package konkuk.kuit.durimong.domain.test.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import konkuk.kuit.durimong.domain.test.dto.request.SubmitTestReq;
 import konkuk.kuit.durimong.domain.test.dto.response.DoTestRes;
+import konkuk.kuit.durimong.domain.test.dto.response.SubmitTestRes;
 import konkuk.kuit.durimong.domain.test.dto.response.TestDescriptionRes;
 import konkuk.kuit.durimong.domain.test.service.TestService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
@@ -13,8 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.TEST_DESCRIPTION;
-import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.TEST_START;
+import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.*;
 
 @Slf4j
 @RestController
@@ -32,10 +33,18 @@ public class TestController {
     }
 
     @PostMapping("/{testId}")
-    @Operation(summary = "테스트 검사 시작", description = "testId의 테스트를 시작합니다, 모든 테스트 문항들이 반환됩니다")
+    @Operation(summary = "테스트 검사 시작", description = "testId의 테스트를 시작합니다, 모든 테스트 문항들이 반환됩니다.")
     @CustomExceptionDescription(TEST_START)
     public SuccessResponse<DoTestRes> startTest(@PathVariable Long testId) {
 
         return SuccessResponse.ok(testService.getTest(testId));
+    }
+
+    @PostMapping("{testId}/results")
+    @Operation(summary = "테스트 완료", description = "testId의 테스트 응답을 제출합니다, 테스트 결과가 반환됩니다.")
+    @CustomExceptionDescription(TEST_END)
+    public SuccessResponse<SubmitTestRes> completeTest(@RequestBody SubmitTestReq req, @PathVariable Long testId, @Parameter(hidden = true) @UserId Long userId) {
+
+        return SuccessResponse.ok(testService.submitTest(req, testId, userId));
     }
 }

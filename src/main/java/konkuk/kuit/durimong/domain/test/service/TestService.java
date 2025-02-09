@@ -1,8 +1,11 @@
 package konkuk.kuit.durimong.domain.test.service;
 
 import konkuk.kuit.durimong.domain.test.Enum.TestResponseOption;
+import konkuk.kuit.durimong.domain.test.dto.request.SubmitTestReq;
 import konkuk.kuit.durimong.domain.test.dto.response.DoTestRes;
+import konkuk.kuit.durimong.domain.test.dto.response.SubmitTestRes;
 import konkuk.kuit.durimong.domain.test.dto.response.TestDescriptionRes;
+import konkuk.kuit.durimong.domain.test.entity.ScoreDistribution;
 import konkuk.kuit.durimong.domain.test.entity.Test;
 import konkuk.kuit.durimong.domain.test.entity.TestQuestion;
 import konkuk.kuit.durimong.domain.test.entity.UserTest;
@@ -19,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,4 +92,63 @@ public class TestService {
         return new DoTestRes(testId, testName, numberOfQuestions, numberOfOptions, questionList);
     }
 
+    // 테스트 검사 완료
+    public SubmitTestRes submitTest(SubmitTestReq req, Long testId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Test test = testRepository.findById(testId)
+                .orElseThrow(() -> new CustomException(ErrorCode.TEST_NOT_FOUND));
+
+        int userResposneCount =  req.getResponseList().size();
+
+        if (userResposneCount != test.getCountOfQuestions()) {
+            throw new CustomException(ErrorCode.USER_RESPONSE_COUNT_NOT_EQUALS);
+        }
+
+        for(SubmitTestReq.UserResponseDTO response : req.getResponseList()) {
+            if(! TestResponseOption.isValidChoice(testId.intValue(), response.getChoice())) {
+                throw new CustomException(ErrorCode.USER_CHOICE_NOT_EXISTS_IN_TEST);
+            }
+        }
+
+        // 점수 구하기
+        int userScore = req.getResponseList().stream()
+                .mapToInt(SubmitTestReq.UserResponseDTO::getChoice)
+                .sum();
+
+        // 테스트 기록 엔터티
+        UserTest userTest = UserTest.builder()
+                .score(userScore)
+                .createdAt(LocalDate.now())
+                .user(user)
+                .test(test)
+                .build();
+
+        // 유저 테스트 기록 생성
+        userTestRepository.save(userTest);
+
+        // 모든 점수 분포 리스트
+        List<SubmitTestRes.ScoreDistributionInfo> scoreDistributionList = scoreDistributionRepository.findAll().stream()
+                .map(scoreDistribution -> new SubmitTestRes.ScoreDistributionInfo(scoreDistribution.getStartScore(),
+                        scoreDistribution.getEndScore(),
+                        scoreDistribution.getDescription()))
+                .toList();
+
+        // 유저가 속한 점수 분포 리스트 가져오기
+        SubmitTestRes.ScoreDistributionInfo userScoreDistribution = scoreDistributionList.stream()
+                .filter(allList -> userScore >= allList.getMinScore() && (allList.getMaxScore() == null || userScore <= allList.getMaxScore()))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_SCORE_NOT_EXISTS_IN_DISTRIBUTION));
+
+        SubmitTestRes.UserResult userResult;
+        userResult = SubmitTestRes.UserResult.builder()
+                .minScore(userScoreDistribution.getMinScore())
+                .maxScore(userScoreDistribution.getMaxScore())
+                .description(userScoreDistribution.getDescription())
+                .build();
+
+
+        return new SubmitTestRes(test.getName(), user.getName(), userScore, userResult, scoreDistributionList);
+    }
 }
