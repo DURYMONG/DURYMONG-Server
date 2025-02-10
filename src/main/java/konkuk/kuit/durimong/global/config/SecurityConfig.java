@@ -35,9 +35,10 @@ public class SecurityConfig {
     };
 
     private final String[] PUBLIC_GET = {
-            /* swagger v3 */
-            "/v3/api-docs/**",
-            "/swagger-ui/**"
+            "/swagger-ui/**", "/api-docs",
+            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html","/swagger-ui/index.html",
+            "/users/userid","users/email","users/email-requests",
+            "users/email-verifications","/v3/api-docs/swagger-config"
     };
 
     private final String[] PUBLIC_PUT = {
