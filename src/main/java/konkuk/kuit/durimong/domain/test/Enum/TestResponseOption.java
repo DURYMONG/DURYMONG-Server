@@ -13,20 +13,29 @@ import java.util.Objects;
 @AllArgsConstructor
 public enum TestResponseOption {
     // 우울증 검사
-    DEPRESSION_SCORE_ONE(1, 1, "그렇지 않다"),
-    DEPRESSION_SCORE_TWO(1, 2, "가끔 그렇다"),
-    DEPRESSION_SCORE_THREE(1, 3, "종종 그렇다"),
-    DEPRESSION_SCORE_FOUR(1, 4, "매우 그렇다"),
+    DEPRESSION_SCORE_ONE(1, 0, "그렇지 않다"),
+    DEPRESSION_SCORE_TWO(1, 1, "가끔 그렇다"),
+    DEPRESSION_SCORE_THREE(1, 2, "종종 그렇다"),
+    DEPRESSION_SCORE_FOUR(1, 3, "항상 그렇다"),
+    // 외상 후 스트레스 검사
+    PTSD_SCORE_ONE(2, 0, "전혀 그렇지 않다"),
+    PTSD_SCORE_TWO(2, 1, "거의 그렇지 않다"),
+    PTSD_SCORE_THREE(2, 2, "보통이다"),
+    PTSD_SCORE_FOUR(2, 3, "가끔 그렇다"),
+    PTSD_SCORE_FIVE(2, 4, "항상 그렇다"),
+    // 스트레스 수치 검사
+    STRESS_SCORE_ZERO(3, 0, "그렇지 않다"),
+    STRESS_SCORE_ONE(3, 1, "가끔 그렇다"),
+    STRESS_SCORE_TWO(3, 2, "종종 그렇다"),
+    STRESS_SCORE_THREE(3, 3, "항상 그렇다"),
+    //조울증 검사
+    MDQ_SCORE_ONE(4, 0, "전혀 그렇지 않다"),
+    MDQ_SCORE_TWO(4, 1, "종종 그렇다"),
+    MDQ_SCORE_THREE(4, 2, "항상 그렇다"),
     //범 불안 장애 검사
-    GAD_SCORE_ONE(2,1,"그렇지 않다"),
-    GAD_SCORE_TWO(2,2,"종종 그렇다"),
-    GAD_SCORE_THREE(2,3,"항상 그렇다"),
-    // 스트레스 검사
-    STRESS_SCORE_ZERO(3, 0, "전혀 없었다"),
-    STRESS_SCORE_ONE(3, 1, "가끔 있었다"),
-    STRESS_SCORE_TWO(3, 2, "자주 있었다"),
-    STRESS_SCORE_THREE(3, 3, "항상 있었다");
-
+    GAD_SCORE_ONE(5,0,"그렇지 않다"),
+    GAD_SCORE_TWO(5,1,"종종 그렇다"),
+    GAD_SCORE_THREE(5,2,"항상 그렇다");
 
     private final int testId;
     private final int score;

@@ -32,7 +32,7 @@ public class TestController {
         return SuccessResponse.ok(testService.getTestDescription(testId, userId));
     }
 
-    @PostMapping("/{testId}")
+    @GetMapping("/{testId}/questions")
     @Operation(summary = "테스트 검사 시작", description = "testId의 테스트를 시작합니다, 모든 테스트 문항들이 반환됩니다.")
     @CustomExceptionDescription(TEST_START)
     public SuccessResponse<DoTestRes> startTest(@PathVariable Long testId) {

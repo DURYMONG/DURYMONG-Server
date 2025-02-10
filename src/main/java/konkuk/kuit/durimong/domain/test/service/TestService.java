@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,10 +53,16 @@ public class TestService {
                 .map(userTest -> new TestDescriptionRes.LastTestDTO(userTest.getCreatedAt(), nickname, userTest.getScore()))
                 .orElse(new TestDescriptionRes.LastTestDTO(null, nickname, null));
 
+        String minResponse = TestResponseOption.getMinResponse(testId.intValue());
+        String maxResponse = TestResponseOption.getMaxResponse(testId.intValue());
+
+        String evaluationInfo = "'" + test.getMinNumber().toString() + " = "+ (minResponse != null ? minResponse : "N/A")
+                + "' ~ " + "'" + test.getMaxNumber().toString() + " = "+ (maxResponse != null ? maxResponse : "N/A")
+                + "'까지 평가합니다.\n\n평가 결과가 " + test.getCriticalScore() + "점 이상인 대상자는 전문가의 상담을 받는 것을 권유합니다.";
+
         return new TestDescriptionRes(
                 testId, test.getName(), test.getEnglishName(),
-                test.getContent(), test.getMinNumber(),TestResponseOption.getMinResponse(testId.intValue()),
-                test.getMaxNumber(), TestResponseOption.getMaxResponse(testId.intValue()),test.getCriticalScore(),
+                test.getContent(), evaluationInfo,
                 test.getCountOfQuestions(), test.getRequiredTime(), lastTestInfo);
     }
 
