@@ -57,13 +57,13 @@ jobs:
             git pull origin main
             
             echo "✋🏻 Stopping existing containers"
-            sudo docker-compose down 
+            docker-compose down 
             
             echo "🥳 Pulling new images"
-            sudo docker-compose pull 
+            docker-compose pull 
             
             echo "🌱 Running new containers"
-            sudo docker-compose up -d --build
+            docker-compose up -d --build
             
             echo "🚮 Cleaning up old images"
-            sudo docker image prune -f 
+            docker image prune -f 
