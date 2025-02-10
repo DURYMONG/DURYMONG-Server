@@ -51,27 +51,23 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(
-                        sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests((authorizeRequests) ->
-                                authorizeRequests
-                                        .anyRequest().permitAll()
-                                .requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()
-                                .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
-                                .requestMatchers(HttpMethod.PUT, PUBLIC_PUT).permitAll()
-                                .anyRequest().authenticated()
-
-                );
-        http
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
+                        .requestMatchers(HttpMethod.PUT, PUBLIC_PUT).permitAll()
+                        .anyRequest().authenticated() 
+                )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(authenticationManager -> authenticationManager
+                .exceptionHandling(auth -> auth
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                         .accessDeniedHandler(new JwtAccessDeniedHandler())
                 );
 
         return http.build();
     }
+
 
     /**
      * CORS 설정
