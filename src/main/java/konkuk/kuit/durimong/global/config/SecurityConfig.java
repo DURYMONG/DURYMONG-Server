@@ -51,24 +51,27 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(
+                        sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
-                        .requestMatchers(HttpMethod.PUT, PUBLIC_PUT).permitAll()
-                        .anyRequest().authenticated()
-                )
+                .authorizeHttpRequests((authorizeRequests) ->
+                                authorizeRequests
+                                        .anyRequest().permitAll()
+                                .requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()
+                                .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
+                                .requestMatchers(HttpMethod.PUT, PUBLIC_PUT).permitAll()
+                                .anyRequest().authenticated()
+
+                );
+        http
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(auth -> auth
+                .exceptionHandling(authenticationManager -> authenticationManager
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                         .accessDeniedHandler(new JwtAccessDeniedHandler())
                 );
 
         return http.build();
     }
-
 
     /**
      * CORS 설정
