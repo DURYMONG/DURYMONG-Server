@@ -59,9 +59,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
                         .requestMatchers(HttpMethod.PUT, PUBLIC_PUT).permitAll()
+                        .anyRequest().authenticated()
                 )
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(auth -> auth
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
