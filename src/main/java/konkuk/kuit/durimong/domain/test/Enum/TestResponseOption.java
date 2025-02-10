@@ -17,10 +17,15 @@ public enum TestResponseOption {
     DEPRESSION_SCORE_TWO(1, 2, "가끔 그렇다"),
     DEPRESSION_SCORE_THREE(1, 3, "종종 그렇다"),
     DEPRESSION_SCORE_FOUR(1, 4, "매우 그렇다"),
+    //범 불안 장애 검사
+    GAD_SCORE_ONE(2,1,"그렇지 않다"),
+    GAD_SCORE_TWO(2,2,"종종 그렇다"),
+    GAD_SCORE_THREE(2,3,"항상 그렇다"),
     // 스트레스 검사
-    STRESS_SCORE_ONE(3, 1, "그렇지 않다"),
-    STRESS_SCORE_TWO(3, 2, "보통이다"),
-    STRESS_SCORE_THREE(3, 3, "매우 그렇다");
+    STRESS_SCORE_ZERO(3, 0, "전혀 없었다"),
+    STRESS_SCORE_ONE(3, 1, "가끔 있었다"),
+    STRESS_SCORE_TWO(3, 2, "자주 있었다"),
+    STRESS_SCORE_THREE(3, 3, "항상 있었다");
 
 
     private final int testId;

@@ -5,7 +5,6 @@ import konkuk.kuit.durimong.domain.test.dto.request.SubmitTestReq;
 import konkuk.kuit.durimong.domain.test.dto.response.DoTestRes;
 import konkuk.kuit.durimong.domain.test.dto.response.SubmitTestRes;
 import konkuk.kuit.durimong.domain.test.dto.response.TestDescriptionRes;
-import konkuk.kuit.durimong.domain.test.entity.ScoreDistribution;
 import konkuk.kuit.durimong.domain.test.entity.Test;
 import konkuk.kuit.durimong.domain.test.entity.TestQuestion;
 import konkuk.kuit.durimong.domain.test.entity.UserTest;
@@ -71,7 +70,7 @@ public class TestService {
         String testName = test.getName();
 
         int numberOfQuestions = test.getCountOfQuestions();
-        int numberOfOptions = test.getMaxNumber();
+        int numberOfOptions = Math.addExact(Math.subtractExact(test.getMaxNumber(), test.getMinNumber()), 1);
 
         // 테스트의 선택지 개수가 같은 지 확인
         if(! TestResponseOption.isEqualResponseOption(testId.intValue(), numberOfOptions)) {
@@ -129,7 +128,7 @@ public class TestService {
         userTestRepository.save(userTest);
 
         // 모든 점수 분포 리스트
-        List<SubmitTestRes.ScoreDistributionInfo> scoreDistributionList = scoreDistributionRepository.findAll().stream()
+        List<SubmitTestRes.ScoreDistributionInfo> scoreDistributionList = scoreDistributionRepository.findByTest(test).stream()
                 .map(scoreDistribution -> new SubmitTestRes.ScoreDistributionInfo(scoreDistribution.getStartScore(),
                         scoreDistribution.getEndScore(),
                         scoreDistribution.getDescription()))
