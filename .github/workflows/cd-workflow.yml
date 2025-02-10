@@ -48,17 +48,22 @@ jobs:
           port: ${{ secrets.EC2_PORT }}
           envs: GITHUB_SHA
           script: |
-            echo "✋🏻Stopping existing container"
-            sudo docker stop durimong
-            sudo docker rm durimong
-        
-            sudo docker ps -a
+            echo "📌 Moving to project directory"
+            cd /DURYMONG-Server
             
-            echo "🥳 Pulling new image"
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
+            echo "🔄 Checking out the correct branch"
+            git fetch --all
+            git checkout main 
+            git pull origin main
             
-            echo "🌱 Running new container"
-            sudo docker run -d -p 8000:8080 --name durimong ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
-
+            echo "✋🏻 Stopping existing containers"
+            sudo docker-compose down 
+            
+            echo "🥳 Pulling new images"
+            sudo docker-compose pull 
+            
+            echo "🌱 Running new containers"
+            sudo docker-compose up -d --build
+            
             echo "🚮 Cleaning up old images"
-            sudo docker image prune -f
+            sudo docker image prune -f 
