@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -51,27 +51,23 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(
-                        sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests((authorizeRequests) ->
-                        authorizeRequests
-                                .anyRequest().permitAll()
-                                .requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()
-                                .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
-                               .requestMatchers(HttpMethod.PUT, PUBLIC_PUT).permitAll()
-                                .anyRequest().authenticated()
-
-                );
-        http
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
+                        .requestMatchers(HttpMethod.PUT, PUBLIC_PUT).permitAll()
+                        .anyRequest().authenticated()
+                )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(authenticationManager -> authenticationManager
+                .exceptionHandling(auth -> auth
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                         .accessDeniedHandler(new JwtAccessDeniedHandler())
                 );
 
         return http.build();
     }
+
 
     /**
      * CORS 설정
@@ -92,6 +88,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 }
