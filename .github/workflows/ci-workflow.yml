@@ -4,11 +4,9 @@ on:          # 아래 브랜치로 push, pull request 발생 시 자동으로 �
   push:
     branches:
       - 'main'
-      - 'develop'
   pull_request:
     branches:
       - 'main'
-      - 'develop'
 
 permissions:
   contents: read
