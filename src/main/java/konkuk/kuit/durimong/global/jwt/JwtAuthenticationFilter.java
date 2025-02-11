@@ -22,6 +22,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.setHeader("Access-Control-Allow-Methods", "*");
         response.setHeader("Access-Control-Allow-Headers", "*");
 
+        // Swagger UI 경로를 제외한 요청에서만 인증을 적용
+        if (shouldNotFilter(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         String token = getToken(request);
         if (token != null && jwtProvider.verify(token)) {
             Authentication authentication = getAuthentication(token);
@@ -29,6 +34,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+    /**
+     * Swagger UI 또는 Swagger 관련 경로를 제외한 요청에 대해서만 필터를 적용
+     */
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        return uri.startsWith("/swagger-ui") || uri.startsWith("/v3/api-docs") || uri.startsWith("/swagger-config");
     }
 
     private String getToken(HttpServletRequest request) {

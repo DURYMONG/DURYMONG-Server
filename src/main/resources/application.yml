@@ -134,13 +134,27 @@ spring:
 springdoc:
   swagger-ui:
     enabled: true
-    path: /swagger-ui.html
+    path: /swagger-ui/index.html
   api-docs:
     enabled: true
     path: /v3/api-docs
-  pathsToMatch: /**
+  show-actuator: true
+  use-management-port: false
+  packages-to-scan: konkuk.kuit.durimong
+  paths-to-match: /**
+  group-configs:
+    - group: default
+      paths-to-match: "/**"
+      packages-to-scan: "konkuk.kuit.durimong"
+
 
 jwt:
   secret: ${JWT_SECRET}
   accessTokenExpiration: 3600000
   refreshTokenExpiration: 604800000
+
+logging:
+  level:
+    org.springframework.web: DEBUG   # HTTP 요청 관련 로그
+    konkuk.kuit.durimong: DEBUG
+    org.springframework.security: DEBUG
