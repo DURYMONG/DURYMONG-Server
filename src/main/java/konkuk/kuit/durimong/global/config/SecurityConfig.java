@@ -29,20 +29,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final String[] PUBLIC_POST = {
-            "/users/signup",
-            "/users/login",
-    };
-
-    private final String[] PUBLIC_GET = {
+    private final String[] PERMITTED_APIS = {
             "/swagger-ui/**", "/api-docs",
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html","/swagger-ui/index.html",
             "/users/userid","users/email","users/email-requests",
-            "users/email-verifications","/v3/api-docs/swagger-config"
-    };
-
-    private final String[] PUBLIC_PUT = {
-
+            "users/email-verifications","/v3/api-docs/swagger-config",
+            "/users/signup",
+            "/users/login",
     };
 
     private final JwtProvider jwtProvider;
@@ -57,9 +50,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, PUBLIC_POST).permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
-                        .requestMatchers(HttpMethod.PUT, PUBLIC_PUT).permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(PERMITTED_APIS).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
