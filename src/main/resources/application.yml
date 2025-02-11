@@ -157,3 +157,4 @@ logging:
   level:
     org.springframework.web: DEBUG   # HTTP 요청 관련 로그
     konkuk.kuit.durimong: DEBUG
+    org.springframework.security: DEBUG
