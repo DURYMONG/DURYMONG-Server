@@ -5,6 +5,7 @@ import konkuk.kuit.durimong.domain.test.dto.request.SubmitTestReq;
 import konkuk.kuit.durimong.domain.test.dto.response.DoTestRes;
 import konkuk.kuit.durimong.domain.test.dto.response.SubmitTestRes;
 import konkuk.kuit.durimong.domain.test.dto.response.TestDescriptionRes;
+import konkuk.kuit.durimong.domain.test.entity.ScoreDistribution;
 import konkuk.kuit.durimong.domain.test.entity.Test;
 import konkuk.kuit.durimong.domain.test.entity.TestQuestion;
 import konkuk.kuit.durimong.domain.test.entity.UserTest;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -116,12 +118,10 @@ public class TestService {
             }
         }
 
-        // 점수 구하기
         int userScore = req.getResponseList().stream()
                 .mapToInt(SubmitTestReq.UserResponseDTO::getChoice)
                 .sum();
 
-        // 테스트 기록 엔터티
         UserTest userTest = UserTest.builder()
                 .score(userScore)
                 .createdAt(LocalDate.now())
@@ -132,26 +132,19 @@ public class TestService {
         // 유저 테스트 기록 생성
         userTestRepository.save(userTest);
 
-        // 모든 점수 분포 리스트
-        List<SubmitTestRes.ScoreDistributionInfo> scoreDistributionList = scoreDistributionRepository.findByTest(test).stream()
-                .map(scoreDistribution -> new SubmitTestRes.ScoreDistributionInfo(scoreDistribution.getStartScore(),
-                        scoreDistribution.getEndScore(),
-                        scoreDistribution.getDescription()))
-                .toList();
+        List<ScoreDistribution> scoreDistributions = scoreDistributionRepository.findByTest(test);
 
-        // 유저가 속한 점수 분포 리스트 가져오기
-        SubmitTestRes.ScoreDistributionInfo userScoreDistribution = scoreDistributionList.stream()
-                .filter(allList -> userScore >= allList.getMinScore() && (allList.getMaxScore() == null || userScore <= allList.getMaxScore()))
+        String scoreDistributionList = scoreDistributions.stream()
+                .map(distribution -> String.format("· %d-%d : %s",
+                        distribution.getStartScore(), distribution.getEndScore(), distribution.getDescription()))
+                .collect(Collectors.joining("\n"));
+
+        ScoreDistribution userScoreDistribution= scoreDistributions.stream()
+                .filter(distribution -> userScore >= distribution.getStartScore() && (distribution.getEndScore() == null || userScore <= distribution.getEndScore()))
                 .findFirst()
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_SCORE_NOT_EXISTS_IN_DISTRIBUTION));
 
-        SubmitTestRes.UserResult userResult;
-        userResult = SubmitTestRes.UserResult.builder()
-                .minScore(userScoreDistribution.getMinScore())
-                .maxScore(userScoreDistribution.getMaxScore())
-                .description(userScoreDistribution.getDescription())
-                .build();
-
+        String userResult = String.format("%d-%d : %s",userScoreDistribution.getStartScore(), userScoreDistribution.getEndScore(), userScoreDistribution.getDescription());
 
         return new SubmitTestRes(test.getName(), user.getName(), userScore, userResult, scoreDistributionList);
     }
