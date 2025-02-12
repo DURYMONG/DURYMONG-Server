@@ -27,6 +27,9 @@ public class CategoryRes {
 
         @Schema(description = "카테고리 이미지", example = "https://durimong.com/category/image.jpg")
         private String image;
+
+        @Schema(description = "카테고리 상세설명", example = "수면장애란...")
+        private String detail;
     }
 
 }
