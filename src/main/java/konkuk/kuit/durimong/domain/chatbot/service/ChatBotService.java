@@ -285,7 +285,11 @@ public class ChatBotService {
                 .orElse(null);
         DiaryRecommendHistory diaryRecommendHistory = diaryRecommendHistoryRepository.findBySession(session)
                 .orElse(null);
-        String finalMessage = makeFinalMessage(userId, req.getChatBotId());
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        ChatBot chatBot = chatBotRepository.findById(req.getChatBotId())
+                .orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
+        String finalMessage = makeFinalMessage(user, chatBot);
 
 
         ChatHistory chatHistory = ChatHistory.builder()
@@ -295,16 +299,15 @@ public class ChatBotService {
                 .testHistory(testRecommendHistory)
                 .diaryHistory(diaryRecommendHistory)
                 .botMessage(finalMessage)
+                .user(user)
+                .chatBot(chatBot)
                 .build();
         chatHistoryRepository.save(chatHistory);
         return new SaveChattingRes(finalMessage);
     }
 
-    private String makeFinalMessage(Long userId, Long chatBotId){
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        ChatBot chatBot = chatBotRepository.findById(chatBotId)
-                .orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
+    private String makeFinalMessage(User user, ChatBot chatBot){
+
         if(chatBot.getAccent().equals("반말")){
             return "대화 즐거웠어! " + user.getNickname() + "를 항상 응원할게";
         }
