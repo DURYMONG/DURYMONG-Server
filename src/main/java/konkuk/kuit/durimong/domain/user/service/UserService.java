@@ -1,6 +1,7 @@
 package konkuk.kuit.durimong.domain.user.service;
 
 import jakarta.transaction.Transactional;
+import konkuk.kuit.durimong.domain.chatbot.entity.ChatBot;
 import konkuk.kuit.durimong.domain.chatbot.repository.ChatHistoryRepository;
 import konkuk.kuit.durimong.domain.mong.entity.Mong;
 import konkuk.kuit.durimong.domain.mong.entity.MongQuestion;
@@ -28,9 +29,11 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static konkuk.kuit.durimong.domain.user.dto.response.UserDailyBotChatChoiceRes.BotChatDto;
 import static konkuk.kuit.durimong.global.exception.ErrorCode.*;
 
 @Slf4j
@@ -339,6 +342,24 @@ public class UserService {
         return "기록 지우기가 완료되었습니다.";
     }
 
+    public UserDailyBotChatChoiceRes showBotChatHistory(UserDailyBotChatChoiceReq req,Long userId){
+        LocalDate targetDate = req.getTargetDate();
+        int day = targetDate.getDayOfMonth();
+        int month = targetDate.getMonthValue();
+        String targetDateStr = month + "월 " + day + "일의 기록";
+        List<ChatBot> chatBots = chatHistoryRepository.findChatBotsByDate(targetDate);
+        if(chatBots.isEmpty()){
+            throw new CustomException(BOT_CHAT_NOT_EXISTS);
+        }
+        List<BotChatDto> botChatDtos = new ArrayList<>();
+        for (ChatBot chatBot : chatBots) {
+            botChatDtos.add(new BotChatDto(chatBot.getChatBotId(),
+                    chatBot.getImage(),
+                    chatBot.getName()+"와의 대화보기"));
+        }
+        return new UserDailyBotChatChoiceRes(targetDateStr,botChatDtos);
+
+    }
 
 
 }
