@@ -1,6 +1,7 @@
 package konkuk.kuit.durimong.domain.user.service;
 
 import jakarta.transaction.Transactional;
+import konkuk.kuit.durimong.domain.chatbot.repository.ChatHistoryRepository;
 import konkuk.kuit.durimong.domain.mong.entity.Mong;
 import konkuk.kuit.durimong.domain.mong.entity.MongQuestion;
 import konkuk.kuit.durimong.domain.mong.repository.MongQuestionRepository;
@@ -46,6 +47,7 @@ public class UserService {
     private final UserMongConversationRepository userMongConversationRepository;
     private final JwtProvider jwtProvider;
     private final MongQuestionRepository mongQuestionRepository;
+    private final ChatHistoryRepository chatHistoryRepository;
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
 
@@ -323,6 +325,18 @@ public class UserService {
                 () -> new CustomException(CONVERSATION_NOT_EXISTS)
         );
         return new UserDailyChatRes(req.getTargetDate(),chat.getMongQuestion(),chat.getUserAnswer());
+    }
+
+    public String deleteHistory(Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if(userMongConversationRepository.findAllByUser(user).isEmpty() && chatHistoryRepository.findAllByUser(user).isEmpty()){
+            throw new CustomException(RECORD_IS_EMPTY);
+        }
+        userMongConversationRepository.deleteAllByUser(user);
+        userMongConversationRepository.flush();
+        chatHistoryRepository.deleteAllByUser(user);
+        chatHistoryRepository.flush();
+        return "기록 지우기가 완료되었습니다.";
     }
 
 

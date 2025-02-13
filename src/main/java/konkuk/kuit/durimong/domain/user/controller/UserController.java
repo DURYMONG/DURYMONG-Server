@@ -207,4 +207,12 @@ public class UserController {
             @Parameter(hidden = true) @UserId Long userId){
         return SuccessResponse.ok(userService.userDailyChat(userId,req));
     }
+
+    @Operation(summary = "기록 지우기", description = "유저와 몽의 대화 기록, 채팅봇 상담내역을 삭제합니다.")
+    @CustomExceptionDescription(USER_DELETE_HISTORY)
+    @PostMapping("history-deletion")
+    public SuccessResponse<String> deleteHistory(
+            @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.deleteHistory(userId));
+    }
 }
