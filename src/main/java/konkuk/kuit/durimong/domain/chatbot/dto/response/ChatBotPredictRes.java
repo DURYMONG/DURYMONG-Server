@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,6 +17,6 @@ public class ChatBotPredictRes {
     @Schema(description = "채팅봇 이미지", example = "image")
     private String chatBotImage;
 
-    @Schema(description = "추천 칼럼 ID들")
-    private List<Long> categoryIds;
+    @Schema(description = "추천 칼럼 ID")
+    private Long categoryId;
 }

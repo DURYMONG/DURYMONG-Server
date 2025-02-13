@@ -64,6 +64,7 @@ public enum ErrorCode {
     KEYWORD_NOT_EXISTS(-603,"키워드가 존재하지 않습니다.", 404),
     KEYWORD_LENGTH_OVER(-604, "키워드 길이는 10자 이내여야 합니다.", 400),
     KEYWORD_RESULT_NOT_FOUND(-605,"키워드에 해당하는 내용이 없습니다", 404),
+    CATEGORY_NOT_FOUND(-606,"존재하지 않는 카테고리입니다.",404),
     //ChatBot
     CHATBOT_NOT_EXISTS(-700,"등록된 채팅봇이 없습니다.",404),
     CHATBOT_NOT_FOUND(-701,"존재하지 않는 채팅봇입니다.",404),
