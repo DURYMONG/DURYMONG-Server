@@ -149,13 +149,14 @@ public class ChatBotService {
             throw new CustomException(CHATBOT_PREDICT_ERROR);
         }
 
-        List<Long> categoryIds = categoryRepository.findByNameIn(predictedDisorders).stream()
-                .map(ColumnCategory::getCategoryId)
-                .toList();
+        String selectedDisorder = predictedDisorders.get(0);
+
+        ColumnCategory category = categoryRepository.findByName(selectedDisorder)
+                .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
 
         String finalMessage = appendRecommendationMessage(gptResponse, chatBot.getAccent());
 
-        return new ChatBotPredictRes(finalMessage, chatBot.getImage(), categoryIds);
+        return new ChatBotPredictRes(finalMessage, chatBot.getImage(), category.getCategoryId());
     }
 
     private List<String> extractPredictedDisorders(String gptResponse) {
@@ -179,7 +180,8 @@ public class ChatBotService {
                 "당신은 %s라는 이름의 챗봇입니다. 당신의 성격은 %s이며, %s 말투를 사용해야 합니다. "
                         + "%s "
                         + "사용자가 입력한 증상을 바탕으로 심적 질환을 예측하세요. "
-                        + "반드시 불면증, 우울증, 공황장애, 조울증, 대인기피증, 폭식증 중 하나만 선택해야 합니다. ",
+                        + "반드시 불면증, 우울증, 공황장애, 조울증, 대인기피증, 폭식증 중 하나만 선택해야 합니다. "
+                        + "가능성이 가장 높은 질환을 가장 앞에 배치하세요.",
                 chatBot.getName(), chatBot.getSlogan(), chatBot.getAccent(), toneInstruction
         );
     }
