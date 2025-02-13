@@ -13,5 +13,6 @@ public class ChatBotChattingRes {
     @Schema(description = "채팅봇의 말", example = "엘리자베스야 안녕! 어떤 증상을 느꼈니?")
     private String message;
 
-
+    @Schema(description = "채팅 세션 ID", example = "1")
+    private Long chatSessionId;
 }

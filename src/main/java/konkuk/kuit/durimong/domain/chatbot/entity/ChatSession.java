@@ -2,10 +2,7 @@ package konkuk.kuit.durimong.domain.chatbot.entity;
 
 import jakarta.persistence.*;
 import konkuk.kuit.durimong.domain.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 public class ChatSession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

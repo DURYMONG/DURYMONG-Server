@@ -1,10 +1,7 @@
 package konkuk.kuit.durimong.domain.chatbot.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -13,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 public class UserSymptomsHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +20,9 @@ public class UserSymptomsHistory {
     @ElementCollection
     @CollectionTable(name = "user_symptom_choices",
                      joinColumns = @JoinColumn(name = "symptoms_id"))
-    @Column(nullable = false)
     private List<String> symptoms;
 
-    @Column(nullable = false, name = "additional_symptom")
+    @Column(name = "additional_symptom")
     private String additionalSymptom;
 
     @Column(nullable = false, name = "bot_greeting")

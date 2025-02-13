@@ -2,10 +2,7 @@ package konkuk.kuit.durimong.domain.chatbot.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotChattingReq;
-import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotPredictReq;
-import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotRecommendDiaryReq;
-import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotRecommendTestReq;
+import konkuk.kuit.durimong.domain.chatbot.dto.request.*;
 import konkuk.kuit.durimong.domain.chatbot.dto.response.*;
 import konkuk.kuit.durimong.domain.chatbot.service.ChatBotService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
@@ -65,5 +62,14 @@ public class ChatBotController {
     public SuccessResponse<ChatBotRecommendDiaryRes> diaryRecommendation(ChatBotRecommendDiaryReq req){
         return SuccessResponse.ok(chatBotService.recommendDiary(req));
     }
+
+    @Operation(summary = "채팅 저장하기", description = "채팅 내역을 저장하고, 대화를 종료합니다.")
+    @CustomExceptionDescription(CHATTING_END)
+    @GetMapping("end-chat")
+    public SuccessResponse<SaveChattingRes> endChat(SaveChattingReq req,
+                                                    @UserId @Parameter(hidden = true) Long userId){
+        return SuccessResponse.ok(chatBotService.saveChatting(req,userId));
+    }
+
 
 }

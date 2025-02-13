@@ -131,14 +131,28 @@ public enum SwaggerResponseDescription {
             CHATBOT_NOT_FOUND,
             CHATBOT_PARSE_ERROR,
             CHATBOT_SYMPOMS_EMPTY,
-            CHATBOT_PREDICT_ERROR
+            CHATBOT_PREDICT_ERROR,
+            CHATSESSION_NOT_FOUND,
+            USER_SYMPTOMS_NOT_FOUND,
+            CATEGORY_NOT_FOUND
     ))),
     CHATBOT_RECOMMEND_TEST(new LinkedHashSet<>(Set.of(
             USER_NOT_FOUND,
-            CHATBOT_NOT_FOUND
+            CHATBOT_NOT_FOUND,
+            CHATSESSION_NOT_FOUND
     ))),
     CHATBOT_RECOMMEND_DIARY(new LinkedHashSet<>(Set.of(
-            CHATBOT_NOT_FOUND
+            CHATBOT_NOT_FOUND,
+            CHATSESSION_NOT_FOUND
+    ))),
+    CHATTING_END(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            CHATBOT_NOT_FOUND,
+            USER_SYMPTOMS_NOT_FOUND,
+            BOT_PREDICTION_NOT_FOUND,
+            TEST_RECOMMENDATION_NOT_FOUND,
+            DIARY_RECOMMENDATION_NOT_FOUND,
+            CHATSESSION_NOT_FOUND
     ))),
 
     //ACTIVITY
