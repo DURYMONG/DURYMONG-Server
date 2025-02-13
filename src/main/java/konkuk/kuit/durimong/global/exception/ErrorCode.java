@@ -51,6 +51,7 @@ public enum ErrorCode {
     USER_SAME_NAME(-309,"현재 사용자의 이름과 수정하시려는 이름이 일치합니다.", 400),
     USER_SAME_PASSWORD(-310,"현재 비밀번호와 새 비밀번호가 일치합니다.", 400),
     RECORD_IS_EMPTY(-311,"삭제할 기록이 존재하지 않습니다.",404),
+    BOT_CHAT_NOT_EXISTS(-312,"채팅봇 대화 내역이 존재하지 않습니다.",404),
     // Mong
     MONG_NAME_LENGTH(-400,"이름은 1~6자로 입력해주세요.", 400),
     MONG_NOT_FOUND(-401, "캐릭터를 생성하지 않았습니다.", 404),

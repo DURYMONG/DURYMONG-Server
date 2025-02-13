@@ -215,4 +215,12 @@ public class UserController {
             @Parameter(hidden = true) @UserId Long userId){
         return SuccessResponse.ok(userService.deleteHistory(userId));
     }
+
+    @Operation(summary = "채팅봇 상담내역 선택", description = "유저가 해당 날짜의 어떤 상담 내역을 조회할 지 선택합니다.")
+    @CustomExceptionDescription(DAILY_BOT_CHAT_CHOICE)
+    @GetMapping("daily-bot-chat-choice")
+    public SuccessResponse<UserDailyBotChatChoiceRes> dailyBotChatChoice(UserDailyBotChatChoiceReq req,
+                                                                         @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.showBotChatHistory(req,userId));
+    }
 }

@@ -97,6 +97,9 @@ public enum SwaggerResponseDescription {
     USER_DELETE_HISTORY(new LinkedHashSet<>(Set.of(
             RECORD_IS_EMPTY
     ))),
+    DAILY_BOT_CHAT_CHOICE(new LinkedHashSet<>(Set.of(
+            BOT_CHAT_NOT_EXISTS
+    ))),
 
     //Mong
     MONG_NAME(new LinkedHashSet<>(Set.of(
