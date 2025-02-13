@@ -94,6 +94,9 @@ public enum SwaggerResponseDescription {
             CONVERSATION_NOT_EXISTS,
             DATE_IS_FUTURE
     ))),
+    USER_DELETE_HISTORY(new LinkedHashSet<>(Set.of(
+            RECORD_IS_EMPTY
+    ))),
 
     //Mong
     MONG_NAME(new LinkedHashSet<>(Set.of(
