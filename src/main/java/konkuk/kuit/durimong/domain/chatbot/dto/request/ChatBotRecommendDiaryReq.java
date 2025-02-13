@@ -11,4 +11,7 @@ import lombok.Setter;
 public class ChatBotRecommendDiaryReq {
     @Schema(description = "채팅봇 ID", example = "1")
     private Long chatBotId;
+
+    @Schema(description = "채팅 세션 ID", example = "1")
+    private Long chatSessionId;
 }

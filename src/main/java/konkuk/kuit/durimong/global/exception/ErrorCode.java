@@ -71,6 +71,11 @@ public enum ErrorCode {
     CHATBOT_PARSE_ERROR(-702,"메시지 파싱중 오류가 발생했습니다.",500),
     CHATBOT_SYMPOMS_EMPTY(-703,"선택된 증상이 없습니다.",422),
     CHATBOT_PREDICT_ERROR(-704,"GPT의 응답에서 질환을 추출하지 못했습니다.",404),
+    CHATSESSION_NOT_FOUND(-705,"채팅 세션이 존재하지 않습니다.",404),
+    USER_SYMPTOMS_NOT_FOUND(-706,"유저가 선택한 증상 내역이 존재하지 않습니다.",404),
+    BOT_PREDICTION_NOT_FOUND(-707,"채팅봇의 질환 추측 내역이 존재하지 않습니다.",404),
+    TEST_RECOMMENDATION_NOT_FOUND(-708,"채팅봇의 테스트 추천 내역이 존재하지 않습니다.",404),
+    DIARY_RECOMMENDATION_NOT_FOUND(-709,"채팅봇의 일기 권유 내역이 존재하지 않습니다.",404),
     //Activity
     ACTIVITY_NOT_EXISTS(-800, "등록된 활동이 없습니다", 404),
     ACTIVITY_INVALID_STATUS(-801, "활동이 유효한 상태가 아닙니다", 400),

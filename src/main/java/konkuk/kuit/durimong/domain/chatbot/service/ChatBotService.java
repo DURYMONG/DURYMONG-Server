@@ -1,13 +1,10 @@
 package konkuk.kuit.durimong.domain.chatbot.service;
 
 import jakarta.transaction.Transactional;
-import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotChattingReq;
-import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotPredictReq;
-import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotRecommendDiaryReq;
-import konkuk.kuit.durimong.domain.chatbot.dto.request.ChatBotRecommendTestReq;
+import konkuk.kuit.durimong.domain.chatbot.dto.request.*;
 import konkuk.kuit.durimong.domain.chatbot.dto.response.*;
-import konkuk.kuit.durimong.domain.chatbot.entity.ChatBot;
-import konkuk.kuit.durimong.domain.chatbot.repository.ChatBotRepository;
+import konkuk.kuit.durimong.domain.chatbot.entity.*;
+import konkuk.kuit.durimong.domain.chatbot.repository.*;
 import konkuk.kuit.durimong.domain.column.entity.ColumnCategory;
 import konkuk.kuit.durimong.domain.column.repository.CategoryRepository;
 import konkuk.kuit.durimong.domain.test.repository.TestRepository;
@@ -27,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +39,12 @@ public class ChatBotService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final TestRepository testRepository;
+    private final ChatSessionRepository chatSessionRepository;
+    private final ChatHistoryRepository chatHistoryRepository;
+    private final UserSymptomHistoryRepository userSymptomHistoryRepository;
+    private final BotPredictionHistoryRepository botPredictionHistoryRepository;
+    private final TestRecommendHistoryRepository testRecommendHistoryRepository;
+    private final DiaryRecommendHistoryRepository diaryRecommendHistoryRepository;
     @Value("${spring.openai.api.url}")
     private String openAiApiUrl;
 
@@ -80,7 +84,19 @@ public class ChatBotService {
 
         String responseMessage = getChatGptResponse(systemPrompt, userPrompt);
 
-        return new ChatBotChattingRes(chatBot.getImage(), responseMessage);
+        ChatSession chatSession = ChatSession.builder()
+                .chatBot(chatBot)
+                .user(user)
+                .createdAt(LocalDateTime.now())
+                .isCompleted(false)
+                .build();
+        chatSessionRepository.save(chatSession);
+        UserSymptomsHistory userSymptomsHistory = UserSymptomsHistory.builder()
+                .botGreeting(responseMessage)
+                .session(chatSession)
+                .build();
+        userSymptomHistoryRepository.save(userSymptomsHistory);
+        return new ChatBotChattingRes(chatBot.getImage(), responseMessage, chatSession.getSessionId());
     }
 
     private String createGreetingPrompt(ChatBot chatBot, String userName) {
@@ -125,6 +141,7 @@ public class ChatBotService {
             throw new CustomException(CHATBOT_PARSE_ERROR);
         }
     }
+
     public ChatBotPredictRes analyzeMentalHealth(ChatBotPredictReq req) {
         ChatBot chatBot = chatBotRepository.findById(req.getChatBotId())
                 .orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
@@ -155,6 +172,22 @@ public class ChatBotService {
                 .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
 
         String finalMessage = appendRecommendationMessage(gptResponse, chatBot.getAccent());
+
+        ChatSession chatSession = chatSessionRepository.findBySessionId(req.getChatSessionId())
+                .orElseThrow(() -> new CustomException(CHATSESSION_NOT_FOUND));
+
+        UserSymptomsHistory userSymptomsHistory = userSymptomHistoryRepository.findBySession(chatSession)
+                .orElseThrow(() -> new CustomException(USER_SYMPTOMS_NOT_FOUND));
+        userSymptomsHistory.setSymptoms(req.getSymptoms());
+        if (req.getAdditionalSymptoms() != null) {
+            userSymptomsHistory.setAdditionalSymptom(req.getAdditionalSymptoms());
+        }
+        userSymptomHistoryRepository.save(userSymptomsHistory);
+        BotPredictionHistory botPredictionHistory = BotPredictionHistory.builder()
+                .session(chatSession)
+                .botMessage(finalMessage)
+                .build();
+        botPredictionHistoryRepository.save(botPredictionHistory);
 
         return new ChatBotPredictRes(finalMessage, chatBot.getImage(), category.getCategoryId());
     }
@@ -194,28 +227,93 @@ public class ChatBotService {
         return message + recommendation;
     }
 
-    public ChatBotRecommendTestRes recommendTest(ChatBotRecommendTestReq req, Long userId){
+    public ChatBotRecommendTestRes recommendTest(ChatBotRecommendTestReq req, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         ChatBot bot = chatBotRepository.findById(req.getChatBotId()).orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
+        ChatSession session = chatSessionRepository.findBySessionId(req.getChatSessionId())
+                .orElseThrow(() -> new CustomException(CHATSESSION_NOT_FOUND));
         List<TestListDto> tests = testRepository.findTestIdAndName();
-        return new ChatBotRecommendTestRes(makeRecommendMessage(user,bot),bot.getImage(),tests);
+        List<String> recommendedTests = testRepository.findAllNames();
+        String botMessage = makeRecommendMessage(user, bot);
+        TestRecommendHistory testRecommendHistory = TestRecommendHistory.builder()
+                .session(session)
+                .botMessage(botMessage)
+                .recommendedTests(recommendedTests)
+                .build();
+        testRecommendHistoryRepository.save(testRecommendHistory);
+        return new ChatBotRecommendTestRes(botMessage, bot.getImage(), tests);
     }
 
-    public String makeRecommendMessage(User user, ChatBot bot){
-        if(bot.getAccent().equals("반말")){
-            return user.getNickname() +"을 위한 테스트도 준비해봤어!";
+    public String makeRecommendMessage(User user, ChatBot bot) {
+        if (bot.getAccent().equals("반말")) {
+            return user.getNickname() + "을 위한 테스트도 준비해봤어!";
         }
-        return user.getNickname()+ "님을 위한 테스트를 준비해봤어요.";
+        return user.getNickname() + "님을 위한 테스트를 준비해봤어요.";
 
     }
 
-    public ChatBotRecommendDiaryRes recommendDiary(ChatBotRecommendDiaryReq req){
+    public ChatBotRecommendDiaryRes recommendDiary(ChatBotRecommendDiaryReq req) {
         ChatBot bot = chatBotRepository.findById(req.getChatBotId()).orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
-        if(bot.getAccent().equals("반말")){
-            return new ChatBotRecommendDiaryRes(bot.getImage(),"오늘 하루는 어땠어? 하루 기록을 남겨봐");
-        }
-        return new ChatBotRecommendDiaryRes(bot.getImage(),"오늘 하루는 어떠셨나요? 하루 기록을 남겨보세요.");
+        ChatSession session = chatSessionRepository.findBySessionId(req.getChatSessionId())
+                .orElseThrow(() -> new CustomException(CHATSESSION_NOT_FOUND));
+        String botMessage = makeDiaryRecommendMessage(bot);
+        DiaryRecommendHistory diaryRecommendHistory = DiaryRecommendHistory.builder()
+                .session(session)
+                .botMessage(botMessage)
+                .build();
+        diaryRecommendHistoryRepository.save(diaryRecommendHistory);
+        return new ChatBotRecommendDiaryRes(bot.getImage(), botMessage);
     }
+
+    private String makeDiaryRecommendMessage(ChatBot chatBot) {
+        if (chatBot.getAccent().equals("반말")) {
+            return "오늘 하루는 어땠어? 하루 기록을 남겨봐!";
+        }
+        return "오늘 하루는 어떠셨나요? 하루 기록을 남겨보세요.";
+    }
+
+    public SaveChattingRes saveChatting(SaveChattingReq req, Long userId) {
+        ChatSession session = chatSessionRepository.findBySessionId(req.getSessionId())
+                .orElseThrow(() -> new CustomException(CHATSESSION_NOT_FOUND));
+        session.setCompleted(true);
+        chatSessionRepository.save(session);
+        UserSymptomsHistory userSymptomsHistory = userSymptomHistoryRepository.findBySession(session)
+                .orElseThrow(() -> new CustomException(USER_SYMPTOMS_NOT_FOUND));
+        BotPredictionHistory botPredictionHistory = botPredictionHistoryRepository.findBySession(session)
+                .orElseThrow(() -> new CustomException(BOT_PREDICTION_NOT_FOUND));
+        TestRecommendHistory testRecommendHistory = testRecommendHistoryRepository.findBySession(session)
+                .orElseThrow(() -> new CustomException((TEST_RECOMMENDATION_NOT_FOUND)));
+        DiaryRecommendHistory diaryRecommendHistory = diaryRecommendHistoryRepository.findBySession(session)
+                .orElseThrow(() -> new CustomException((DIARY_RECOMMENDATION_NOT_FOUND)));
+        String finalMessage = makeFinalMessage(userId, req.getChatBotId());
+
+
+        ChatHistory chatHistory = ChatHistory.builder()
+                .createdAt(session.getCreatedAt())
+                .symptomsHistory(userSymptomsHistory)
+                .predictionHistory(botPredictionHistory)
+                .testHistory(testRecommendHistory)
+                .diaryHistory(diaryRecommendHistory)
+                .botMessage(finalMessage)
+                .build();
+        chatHistoryRepository.save(chatHistory);
+        return new SaveChattingRes(finalMessage);
+    }
+
+    private String makeFinalMessage(Long userId, Long chatBotId){
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        ChatBot chatBot = chatBotRepository.findById(chatBotId)
+                .orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
+        if(chatBot.getAccent().equals("반말")){
+            return "대화 즐거웠어! " + user.getNickname() + "를 항상 응원할게";
+        }
+        return "대화 즐거웠어요! " + user.getNickname() + "를 항상 응원할게요.";
+    }
+
+
+
+
 
 
 

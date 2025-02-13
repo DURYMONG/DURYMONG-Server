@@ -19,13 +19,16 @@ public class ChatHistory {
     @Column(name = "chat_history_id")
     private Long chatHistoryId;
 
+    @Column(name = "bot_message")
+    private String botMessage;
+
     @Column(nullable = false, name = "created_at")
     private LocalDateTime createdAt;
 
     @OneToOne
     @JoinColumn(name = "symptomsId", nullable = false)
     private UserSymptomsHistory symptomsHistory;
-    
+
     @OneToOne
     @JoinColumn(name = "predictionId")
     private BotPredictionHistory predictionHistory;
