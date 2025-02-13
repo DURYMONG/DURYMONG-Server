@@ -280,11 +280,11 @@ public class ChatBotService {
         UserSymptomsHistory userSymptomsHistory = userSymptomHistoryRepository.findBySession(session)
                 .orElseThrow(() -> new CustomException(USER_SYMPTOMS_NOT_FOUND));
         BotPredictionHistory botPredictionHistory = botPredictionHistoryRepository.findBySession(session)
-                .orElseThrow(() -> new CustomException(BOT_PREDICTION_NOT_FOUND));
+                .orElse(null);
         TestRecommendHistory testRecommendHistory = testRecommendHistoryRepository.findBySession(session)
-                .orElseThrow(() -> new CustomException((TEST_RECOMMENDATION_NOT_FOUND)));
+                .orElse(null);
         DiaryRecommendHistory diaryRecommendHistory = diaryRecommendHistoryRepository.findBySession(session)
-                .orElseThrow(() -> new CustomException((DIARY_RECOMMENDATION_NOT_FOUND)));
+                .orElse(null);
         String finalMessage = makeFinalMessage(userId, req.getChatBotId());
 
 
