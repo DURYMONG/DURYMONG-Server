@@ -1,6 +1,7 @@
 package konkuk.kuit.durimong.domain.chatbot.entity;
 
 import jakarta.persistence.*;
+import konkuk.kuit.durimong.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,4 +41,12 @@ public class ChatHistory {
     @OneToOne
     @JoinColumn(name = "diaryHistoryId")
     private DiaryRecommendHistory diaryHistory;
+
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
+
+    @ManyToOne()
+    @JoinColumn(name = "chatBotId")
+    private ChatBot chatBot;
 }
