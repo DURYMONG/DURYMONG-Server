@@ -13,6 +13,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDailyBotChatChoiceReq {
-    @Schema(description = "날짜", example = "11월 28일")
+    @Schema(description = "날짜", example = "2025-02-13")
     private LocalDate targetDate;
 }
