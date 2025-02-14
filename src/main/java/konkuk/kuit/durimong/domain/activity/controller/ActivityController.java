@@ -2,6 +2,7 @@ package konkuk.kuit.durimong.domain.activity.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import konkuk.kuit.durimong.domain.activity.dto.request.CheckActivityReq;
 import konkuk.kuit.durimong.domain.activity.dto.request.WriteDiaryReq;
@@ -29,6 +30,7 @@ public class ActivityController {
 
     @GetMapping
     @Operation(summary = "활동/테스트 리스트 조회", description = "JWT 토큰에서 사용자 ID를 추출하여 활동 및 테스트 리스트를 조회합니다.")
+    @Tag(name = "Activity/Test List", description = "활동 / 테스트 리스트 관련 API")
     @CustomExceptionDescription(ACTIVITY_TEST_LIST)
     public SuccessResponse<ActivityTestListRes> viewActivityTestList(
             @Parameter(hidden = true) @UserId Long userId) {
@@ -38,6 +40,7 @@ public class ActivityController {
 
     @GetMapping("/{activityId}")
     @Operation(summary = "활동 내용 조회", description = "박스 존재 여부에 따라 형식을 나누어, 각 활동의 내용을 조회합니다.")
+    @Tag(name = "Activity", description = "활동 관련 API")
     @CustomExceptionDescription(ACTIVITY_EXIST)
     public SuccessResponse<?> viewActivity(@PathVariable Long activityId) {
 
@@ -46,6 +49,7 @@ public class ActivityController {
 
     @PostMapping("/user-records")
     @Operation(summary = "활동 완료 체크", description = "완료한 활동에 대해 체크표시 합니다.")
+    @Tag(name = "Activity check", description = "활동 체크 관련 API")
     @CustomExceptionDescription(ACTIVITY_EXIST)
     public SuccessResponse<Void> checkActivity(
             @Validated @RequestBody CheckActivityReq req, @Parameter(hidden = true) @UserId Long userId) {
@@ -56,6 +60,7 @@ public class ActivityController {
 
     @PostMapping("/user-records/{activityId}/deactivation")
     @Operation(summary = "활동 체크 취소", description = "활동 완료체크를 취소합니다")
+    @Tag(name = "Activity check", description = "활동 체크 관련 API")
     @CustomExceptionDescription(USER_RECORD)
     public SuccessResponse<Void> deleteActivity(
             @PathVariable Long activityId, @Parameter(hidden = true) @UserId Long userId) {
@@ -66,6 +71,7 @@ public class ActivityController {
 
     @GetMapping("/records")
     @Operation(summary = "월별 성장 일지 조회", description = "월별 성장일지를 조회합니다.")
+    @Tag(name = "User Record", description = "활동 기록 관련 API")
     @CustomExceptionDescription(USER_RECORD_DATE)
     public SuccessResponse<ActivityRecordRes> viewMonthActivityRecord(
             @RequestParam @Parameter(description = "년도", example = "2025") int year, @Parameter(description = "월", example = "2") int month, @Parameter(hidden = true) @UserId Long userId) {
@@ -75,6 +81,7 @@ public class ActivityController {
 
     @GetMapping("/records/{date}")
     @Operation(summary = "일별 성장 일지 조회", description = "일별 성장일지를 조회합니다.")
+    @Tag(name = "User Record", description = "활동 기록 관련 API")
     @CustomExceptionDescription(USER_RECORD_DAY)
     public SuccessResponse<ActivityDayRecordRes> viewDayActivityRecord(@PathVariable LocalDate date, @Parameter(hidden = true) @UserId Long userId) {
 
@@ -83,6 +90,7 @@ public class ActivityController {
 
     @GetMapping("/records/{date}/diaries")
     @Operation(summary = "하루 일기 조회", description = "하루 일기를 조회합니다.")
+    @Tag(name = "Diary", description = "일기 관련 API")
     @CustomExceptionDescription(Diary)
     public SuccessResponse<DiaryRes> viewDayDiary(@PathVariable LocalDate date, @Parameter(hidden = true) @UserId Long userId) {
 
@@ -91,6 +99,7 @@ public class ActivityController {
 
     @PostMapping("/records/diaries")
     @Operation(summary = "일기 작성", description = "당일에 일기를 작성합니다.")
+    @Tag(name = "Diary", description = "일기 관련 API")
     @CustomExceptionDescription(Diary)
     public SuccessResponse<DiaryRes> writeDayDiary(
             @Valid @RequestBody WriteDiaryReq req, @Parameter(hidden = true) @UserId Long userId) {

@@ -177,6 +177,18 @@ public enum SwaggerResponseDescription {
     TEST_DESCRIPTION(new LinkedHashSet<>(Set.of(
             TEST_NOT_FOUND,
             USER_NOT_FOUND
+    ))),
+    TEST_START(new LinkedHashSet<>(Set.of(
+            TEST_NOT_FOUND,
+            TEST_OPTION_COUNT_NOT_EQUALS,
+            TEST_QUESTION_COUNT_NOT_EQUALS
+    ))),
+    TEST_END(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            TEST_NOT_FOUND,
+            USER_RESPONSE_COUNT_NOT_EQUALS,
+            USER_SCORE_NOT_EXISTS_IN_DISTRIBUTION,
+            USER_CHOICE_NOT_EXISTS_IN_TEST
     )));
 
     private Set<ErrorCode> errorCodeList;

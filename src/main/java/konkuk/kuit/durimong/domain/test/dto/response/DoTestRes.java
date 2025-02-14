@@ -34,7 +34,7 @@ public class DoTestRes {
     @Schema(description = "단일 활동 DTO")
     public static class QuestionListDTO {
         @Schema(description = "번호", example = "1")
-        private Long activityId;
+        private int number;
 
         @Schema(description = "문항", example = "쉽게 짜증이 나고 기분의 변동이 심하다.")
         private String question;
