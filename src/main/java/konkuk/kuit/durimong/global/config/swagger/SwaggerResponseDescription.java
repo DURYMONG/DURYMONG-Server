@@ -98,7 +98,13 @@ public enum SwaggerResponseDescription {
             RECORD_IS_EMPTY
     ))),
     DAILY_BOT_CHAT_CHOICE(new LinkedHashSet<>(Set.of(
-            BOT_CHAT_NOT_EXISTS
+            BOT_CHAT_NOT_EXISTS,
+            DATE_IS_FUTURE
+    ))),
+    DAILY_BOT_CHAT(new LinkedHashSet<>(Set.of(
+            DATE_IS_FUTURE,
+            USER_NOT_FOUND,
+            CHATBOT_NOT_FOUND
     ))),
 
     //Mong

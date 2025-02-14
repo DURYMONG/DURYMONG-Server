@@ -16,4 +16,7 @@ public interface ChatHistoryRepository extends JpaRepository<ChatHistory, Long> 
 
     @Query("SELECT DISTINCT c.chatBot FROM ChatHistory c WHERE FUNCTION('DATE', c.createdAt) = :date")
     List<ChatBot> findChatBotsByDate(@Param("date") LocalDate date);
+
+    @Query("SELECT c FROM ChatHistory c WHERE FUNCTION('DATE',c.createdAt) = :date and c.user = :user and c.chatBot = :chatBot")
+    List<ChatHistory> findChatHistoryByUserAndChatBotAndDate(User user, ChatBot chatBot, @Param("date") LocalDate date);
 }

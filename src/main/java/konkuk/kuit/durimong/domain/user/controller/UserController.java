@@ -223,4 +223,12 @@ public class UserController {
                                                                          @Parameter(hidden = true) @UserId Long userId){
         return SuccessResponse.ok(userService.showBotChatHistory(req,userId));
     }
+
+    @Operation(summary = "채팅봇 상담내역 조회", description = "유저가 해당 날짜의 채팅봇 상담 내역을 조회합니다.")
+    @CustomExceptionDescription(DAILY_BOT_CHAT)
+    @GetMapping("daily-bot-chat")
+    public SuccessResponse<UserDailyBotChatRes> getDailyBotChat(UserDailyBotChatReq req,
+                                                                @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.userDailyBotChat(req,userId));
+    }
 }
