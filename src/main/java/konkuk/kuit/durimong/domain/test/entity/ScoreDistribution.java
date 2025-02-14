@@ -19,8 +19,8 @@ public class ScoreDistribution {
     @Column(name = "start_score", nullable = false)
     private int startScore;
 
-    @Column(name = "end_score", nullable = false)
-    private int endScore;
+    @Column(name = "end_score", nullable = true)
+    private Integer endScore;
 
     @Column(nullable = false)
     private String description;

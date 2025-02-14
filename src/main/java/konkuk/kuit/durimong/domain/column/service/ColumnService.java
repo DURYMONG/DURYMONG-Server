@@ -1,7 +1,6 @@
 package konkuk.kuit.durimong.domain.column.service;
 
 import jakarta.transaction.Transactional;
-import konkuk.kuit.durimong.domain.column.dto.response.CategoryDetailRes;
 import konkuk.kuit.durimong.domain.column.dto.response.CategoryRes;
 import konkuk.kuit.durimong.domain.column.dto.response.ColumnRes;
 import konkuk.kuit.durimong.domain.column.dto.response.KeywordSearchRes;
@@ -33,7 +32,9 @@ public class ColumnService {
                 .map(category -> new CategoryRes.CategoryDTO(
                         category.getCategoryId(),
                         category.getName(),
-                        category.getImage()
+                        category.getImage(),
+                        category.getDetail()
+
                 ))
                 .collect(Collectors.toList());
 
@@ -42,18 +43,6 @@ public class ColumnService {
         }
 
         return new CategoryRes(categoryList);
-    }
-
-    public CategoryDetailRes getCategoryDetail(Long id) {
-        ColumnCategory category = categoryRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.COLUMN_CATEGORY_NOT_EXISTS));
-
-        String categoryDetail = category.getDetail();
-
-        if (categoryDetail == null || categoryDetail.trim().isEmpty()) {
-            throw new CustomException(ErrorCode.COLUMN_CATEGORY_DETAIL_NOT_EXISTS);
-        }
-
-        return new CategoryDetailRes(categoryDetail);
     }
 
     public KeywordSearchRes searchColumnsByKeyword(String keyword) {

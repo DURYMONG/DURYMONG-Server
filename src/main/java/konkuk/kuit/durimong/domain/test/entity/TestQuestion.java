@@ -9,12 +9,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "test_content")
-public class TestContent {
+@Table(name = "test_question")
+public class TestQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "test_content_id")
-    private Long testContentId;
+    @Column(name = "test_question_id")
+    private Long testQuestionId;
 
     @Column(nullable = false)
     private int number;
