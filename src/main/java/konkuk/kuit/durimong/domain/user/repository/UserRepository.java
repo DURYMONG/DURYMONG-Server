@@ -15,6 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User save(User user);
     Optional<User> findById(String id);
     Optional<User> findByUserId(Long userId);
-    @Query("SELECT u FROM User u WHERE u.lastLogin < :thresholdDate")
-    List<User> findUsersNotLoggedInSince(LocalDateTime thresholdDate);
+    @Query("SELECT u FROM User u WHERE u.lastLogin < :thresholdDate AND u.isPushEnabled = true")
+    List<User> findUsersNotLoggedInSinceAndIsPushEnabled(LocalDateTime thresholdDate);
 }

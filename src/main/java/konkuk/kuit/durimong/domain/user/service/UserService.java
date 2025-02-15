@@ -411,6 +411,18 @@ public class UserService {
         );
     }
 
+    public void setPushEnabled(Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if(user.isPushEnabled()){
+            user.setPushEnabled(false);
+            userRepository.save(user);
+            return;
+        }
+        user.setPushEnabled(true);
+        userRepository.save(user);
+
+    }
+
 
 
 }

@@ -97,8 +97,11 @@ public enum ErrorCode {
     TEST_MIN_RESPONSE_NOT_EXISTS(-1002, "해당 테스트의 최소 점수 응답을 찾을 수 없습니다", 404),
     TEST_MAX_RESPONSE_NOT_EXISTS(-1003, "해당 테스트의 최고 점수 응답을 찾을 수 없습니다", 404),
 
+    //Fcm Tokens
+    INVALID_FCM_TOKEN(-1100,"유호하지 않은 FCM 토큰입니다.",422),
+
     //기타
-    DATE_IS_FUTURE(-1100,"미래의 시간을 입력하셨습니다",422);
+    DATE_IS_FUTURE(-1200,"미래의 시간을 입력하셨습니다",422);
     private final int errorCode;
     private final String message;
     private final int httpCode;
