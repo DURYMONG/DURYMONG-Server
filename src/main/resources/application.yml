@@ -150,7 +150,7 @@ springdoc:
 
 jwt:
   secret: ${JWT_SECRET}
-  accessTokenExpiration:  5000 #3600000
+  accessTokenExpiration: 3600000
   refreshTokenExpiration: 604800000
 
 logging:
