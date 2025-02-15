@@ -106,6 +106,13 @@ public enum SwaggerResponseDescription {
             USER_NOT_FOUND,
             CHATBOT_NOT_FOUND
     ))),
+    SAVE_FCM_TOKEN(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            INVALID_FCM_TOKEN
+    ))),
+    SET_PUSH(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND
+    ))),
 
     //Mong
     MONG_NAME(new LinkedHashSet<>(Set.of(

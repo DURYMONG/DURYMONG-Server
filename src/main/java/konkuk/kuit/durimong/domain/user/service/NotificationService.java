@@ -1,5 +1,7 @@
 package konkuk.kuit.durimong.domain.user.service;
 
+import konkuk.kuit.durimong.domain.mong.entity.Mong;
+import konkuk.kuit.durimong.domain.mong.repository.MongRepository;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,22 +18,39 @@ import java.util.List;
 public class NotificationService {
 
     private final UserRepository userRepository;
+    private final MongRepository mongRepository;
     private final FcmService fcmService;
 
     @Scheduled(cron = "0 0 9 * * ?")  // 매일 아침 9시에 실행
     public void sendPushNotificationsToInactiveUsers() {
-        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
-        List<User> inactiveUsers = userRepository.findUsersNotLoggedInSince(sevenDaysAgo);
+        try {
+            LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+            List<User> inactiveUsers = userRepository.findUsersNotLoggedInSinceAndIsPushEnabled(sevenDaysAgo);
 
-        for (User user : inactiveUsers) {
-            String title = "두리몽이 기다리고 있어요!";
-            String body = user.getNickname() + "님, 오랜만이에요! 두리몽과 다시 대화해보세요.";
-            String fcmToken = user.getFcmToken();
-
-            if (fcmToken != null) {
-                fcmService.sendPushNotification(fcmToken, title, body);
+            if (inactiveUsers.isEmpty()) {
+                log.info("📢 미접속 사용자가 없습니다. 푸시 알림을 전송하지 않습니다.");
+                return;
             }
+
+            int sentCount = 0;
+            for (User user : inactiveUsers) {
+                Mong mong = mongRepository.findByUser(user).orElse(null);
+                assert mong != null;
+                String title = mong.getName() + "이 기다리고 있어요!";
+                String body = user.getNickname() + "님, 오랜만이에요! 두리몽과 다시 대화해보세요.";
+                String fcmToken = user.getFcmToken();
+
+                if (fcmToken != null && !fcmToken.trim().isEmpty()) {
+                    fcmService.sendPushNotification(fcmToken, title, body);
+                    sentCount++;
+                } else {
+                    log.warn("⚠️ 사용자 {} ({}) 에게 FCM 푸시 알림을 보낼 수 없습니다. (토큰 없음)", user.getUserId(), user.getNickname());
+                }
+            }
+
+            log.info("✅ 총 {}명의 미접속 사용자에게 푸시 알림 전송 완료", sentCount);
+        } catch (Exception e) {
+            log.error("❌ 푸시 알림 전송 중 예외 발생: {}", e.getMessage(), e);
         }
-        log.info("✅ {}명의 미접속 사용자에게 푸시 알림 전송 완료", inactiveUsers.size());
     }
 }

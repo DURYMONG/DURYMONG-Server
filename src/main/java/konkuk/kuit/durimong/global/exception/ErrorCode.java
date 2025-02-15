@@ -101,8 +101,12 @@ public enum ErrorCode {
     USER_RESPONSE_COUNT_NOT_EQUALS(-1006, "유저가 응답한 문항 수가 일치하지 않습니다", 422),
     USER_SCORE_NOT_EXISTS_IN_DISTRIBUTION(-1007, "유저의 점수가 테스트 점수 분포에 존재하지 않습니다", 404),
     USER_CHOICE_NOT_EXISTS_IN_TEST(-1008, "유저가 선택한 응답 번호가 테스트에 존재하지 않습니다", 404),
+
+    //Fcm Tokens
+    INVALID_FCM_TOKEN(-1100,"유호하지 않은 FCM 토큰입니다.",422),
+
     //기타
-    DATE_IS_FUTURE(-1100,"미래의 시간을 입력하셨습니다",422);
+    DATE_IS_FUTURE(-1200,"미래의 시간을 입력하셨습니다",422);
     private final int errorCode;
     private final String message;
     private final int httpCode;

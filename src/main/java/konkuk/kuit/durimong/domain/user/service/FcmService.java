@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.ExecutionException;
 
+import static konkuk.kuit.durimong.global.exception.ErrorCode.INVALID_FCM_TOKEN;
 import static konkuk.kuit.durimong.global.exception.ErrorCode.USER_NOT_FOUND;
 
 @Slf4j
@@ -22,6 +23,9 @@ public class FcmService {
     private final UserRepository userRepository;
 
     public void sendPushNotification(String token, String title, String body) {
+        if (token == null || token.trim().isEmpty()) {
+            log.error("token is null or empty");
+        }
         Message message = Message.builder()
                 .setToken(token)
                 .setNotification(Notification.builder()
@@ -40,6 +44,9 @@ public class FcmService {
 
     @Transactional
     public void updateFcmToken(Long userId, String fcmToken) {
+        if (fcmToken == null || fcmToken.trim().isEmpty()) {
+            throw new CustomException(INVALID_FCM_TOKEN);
+        }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         user.setFcmToken(fcmToken);

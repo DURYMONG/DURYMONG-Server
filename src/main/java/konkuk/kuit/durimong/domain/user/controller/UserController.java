@@ -8,6 +8,7 @@ import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
 import konkuk.kuit.durimong.domain.user.dto.response.*;
+import konkuk.kuit.durimong.domain.user.service.FcmService;
 import konkuk.kuit.durimong.domain.user.service.UserService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
 import konkuk.kuit.durimong.global.annotation.UserId;
@@ -25,6 +26,7 @@ import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescript
 @RequestMapping("users")
 public class UserController {
     private final UserService userService;
+    private final FcmService fcmService;
 
     @Operation(summary = "아이디 중복검사", description = "아이디 중복여부를 확인합니다.")
     @CustomExceptionDescription(USER_ID)
@@ -231,4 +233,21 @@ public class UserController {
                                                                 @Parameter(hidden = true) @UserId Long userId){
         return SuccessResponse.ok(userService.userDailyBotChat(req,userId));
     }
+
+    @Operation(summary = "FCM 토큰 저장", description = "클라이언트로부터 전달받은 FCM 토큰을 저장합니다.")
+    @CustomExceptionDescription(SAVE_FCM_TOKEN)
+    @PostMapping("fcm-token")
+    public SuccessResponse<Void> updateFcmToken(@Parameter(hidden = true) @UserId Long userId,@RequestParam String fcmToken){
+        fcmService.updateFcmToken(userId,fcmToken);
+        return SuccessResponse.ok(null);
+    }
+
+    @Operation(summary = "푸시알림 설정", description = "푸시알림 수신 여부를 설정합니다.")
+    @CustomExceptionDescription(SET_PUSH)
+    @PostMapping("setting-notification")
+    public SuccessResponse<Void> setPush(@Parameter(hidden = true) @UserId Long userId){
+        userService.setPushEnabled(userId);
+        return SuccessResponse.ok(null);
+    }
+
 }
