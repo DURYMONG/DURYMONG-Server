@@ -1,6 +1,10 @@
 package konkuk.kuit.durimong.domain.user.service;
 
 import jakarta.transaction.Transactional;
+import konkuk.kuit.durimong.domain.chatbot.entity.ChatBot;
+import konkuk.kuit.durimong.domain.chatbot.entity.ChatHistory;
+import konkuk.kuit.durimong.domain.chatbot.repository.ChatBotRepository;
+import konkuk.kuit.durimong.domain.chatbot.repository.ChatHistoryRepository;
 import konkuk.kuit.durimong.domain.mong.entity.Mong;
 import konkuk.kuit.durimong.domain.mong.entity.MongQuestion;
 import konkuk.kuit.durimong.domain.mong.repository.MongQuestionRepository;
@@ -27,9 +31,12 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static konkuk.kuit.durimong.domain.user.dto.response.UserDailyBotChatChoiceRes.ChatBotChoiceDto;
+import static konkuk.kuit.durimong.domain.user.dto.response.UserDailyBotChatRes.*;
 import static konkuk.kuit.durimong.global.exception.ErrorCode.*;
 
 @Slf4j
@@ -46,6 +53,8 @@ public class UserService {
     private final UserMongConversationRepository userMongConversationRepository;
     private final JwtProvider jwtProvider;
     private final MongQuestionRepository mongQuestionRepository;
+    private final ChatHistoryRepository chatHistoryRepository;
+    private final ChatBotRepository chatBotRepository;
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
 
@@ -323,6 +332,95 @@ public class UserService {
                 () -> new CustomException(CONVERSATION_NOT_EXISTS)
         );
         return new UserDailyChatRes(req.getTargetDate(),chat.getMongQuestion(),chat.getUserAnswer());
+    }
+
+    public String deleteHistory(Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if(userMongConversationRepository.findAllByUser(user).isEmpty() && chatHistoryRepository.findAllByUser(user).isEmpty()){
+            throw new CustomException(RECORD_IS_EMPTY);
+        }
+        userMongConversationRepository.deleteAllByUser(user);
+        userMongConversationRepository.flush();
+        chatHistoryRepository.deleteAllByUser(user);
+        chatHistoryRepository.flush();
+        return "기록 지우기가 완료되었습니다.";
+    }
+
+    public UserDailyBotChatChoiceRes showBotChatHistory(UserDailyBotChatChoiceReq req,Long userId){
+        LocalDate targetDate = req.getTargetDate();
+        if(targetDate.isAfter(LocalDate.now())){
+            throw new CustomException(DATE_IS_FUTURE);
+        }
+        int day = targetDate.getDayOfMonth();
+        int month = targetDate.getMonthValue();
+        String targetDateStr = month + "월 " + day + "일의 기록";
+        List<ChatBot> chatBots = chatHistoryRepository.findChatBotsByDate(targetDate);
+        if(chatBots.isEmpty()){
+            throw new CustomException(BOT_CHAT_NOT_EXISTS);
+        }
+        List<ChatBotChoiceDto> chatBotChoiceDtos = new ArrayList<>();
+        for (ChatBot chatBot : chatBots) {
+            chatBotChoiceDtos.add(new ChatBotChoiceDto(chatBot.getChatBotId(),
+                    chatBot.getImage(),
+                    chatBot.getName()+"와의 대화보기"));
+        }
+        return new UserDailyBotChatChoiceRes(targetDateStr, chatBotChoiceDtos);
+
+    }
+
+    public UserDailyBotChatRes userDailyBotChat( UserDailyBotChatReq req, Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        ChatBot chatBot = chatBotRepository.findById(req.getChatBotId()).orElseThrow(
+                () -> new CustomException(CHATBOT_NOT_FOUND));
+        LocalDate targetDate = req.getTargetDate();
+        if(targetDate.isAfter(LocalDate.now())){
+            throw new CustomException(DATE_IS_FUTURE);
+        }
+        List<ChatHistory> chatHistories = chatHistoryRepository.findChatHistoryByUserAndChatBotAndDate(user, chatBot, targetDate);
+        List<ChatHistoryDto> chatHistoryDtos = new ArrayList<>();
+        for (ChatHistory chatHistory : chatHistories) {
+            ChatHistoryDto chatHistoryDto = getChatHistoryDto(chatHistory);
+            chatHistoryDtos.add(chatHistoryDto);
+        }
+        String targetDateStr = targetDate.getMonthValue() + "월 " + targetDate.getDayOfMonth() + "일의 상담";
+        return new UserDailyBotChatRes(targetDateStr, chatBot.getImage(), chatHistoryDtos);
+
+
+    }
+
+    private ChatHistoryDto getChatHistoryDto(ChatHistory chatHistory) {
+        LocalDateTime createdAt = chatHistory.getCreatedAt();
+        String startTime;
+        if(createdAt.getMinute() < 10){
+            startTime = createdAt.getHour() + ":0" + createdAt.getMinute();
+        }
+        else{
+            startTime = createdAt.getHour() + ":" + createdAt.getMinute();
+        }
+
+        return new ChatHistoryDto(
+                startTime,
+                chatHistory.getSymptomsHistory() != null ? chatHistory.getSymptomsHistory().getBotGreeting() : null,
+                chatHistory.getSymptomsHistory() != null ? chatHistory.getSymptomsHistory().getSymptoms() : null,
+                chatHistory.getSymptomsHistory() != null ? chatHistory.getSymptomsHistory().getAdditionalSymptom() : null,
+                chatHistory.getPredictionHistory() != null ? chatHistory.getPredictionHistory().getBotMessage() : null,
+                chatHistory.getTestHistory() != null ? chatHistory.getTestHistory().getBotMessage() : null,
+                chatHistory.getTestHistory() != null ? chatHistory.getTestHistory().getRecommendedTests() : null,
+                chatHistory.getDiaryHistory() != null ? chatHistory.getDiaryHistory().getBotMessage() : null,
+                chatHistory.getBotMessage()
+        );
+    }
+
+    public void setPushEnabled(Long userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if(user.isPushEnabled()){
+            user.setPushEnabled(false);
+            userRepository.save(user);
+            return;
+        }
+        user.setPushEnabled(true);
+        userRepository.save(user);
+
     }
 
 

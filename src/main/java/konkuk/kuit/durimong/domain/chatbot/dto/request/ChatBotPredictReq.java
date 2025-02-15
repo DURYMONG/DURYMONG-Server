@@ -19,4 +19,7 @@ public class ChatBotPredictReq {
 
     @Schema(description = "추가하기를 통해 추가 입력한 유저의 증상")
     private String additionalSymptoms;
+
+    @Schema(description = "채팅 세션 ID", example = "1")
+    private Long chatSessionId;
 }

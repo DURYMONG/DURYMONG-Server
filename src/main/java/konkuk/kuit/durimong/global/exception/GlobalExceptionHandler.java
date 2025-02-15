@@ -1,5 +1,6 @@
 package konkuk.kuit.durimong.global.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import konkuk.kuit.durimong.global.response.ErrorResponse;
 import konkuk.kuit.durimong.global.response.result.ParameterData;
 import konkuk.kuit.durimong.global.response.result.ServerErrorData;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static konkuk.kuit.durimong.global.exception.ErrorCode.JWT_EXPIRE_TOKEN;
 import static konkuk.kuit.durimong.global.exception.ErrorCode.NOT_FOUND_PATH;
 
 @Slf4j
@@ -116,6 +118,16 @@ public class GlobalExceptionHandler {
         ErrorResponse<Object> body = ErrorResponse.of(errorCode, e.getAdditionalInfo());
         HttpStatus httpStatus = HttpStatus.valueOf(errorCode.getHttpCode());
         return new ResponseEntity<>(body, httpStatus);
+    }
+    /**
+     * JWT 만료 예외 처리
+     */
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponse<String>> handleExpiredJwtException(ExpiredJwtException e) {
+        log.warn("JWT ERROR] 만료된 토큰: {}", e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResponse.of(JWT_EXPIRE_TOKEN, "토큰이 만료되었습니다."));
     }
 
     /**

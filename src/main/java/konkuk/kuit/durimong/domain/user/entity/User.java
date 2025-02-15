@@ -40,6 +40,12 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime lastLogin;
 
+    @Column
+    private String FcmToken;
+
+    @Builder.Default
+    private boolean isPushEnabled = true;
+
     public static User create(String id, String password, String email, String name, String nickname) {
         return User.builder()
                 .id(id)

@@ -8,6 +8,7 @@ import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
 import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
 import konkuk.kuit.durimong.domain.user.dto.response.*;
+import konkuk.kuit.durimong.domain.user.service.FcmService;
 import konkuk.kuit.durimong.domain.user.service.UserService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
 import konkuk.kuit.durimong.global.annotation.UserId;
@@ -25,6 +26,7 @@ import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescript
 @RequestMapping("users")
 public class UserController {
     private final UserService userService;
+    private final FcmService fcmService;
 
     @Operation(summary = "아이디 중복검사", description = "아이디 중복여부를 확인합니다.")
     @CustomExceptionDescription(USER_ID)
@@ -201,10 +203,51 @@ public class UserController {
 
     @Operation(summary = "일별 몽 대화기록 조회", description = "원하는 날짜의 몽과의 대화 내역을 조회합니다.")
     @CustomExceptionDescription(USER_DAILY_CHAT)
-    @GetMapping("users/daily-chat")
+    @GetMapping("daily-mong-chat")
     public SuccessResponse<UserDailyChatRes> dailyChat(
             UserDailyChatReq req,
             @Parameter(hidden = true) @UserId Long userId){
         return SuccessResponse.ok(userService.userDailyChat(userId,req));
     }
+
+    @Operation(summary = "기록 지우기", description = "유저와 몽의 대화 기록, 채팅봇 상담내역을 삭제합니다.")
+    @CustomExceptionDescription(USER_DELETE_HISTORY)
+    @PostMapping("history-deletion")
+    public SuccessResponse<String> deleteHistory(
+            @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.deleteHistory(userId));
+    }
+
+    @Operation(summary = "채팅봇 상담내역 선택", description = "유저가 해당 날짜의 어떤 상담 내역을 조회할 지 선택합니다.")
+    @CustomExceptionDescription(DAILY_BOT_CHAT_CHOICE)
+    @GetMapping("daily-bot-chat-choice")
+    public SuccessResponse<UserDailyBotChatChoiceRes> dailyBotChatChoice(UserDailyBotChatChoiceReq req,
+                                                                         @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.showBotChatHistory(req,userId));
+    }
+
+    @Operation(summary = "채팅봇 상담내역 조회", description = "유저가 해당 날짜의 채팅봇 상담 내역을 조회합니다.")
+    @CustomExceptionDescription(DAILY_BOT_CHAT)
+    @GetMapping("daily-bot-chat")
+    public SuccessResponse<UserDailyBotChatRes> getDailyBotChat(UserDailyBotChatReq req,
+                                                                @Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(userService.userDailyBotChat(req,userId));
+    }
+
+    @Operation(summary = "FCM 토큰 저장", description = "클라이언트로부터 전달받은 FCM 토큰을 저장합니다.")
+    @CustomExceptionDescription(SAVE_FCM_TOKEN)
+    @PostMapping("fcm-token")
+    public SuccessResponse<Void> updateFcmToken(@Parameter(hidden = true) @UserId Long userId,@RequestParam String fcmToken){
+        fcmService.updateFcmToken(userId,fcmToken);
+        return SuccessResponse.ok(null);
+    }
+
+    @Operation(summary = "푸시알림 설정", description = "푸시알림 수신 여부를 설정합니다.")
+    @CustomExceptionDescription(SET_PUSH)
+    @PostMapping("setting-notification")
+    public SuccessResponse<Void> setPush(@Parameter(hidden = true) @UserId Long userId){
+        userService.setPushEnabled(userId);
+        return SuccessResponse.ok(null);
+    }
+
 }

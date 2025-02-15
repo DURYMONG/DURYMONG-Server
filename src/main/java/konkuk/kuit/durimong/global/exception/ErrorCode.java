@@ -30,14 +30,14 @@ public enum ErrorCode {
     // Auth
     UNAUTHORIZED(-200, "인증 자격이 없습니다.", 401),
     FORBIDDEN(-201, "권한이 없습니다.", 403),
-    JWT_ERROR_TOKEN(-202, "잘못된 토큰입니다.", 401),
-    JWT_EXPIRE_TOKEN(-203, "만료된 토큰입니다.", 401),
+    JWT_ERROR_TOKEN(-202, "잘못된 토큰입니다.", 403),
+    JWT_EXPIRE_TOKEN(-203, "만료된 토큰입니다.", 403),
     AUTHORIZED_ERROR(-204, "인증 과정 중 에러가 발생했습니다.", 500),
     AUTHENTICATION_SETTING_FAIL(-207, "인증정보 처리에 실패했습니다.", 500),
-    INVALID_TOKEN(-208,"저장된 토큰과 일치하지 않습니다.", 401),
+    INVALID_TOKEN(-208,"저장된 토큰과 일치하지 않습니다.", 403),
     NOT_FOUND_AVAILABLE_PORT(-209,"이용 가능한 포트를 찾지 못했습니다.", 500),
     ERROR_EXECUTING_EMBEDDED_REDIS(-210,"REDIS 서버 실행 중 오류가 발생했습니다.", 500),
-    JWT_LOGOUT_TOKEN(-211,"로그아웃된 토큰입니다.", 401),
+    JWT_LOGOUT_TOKEN(-211,"로그아웃된 토큰입니다.", 403),
     // User
     USER_NOT_FOUND(-300, "존재하지 않는 회원입니다.", 404),
     USER_DUPLICATE_ID(-301, "이미 존재하는 아이디입니다.", 409),
@@ -47,9 +47,11 @@ public enum ErrorCode {
     USER_PASSWORD_NONUM(-305,"비밀번호에 숫자가 포함되어야 합니다.", 400),
     USER_PASSWORD_ENGLISH(-306,"비밀번호에 영문자가 포함되어야 합니다.", 400),
     USER_EMAIL_VERIFY_FAILED(-307,"이메일 인증에 실패하였습니다.", 400),
-    USER_LOGOUTED(-308,"로그아웃 되어 있는 상태입니다.", 401),
+    USER_LOGOUTED(-308,"로그아웃 되어 있는 상태입니다.", 403),
     USER_SAME_NAME(-309,"현재 사용자의 이름과 수정하시려는 이름이 일치합니다.", 400),
     USER_SAME_PASSWORD(-310,"현재 비밀번호와 새 비밀번호가 일치합니다.", 400),
+    RECORD_IS_EMPTY(-311,"삭제할 기록이 존재하지 않습니다.",404),
+    BOT_CHAT_NOT_EXISTS(-312,"채팅봇 대화 내역이 존재하지 않습니다.",404),
     // Mong
     MONG_NAME_LENGTH(-400,"이름은 1~6자로 입력해주세요.", 400),
     MONG_NOT_FOUND(-401, "캐릭터를 생성하지 않았습니다.", 404),
@@ -64,12 +66,18 @@ public enum ErrorCode {
     KEYWORD_NOT_EXISTS(-603,"키워드가 존재하지 않습니다.", 404),
     KEYWORD_LENGTH_OVER(-604, "키워드 길이는 10자 이내여야 합니다.", 400),
     KEYWORD_RESULT_NOT_FOUND(-605,"키워드에 해당하는 내용이 없습니다", 404),
+    CATEGORY_NOT_FOUND(-606,"존재하지 않는 카테고리입니다.",404),
     //ChatBot
     CHATBOT_NOT_EXISTS(-700,"등록된 채팅봇이 없습니다.",404),
     CHATBOT_NOT_FOUND(-701,"존재하지 않는 채팅봇입니다.",404),
     CHATBOT_PARSE_ERROR(-702,"메시지 파싱중 오류가 발생했습니다.",500),
     CHATBOT_SYMPOMS_EMPTY(-703,"선택된 증상이 없습니다.",422),
     CHATBOT_PREDICT_ERROR(-704,"GPT의 응답에서 질환을 추출하지 못했습니다.",404),
+    CHATSESSION_NOT_FOUND(-705,"채팅 세션이 존재하지 않습니다.",404),
+    USER_SYMPTOMS_NOT_FOUND(-706,"유저가 선택한 증상 내역이 존재하지 않습니다.",404),
+    BOT_PREDICTION_NOT_FOUND(-707,"채팅봇의 질환 추측 내역이 존재하지 않습니다.",404),
+    TEST_RECOMMENDATION_NOT_FOUND(-708,"채팅봇의 테스트 추천 내역이 존재하지 않습니다.",404),
+    DIARY_RECOMMENDATION_NOT_FOUND(-709,"채팅봇의 일기 권유 내역이 존재하지 않습니다.",404),
     //Activity
     ACTIVITY_NOT_EXISTS(-800, "등록된 활동이 없습니다", 404),
     ACTIVITY_INVALID_STATUS(-801, "활동이 유효한 상태가 아닙니다", 400),
@@ -93,8 +101,12 @@ public enum ErrorCode {
     USER_RESPONSE_COUNT_NOT_EQUALS(-1006, "유저가 응답한 문항 수가 일치하지 않습니다", 422),
     USER_SCORE_NOT_EXISTS_IN_DISTRIBUTION(-1007, "유저의 점수가 테스트 점수 분포에 존재하지 않습니다", 404),
     USER_CHOICE_NOT_EXISTS_IN_TEST(-1008, "유저가 선택한 응답 번호가 테스트에 존재하지 않습니다", 404),
+
+    //Fcm Tokens
+    INVALID_FCM_TOKEN(-1100,"유호하지 않은 FCM 토큰입니다.",422),
+
     //기타
-    DATE_IS_FUTURE(-1100,"미래의 시간을 입력하셨습니다",422);
+    DATE_IS_FUTURE(-1200,"미래의 시간을 입력하셨습니다",422);
     private final int errorCode;
     private final String message;
     private final int httpCode;
