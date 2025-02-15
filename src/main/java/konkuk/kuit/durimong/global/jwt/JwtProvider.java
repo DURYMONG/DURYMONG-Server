@@ -2,6 +2,7 @@ package konkuk.kuit.durimong.global.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.global.exception.CustomException;
 import konkuk.kuit.durimong.global.exception.ErrorCode;
@@ -102,7 +103,7 @@ public class JwtProvider {
     }
 
 
-    public boolean verify(String token) {
+    public boolean verify(HttpServletRequest request, String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(secretKey)
@@ -113,6 +114,7 @@ public class JwtProvider {
             throw new CustomException(ErrorCode.JWT_ERROR_TOKEN);
         } catch (ExpiredJwtException e) {
             log.debug("만료된 토큰입니다.");
+            request.setAttribute("exception", "JWT_EXPIRE_TOKEN");
             throw new CustomException(ErrorCode.JWT_EXPIRE_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.debug("지원하지 않는 토큰입니다.");
