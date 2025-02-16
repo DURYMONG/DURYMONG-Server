@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -39,6 +40,9 @@ public class Mong {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private LocalDate lastGrowthDate;
+
     @OneToOne
     @JoinColumn(name = "userId")
     private User user;
@@ -52,6 +56,7 @@ public class Mong {
                 .image(mongType.getImagePath(mongColor,1))
                 .color(mongColor)
                 .mongType(mongType)
+                .lastGrowthDate(LocalDate.now())
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -60,6 +65,7 @@ public class Mong {
         if (this.level < 3) {
             this.level++;
             this.image = this.mongType.getImagePath(this.color,this.level);
+            this.lastGrowthDate = LocalDate.now();
         }
     }
 

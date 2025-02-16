@@ -55,6 +55,10 @@ public class MongService {
         if(mong.getLevel() == 3){
             throw new CustomException(MONG_MAX_LEVEL);
         }
+        if (mong.getLastGrowthDate() != null &&
+                mong.getLastGrowthDate().plusDays(15).isAfter(LocalDate.now())) {
+            throw new CustomException(MONG_CANNOT_GROW_YET);
+        }
         boolean hasCompletedAllDays = activityService.hasUserCompletedThreeActivitiesDailyFor15Days(user);
         if(!hasCompletedAllDays){
             throw new CustomException(USER_NOT_COMPLETED_15DAYS);

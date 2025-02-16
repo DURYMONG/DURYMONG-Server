@@ -62,6 +62,7 @@ public enum ErrorCode {
     MONG_TYPE_NOT_EXISTS(-405,"존재하지 않는 몽 타입입니다.",404),
     MONG_ALREADY_EXISTS(-406,"이미 몽을 생성하셨습니다.",400),
     MONG_MAX_LEVEL(-407,"이미 성장레벨 3단계에 도달하셨습니다.",400),
+    MONG_CANNOT_GROW_YET(-408,"몽이 성장하려면 마지막 성장 날짜보다 최소 15일이 지나야 합니다,",400),
 
     //UserMongConversation
     CONVERSATION_NOT_EXISTS(-500,"몽과의 대화가 존재하지 않습니다,",404),
@@ -97,7 +98,7 @@ public enum ErrorCode {
     USER_RECORD_NOT_FOUND(-900, "유저의 활동 기록이 없습니다", 404),
     USER_RECORD_EXISTS_OVER(-901, "완료한 활동 개수가 전체보다 많습니다", 400),
     USER_RECORD_DATE_NOT_VALID(-902, "유저 기록을 조회할 수 없는 기간입니다.", 404),
-    USER_NOT_COMPLETED_15DAYS(-903,"15일 연속으로 활동 3개 이상을 실천하지 못했습니다.",400),
+    USER_NOT_COMPLETED_15DAYS(-903,"15일 연속으로 활동 3개 이상을 실천해야 몽이 성장합니다.",400),
     //Test
     TEST_NOT_EXISTS(-1000,"등록된 테스트가 없습니다", 404),
     TEST_NOT_FOUND(-1001, "해당 id의 테스트가 존재하지 않습니다", 404),
