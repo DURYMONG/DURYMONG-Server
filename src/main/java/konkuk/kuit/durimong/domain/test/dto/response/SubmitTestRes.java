@@ -15,8 +15,8 @@ public class SubmitTestRes {
     @Schema(description = "테스트 이름", example = "스트레스 수치 검사")
     private String testName;
 
-    @Schema(description = "사용자 이름", example = "엘리자베스")
-    private String userName;
+    @Schema(description = "유저 닉네임", example = "엘리자베스")
+    private String nickName;
 
     @Schema(description = "사용자의 테스트 점수", example = "15")
     private int userScore;
