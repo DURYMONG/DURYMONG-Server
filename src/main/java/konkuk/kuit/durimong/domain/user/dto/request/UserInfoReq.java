@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class UserInfoReq {
     @Schema(description = "변경할 이름", example = "엘리자베스")
-    private String newUserName;
+    private String newUserID;
 
     @Schema(description = "변경할 몽 이름", example = "쿠쿠몽")
     private String newMongName;

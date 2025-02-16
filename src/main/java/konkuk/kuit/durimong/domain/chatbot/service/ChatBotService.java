@@ -76,7 +76,7 @@ public class ChatBotService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        String userName = user.getName();
+        String userName = user.getId();
 
         String systemPrompt = createGreetingPrompt(chatBot, userName);
 
@@ -246,9 +246,9 @@ public class ChatBotService {
 
     public String makeRecommendMessage(User user, ChatBot bot) {
         if (bot.getAccent().equals("반말")) {
-            return user.getNickname() + "을 위한 테스트도 준비해봤어!";
+            return user.getId() + "을 위한 테스트도 준비해봤어!";
         }
-        return user.getNickname() + "님을 위한 테스트를 준비해봤어요.";
+        return user.getId() + "님을 위한 테스트를 준비해봤어요.";
 
     }
 
@@ -309,9 +309,9 @@ public class ChatBotService {
     private String makeFinalMessage(User user, ChatBot chatBot){
 
         if(chatBot.getAccent().equals("반말")){
-            return "대화 즐거웠어! " + user.getNickname() + "를 항상 응원할게";
+            return "대화 즐거웠어! " + user.getId() + "를 항상 응원할게";
         }
-        return "대화 즐거웠어요! " + user.getNickname() + "를 항상 응원할게요.";
+        return "대화 즐거웠어요! " + user.getId() + "를 항상 응원할게요.";
     }
 
 

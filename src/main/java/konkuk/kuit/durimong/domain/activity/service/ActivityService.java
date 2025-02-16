@@ -151,7 +151,7 @@ public class ActivityService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        String nickName = user.getNickname();
+        String nickName = user.getId();
 
         // 현재 시간의 년/월
         LocalDate today = LocalDate.now().withDayOfMonth(1);

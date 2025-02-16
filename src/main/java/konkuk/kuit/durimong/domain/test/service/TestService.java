@@ -43,7 +43,7 @@ public class TestService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        String nickname = user.getNickname();
+        String nickname = user.getId();
 
         Test test = testRepository.findById(testId)
                         .orElseThrow(() -> new CustomException(ErrorCode.TEST_NOT_FOUND));
@@ -146,6 +146,6 @@ public class TestService {
 
         String userResult = String.format("%d-%d : %s",userScoreDistribution.getStartScore(), userScoreDistribution.getEndScore(), userScoreDistribution.getDescription());
 
-        return new SubmitTestRes(test.getName(), user.getNickname(), userScore, userResult, scoreDistributionList);
+        return new SubmitTestRes(test.getName(), user.getId(), userScore, userResult, scoreDistributionList);
     }
 }

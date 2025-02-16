@@ -37,14 +37,14 @@ public class NotificationService {
                 Mong mong = mongRepository.findByUser(user).orElse(null);
                 assert mong != null;
                 String title = mong.getName() + "이 기다리고 있어요!";
-                String body = user.getNickname() + "님, 오랜만이에요! 두리몽과 다시 대화해보세요.";
+                String body = user.getId() + "님, 오랜만이에요! 두리몽과 다시 대화해보세요.";
                 String fcmToken = user.getFcmToken();
 
                 if (fcmToken != null && !fcmToken.trim().isEmpty()) {
                     fcmService.sendPushNotification(fcmToken, title, body);
                     sentCount++;
                 } else {
-                    log.warn("⚠️ 사용자 {} ({}) 에게 FCM 푸시 알림을 보낼 수 없습니다. (토큰 없음)", user.getUserId(), user.getNickname());
+                    log.warn("⚠️ 사용자 {} ({}) 에게 FCM 푸시 알림을 보낼 수 없습니다. (토큰 없음)", user.getUserId(), user.getId());
                 }
             }
 
