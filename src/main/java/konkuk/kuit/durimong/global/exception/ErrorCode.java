@@ -54,6 +54,8 @@ public enum ErrorCode {
     BOT_CHAT_NOT_EXISTS(-312,"채팅봇 대화 내역이 존재하지 않습니다.",404),
     USER_SIGNUP_LESSTHAN_TWOWEEK(-313,"유저가 회원가입한 지 15일이 되지 않았습니다.",422),
     INVALID_EMAIL_FORMAT(-314,"이메일 형식에 맞지 않습니다." , 422 ),
+    LOGIN_PASSWORD_EMPTY(-315,"비밀번호를 입력하지 않으셨습니다.",400),
+
     // Mong
     MONG_NAME_LENGTH(-400,"이름은 1~6자로 입력해주세요.", 400),
     MONG_NOT_FOUND(-401, "캐릭터를 생성하지 않았습니다.", 404),

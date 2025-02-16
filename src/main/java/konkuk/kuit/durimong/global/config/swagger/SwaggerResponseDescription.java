@@ -29,7 +29,8 @@ public enum SwaggerResponseDescription {
     ))),
     USER_LOGIN(new LinkedHashSet<>(Set.of(
             USER_NOT_MATCH_PASSWORD,
-            USER_NOT_FOUND
+            USER_NOT_FOUND,
+            LOGIN_PASSWORD_EMPTY
     ))),
     USER_EMAIL_VERIFICATION(new LinkedHashSet<>(Set.of(
             USER_EMAIL_VERIFY_FAILED

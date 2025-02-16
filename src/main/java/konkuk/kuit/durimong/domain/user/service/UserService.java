@@ -136,6 +136,9 @@ public class UserService {
     }
 
     public UserTokenRes login(UserLoginReq req){
+        if(req.getPassword().isEmpty()){
+            throw new CustomException(LOGIN_PASSWORD_EMPTY);
+        }
         User user = userRepository.findById(req.getId())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         if (!req.getPassword().equals(user.getPassword())) {
