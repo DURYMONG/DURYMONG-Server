@@ -35,7 +35,7 @@ public class SecurityConfig {
             "/users/userid","users/email","users/email-requests",
             "users/email-verifications","/v3/api-docs/swagger-config",
             "/users/signup",
-            "/users/login", "/mongs/creation","/mongs/name"
+            "/users/login"
     };
 
     private final JwtProvider jwtProvider;
