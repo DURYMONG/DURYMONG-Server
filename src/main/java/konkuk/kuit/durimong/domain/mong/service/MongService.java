@@ -52,6 +52,9 @@ public class MongService {
             throw new CustomException(USER_SIGNUP_LESSTHAN_TWOWEEK);
         }
         Mong mong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
+        if(mong.getLevel() == 3){
+            throw new CustomException(MONG_MAX_LEVEL);
+        }
         boolean hasCompletedAllDays = activityService.hasUserCompletedThreeActivitiesDailyFor15Days(user);
         if(!hasCompletedAllDays){
             throw new CustomException(USER_NOT_COMPLETED_15DAYS);

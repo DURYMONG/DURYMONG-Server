@@ -61,6 +61,7 @@ public enum ErrorCode {
     MONG_COLOR_NOT_EXISTS(-404,"존재하지 않는 몽 색상입니다.",404),
     MONG_TYPE_NOT_EXISTS(-405,"존재하지 않는 몽 타입입니다.",404),
     MONG_ALREADY_EXISTS(-406,"이미 몽을 생성하셨습니다.",400),
+    MONG_MAX_LEVEL(-407,"이미 성장레벨 3단계에 도달하셨습니다.",400),
 
     //UserMongConversation
     CONVERSATION_NOT_EXISTS(-500,"몽과의 대화가 존재하지 않습니다,",404),
