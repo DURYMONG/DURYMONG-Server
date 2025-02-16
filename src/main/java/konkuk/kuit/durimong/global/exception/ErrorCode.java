@@ -60,6 +60,7 @@ public enum ErrorCode {
     MONG_SAME_NAME(-403,"현재 몽의 이름과 수정하시려는 몽의 이름이 일치합니다.", 400),
     MONG_COLOR_NOT_EXISTS(-404,"존재하지 않는 몽 색상입니다.",404),
     MONG_TYPE_NOT_EXISTS(-405,"존재하지 않는 몽 타입입니다.",404),
+    MONG_ALREADY_EXISTS(-406,"이미 몽을 생성하셨습니다.",400),
 
     //UserMongConversation
     CONVERSATION_NOT_EXISTS(-500,"몽과의 대화가 존재하지 않습니다,",404),

@@ -38,6 +38,9 @@ public class MongService {
         User user = userRepository.findByUserId(userId).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND)
         );
+        if(mongRepository.findByUser(user).isPresent()){
+            throw new CustomException(MONG_ALREADY_EXISTS);
+        }
         Mong mong = Mong.create(req.getMongName(),req.getMongType(),req.getMongColor(),user);
         mongRepository.save(mong);
         return "두리몽 생성이 완료되었습니다.";
