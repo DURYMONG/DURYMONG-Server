@@ -47,7 +47,7 @@ public class TestDescriptionRes {
         private LocalDate date;
 
         @Schema(description = "유저 닉네임", example = "엘리자베스")
-        private String nickName;
+        private String userName;
 
         @Schema(description = "직전 테스트 점수", example = "15")
         private Integer lastScore;

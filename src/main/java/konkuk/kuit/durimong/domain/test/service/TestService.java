@@ -146,6 +146,6 @@ public class TestService {
 
         String userResult = String.format("%d-%d : %s",userScoreDistribution.getStartScore(), userScoreDistribution.getEndScore(), userScoreDistribution.getDescription());
 
-        return new SubmitTestRes(test.getName(), user.getNickname(), userScore, userResult, scoreDistributionList);
+        return new SubmitTestRes(test.getName(), user.getName(), userScore, userResult, scoreDistributionList);
     }
 }
