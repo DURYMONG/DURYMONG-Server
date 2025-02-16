@@ -53,6 +53,7 @@ public enum ErrorCode {
     RECORD_IS_EMPTY(-311,"삭제할 기록이 존재하지 않습니다.",404),
     BOT_CHAT_NOT_EXISTS(-312,"채팅봇 대화 내역이 존재하지 않습니다.",404),
     USER_SIGNUP_LESSTHAN_TWOWEEK(-313,"유저가 회원가입한 지 15일이 되지 않았습니다.",422),
+    INVALID_EMAIL_FORMAT(-314,"이메일 형식에 맞지 않습니다." , 422 ),
     // Mong
     MONG_NAME_LENGTH(-400,"이름은 1~6자로 입력해주세요.", 400),
     MONG_NOT_FOUND(-401, "캐릭터를 생성하지 않았습니다.", 404),

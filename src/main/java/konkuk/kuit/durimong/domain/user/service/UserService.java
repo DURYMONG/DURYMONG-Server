@@ -65,10 +65,18 @@ public class UserService {
         return "사용 가능한 아이디입니다.";
     }
     public String validateEmail(String email) {
+        if (!isValidEmail(email)) {
+            throw new CustomException(INVALID_EMAIL_FORMAT);
+        }
+
         if(userRepository.existsByEmail(email)) {
             throw new CustomException(USER_DUPLICATE_EMAIL);
         }
         return "사용 가능한 이메일입니다.";
+    }
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+        return email.matches(emailRegex);
     }
     public String validatePassword(String password) {
         if (password.length() < 6 || password.length() > 10) {
