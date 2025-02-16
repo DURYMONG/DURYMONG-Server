@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import konkuk.kuit.durimong.domain.mong.dto.request.MongCreateReq;
 import konkuk.kuit.durimong.domain.mong.dto.request.MongNameReq;
+import konkuk.kuit.durimong.domain.mong.dto.response.MongGrowthRes;
 import konkuk.kuit.durimong.domain.mong.service.MongService;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
@@ -15,8 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.MONG_CREATE;
-import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.MONG_NAME;
+import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.*;
 
 @Slf4j
 @RestController
@@ -45,7 +45,12 @@ public class MongController {
         return SuccessResponse.ok(mongService.createMong(req,userId));
     }
 
-
+    @Operation(summary = "몽 키우기", description = "사용자의 활동 기록을 조회하여 몽을 성장시킵니다.")
+    @CustomExceptionDescription(MONG_GROWTH)
+    @PostMapping("growth")
+    public SuccessResponse<MongGrowthRes> growMong(@Parameter(hidden = true) @UserId Long userId){
+        return SuccessResponse.ok(mongService.growMong(userId));
+    }
 
 
 }

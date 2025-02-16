@@ -20,12 +20,6 @@ public class User {
     private Long userId;
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String nickname;
-
-    @Column(nullable = false)
     private String id;
 
     @Column(nullable = false)
@@ -51,8 +45,6 @@ public class User {
                 .id(id)
                 .password(password)
                 .email(email)
-                .name(name)
-                .nickname(nickname)
                 .createdAt(LocalDateTime.now())
                 .lastLogin(LocalDateTime.now())
                 .build();

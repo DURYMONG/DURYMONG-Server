@@ -65,10 +65,18 @@ public class UserService {
         return "사용 가능한 아이디입니다.";
     }
     public String validateEmail(String email) {
+        if (!isValidEmail(email)) {
+            throw new CustomException(INVALID_EMAIL_FORMAT);
+        }
+
         if(userRepository.existsByEmail(email)) {
             throw new CustomException(USER_DUPLICATE_EMAIL);
         }
         return "사용 가능한 이메일입니다.";
+    }
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+        return email.matches(emailRegex);
     }
     public String validatePassword(String password) {
         if (password.length() < 6 || password.length() > 10) {
@@ -216,10 +224,10 @@ public class UserService {
 
     public String editUserInfo(UserInfoReq req, Long userId){
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        if(req.getNewUserName().equals(user.getName())){
+        if(req.getNewUserID().equals(user.getId())){
             throw new CustomException(USER_SAME_NAME);
         }
-        user.setName(req.getNewUserName());
+        user.setId(req.getNewUserID());
         userRepository.save(user);
         Mong mong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
         if(req.getNewMongName().equals(mong.getName())){
@@ -261,7 +269,7 @@ public class UserService {
         LocalDateTime createdAt = mong.getCreatedAt();
         LocalDateTime today = LocalDateTime.now();
         int dateWithMong = getDateWithMong(today,createdAt);
-        return new UserUnRegisterRes(user.getName(),dateWithMong,mong.getImage());
+        return new UserUnRegisterRes(user.getId(),dateWithMong,mong.getImage());
     }
 
     public String unRegister(String accessToken,Long userId){
@@ -320,7 +328,7 @@ public class UserService {
     public NotificationSettingFormRes notificationSettingForm(Long userId){
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Mong mong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
-        return new NotificationSettingFormRes(mong.getName(),user.getName());
+        return new NotificationSettingFormRes(mong.getName(),user.getId());
     }
 
     public UserDailyChatRes userDailyChat(Long userId, UserDailyChatReq req){

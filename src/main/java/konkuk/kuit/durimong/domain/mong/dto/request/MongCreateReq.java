@@ -8,10 +8,10 @@ public class MongCreateReq {
     @Schema(description = "몽 이름", example = "두리몽")
     private String mongName;
 
-    @Schema(description = "캐릭터", example = " ")
-    private String image;
+    @Schema(description = "몽 타입", example = "tree")
+    private String mongType;
 
-    @Schema(description = "캐릭터 색상", example = " ")
-    private String color;
+    @Schema(description = "캐릭터 색상", example = "yellow")
+    private String mongColor;
 
 }

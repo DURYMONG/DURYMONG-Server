@@ -119,7 +119,13 @@ public enum SwaggerResponseDescription {
             MONG_NAME_LENGTH
     ))),
     MONG_CREATE(new LinkedHashSet<>(Set.of(
-            USER_NOT_FOUND
+            USER_NOT_FOUND,
+            MONG_ALREADY_EXISTS
+    ))),
+    MONG_GROWTH(new LinkedHashSet<>(Set.of(
+            USER_NOT_FOUND,
+            MONG_NOT_FOUND,
+            USER_SIGNUP_LESSTHAN_TWOWEEK
     ))),
 
     //COLUMN

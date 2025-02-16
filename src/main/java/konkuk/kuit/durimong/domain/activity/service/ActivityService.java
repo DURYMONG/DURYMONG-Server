@@ -151,7 +151,7 @@ public class ActivityService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        String nickName = user.getNickname();
+        String nickName = user.getId();
 
         // 현재 시간의 년/월
         LocalDate today = LocalDate.now().withDayOfMonth(1);
@@ -260,6 +260,19 @@ public class ActivityService {
     // 날짜  유효성 검사
     public boolean isValidRange(LocalDate targetDate, LocalDate createdDate, LocalDate today) {
         return !targetDate.isBefore(createdDate) && !targetDate.isAfter(today);
+    }
+
+    public boolean hasUserCompletedThreeActivitiesDailyFor15Days(User user) {
+        LocalDate startDate = LocalDate.now().minusDays(14);
+        List<LocalDate> daysWithThreeOrMoreActivities = userRecordRepository.findDaysWithThreeOrMoreActivities(user, startDate);
+
+        for (int i = 0; i < 15; i++) {
+            LocalDate targetDate = startDate.plusDays(i);
+            if (!daysWithThreeOrMoreActivities.contains(targetDate)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
