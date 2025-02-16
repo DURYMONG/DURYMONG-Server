@@ -52,11 +52,15 @@ public enum ErrorCode {
     USER_SAME_PASSWORD(-310,"현재 비밀번호와 새 비밀번호가 일치합니다.", 400),
     RECORD_IS_EMPTY(-311,"삭제할 기록이 존재하지 않습니다.",404),
     BOT_CHAT_NOT_EXISTS(-312,"채팅봇 대화 내역이 존재하지 않습니다.",404),
+    USER_SIGNUP_LESSTHAN_TWOWEEK(-313,"유저가 회원가입한 지 15일이 되지 않았습니다.",422),
     // Mong
     MONG_NAME_LENGTH(-400,"이름은 1~6자로 입력해주세요.", 400),
     MONG_NOT_FOUND(-401, "캐릭터를 생성하지 않았습니다.", 404),
     QUESTION_NOT_EXISTS(-402, "등록된 몽의 질문이 없습니다.", 404),
     MONG_SAME_NAME(-403,"현재 몽의 이름과 수정하시려는 몽의 이름이 일치합니다.", 400),
+    MONG_COLOR_NOT_EXISTS(-404,"존재하지 않는 몽 색상입니다.",404),
+    MONG_TYPE_NOT_EXISTS(-405,"존재하지 않는 몽 타입입니다.",404),
+
     //UserMongConversation
     CONVERSATION_NOT_EXISTS(-500,"몽과의 대화가 존재하지 않습니다,",404),
     //Column
@@ -91,6 +95,7 @@ public enum ErrorCode {
     USER_RECORD_NOT_FOUND(-900, "유저의 활동 기록이 없습니다", 404),
     USER_RECORD_EXISTS_OVER(-901, "완료한 활동 개수가 전체보다 많습니다", 400),
     USER_RECORD_DATE_NOT_VALID(-902, "유저 기록을 조회할 수 없는 기간입니다.", 404),
+    USER_NOT_COMPLETED_15DAYS(-903,"15일 연속으로 활동 3개 이상을 실천하지 못했습니다.",400),
     //Test
     TEST_NOT_EXISTS(-1000,"등록된 테스트가 없습니다", 404),
     TEST_NOT_FOUND(-1001, "해당 id의 테스트가 존재하지 않습니다", 404),

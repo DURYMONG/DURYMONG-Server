@@ -262,4 +262,17 @@ public class ActivityService {
         return !targetDate.isBefore(createdDate) && !targetDate.isAfter(today);
     }
 
+    public boolean hasUserCompletedThreeActivitiesDailyFor15Days(User user) {
+        LocalDate startDate = LocalDate.now().minusDays(14);
+        List<LocalDate> daysWithThreeOrMoreActivities = userRecordRepository.findDaysWithThreeOrMoreActivities(user, startDate);
+
+        for (int i = 0; i < 15; i++) {
+            LocalDate targetDate = startDate.plusDays(i);
+            if (!daysWithThreeOrMoreActivities.contains(targetDate)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
