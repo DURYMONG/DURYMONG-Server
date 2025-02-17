@@ -18,13 +18,4 @@ public class Activity {
 
     @Column(nullable = false)
     private String name;
-
-    @Column(nullable = true)
-    private String intro;
-
-    @Column(nullable = true)
-    private String tip;
-
-    @Column(nullable = true)
-    private String effect;
 }
