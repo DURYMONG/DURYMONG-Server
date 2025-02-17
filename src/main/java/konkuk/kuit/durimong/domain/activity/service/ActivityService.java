@@ -6,7 +6,6 @@ import konkuk.kuit.durimong.domain.activity.dto.response.*;
 import konkuk.kuit.durimong.domain.activity.entity.Activity;
 import konkuk.kuit.durimong.domain.activity.entity.Diary;
 import konkuk.kuit.durimong.domain.activity.entity.UserRecord;
-import konkuk.kuit.durimong.domain.activity.repository.ActivityBoxRepository;
 import konkuk.kuit.durimong.domain.activity.repository.ActivityRepository;
 import konkuk.kuit.durimong.domain.activity.repository.DiaryRepository;
 import konkuk.kuit.durimong.domain.activity.repository.UserRecordRepository;
@@ -36,7 +35,6 @@ import java.util.stream.IntStream;
 public class ActivityService {
     private final ActivityRepository activityRepository;
     private final TestRepository testRepository;
-    private final ActivityBoxRepository activityBoxRepository;
     private final UserRecordRepository userRecordRepository;
     private final UserRepository userRepository;
     private final MongRepository mongRepository;
@@ -79,37 +77,6 @@ public class ActivityService {
                 activityList,
                 testList
         );
-    }
-
-    // 활동 설명화면 조회
-    public Object getActivityDetails(Long activityId) {
-        Activity activity = activityRepository.findById(activityId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ACTIVITY_NOT_FOUND));
-
-        boolean hasBoxes = activityBoxRepository.existsByActivity(activity);
-
-        // 박스가 있는 경우
-        if (hasBoxes) {
-            List<ActivityBoxDescriptionRes.ActivityBoxDTO> activityBoxList = activityBoxRepository.findByActivity(activity)
-                    .stream()
-                    .map(activityBox -> new ActivityBoxDescriptionRes.ActivityBoxDTO(
-                            activityBox.getBoxName(),
-                            activityBox.getContent(),
-                            activityBox.getEffect(),
-                            activityBox.getImage()
-                    )).toList();
-
-            return new ActivityBoxDescriptionRes(activity.getName(), activityBoxList);
-        }
-        // 박스가 없는 경우
-        else {
-            return new ActivityDescriptionRes(
-                    activity.getName(),
-                    activity.getIntro(),
-                    activity.getEffect(),
-                    activity.getTip()
-            );
-        }
     }
 
     // 활동 체크

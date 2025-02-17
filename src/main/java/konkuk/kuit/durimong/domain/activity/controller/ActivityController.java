@@ -38,15 +38,6 @@ public class ActivityController {
         return SuccessResponse.ok(activityService.getActivityTestList(userId));
     }
 
-    @GetMapping("/{activityId}")
-    @Operation(summary = "활동 내용 조회", description = "박스 존재 여부에 따라 형식을 나누어, 각 활동의 내용을 조회합니다.")
-    @Tag(name = "Activity", description = "활동 관련 API")
-    @CustomExceptionDescription(ACTIVITY_EXIST)
-    public SuccessResponse<?> viewActivity(@PathVariable Long activityId) {
-
-        return SuccessResponse.ok(activityService.getActivityDetails(activityId));
-    }
-
     @PostMapping("/user-records")
     @Operation(summary = "활동 완료 체크", description = "완료한 활동에 대해 체크표시 합니다.")
     @Tag(name = "Activity check", description = "활동 체크 관련 API")
