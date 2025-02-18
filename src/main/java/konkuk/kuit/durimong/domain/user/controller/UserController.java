@@ -145,7 +145,7 @@ public class UserController {
     @Operation(summary = "몽과의 대화 기록 보기", description = "몽과의 대화 기록을 조회합니다.")
     @Tag(name = "Mong Conversation", description = "몽과의 대화 관련 API")
     @CustomExceptionDescription(USER_CHAT_HISTORY)
-    @GetMapping("chat-history")
+    @GetMapping("mong-chat-history")
     public SuccessResponse<List<UserChatHistoryRes>> showChatHistory(
             @Parameter(hidden = true) @UserId Long userId){
         return SuccessResponse.ok(userService.showChatHistory(userId));
@@ -192,9 +192,8 @@ public class UserController {
     @Tag(name = "User Record", description = "유저 기록 조회 관련 API")
     @CustomExceptionDescription(DAILY_BOT_CHAT_CHOICE)
     @GetMapping("daily-bot-chat-choice")
-    public SuccessResponse<UserDailyBotChatChoiceRes> dailyBotChatChoice(UserDailyBotChatChoiceReq req,
-                                                                         @Parameter(hidden = true) @UserId Long userId){
-        return SuccessResponse.ok(userService.showBotChatHistory(req,userId));
+    public SuccessResponse<UserDailyBotChatChoiceRes> dailyBotChatChoice(UserDailyBotChatChoiceReq req){
+        return SuccessResponse.ok(userService.showBotChatHistory(req));
     }
 
     @Operation(summary = "채팅봇 상담내역 조회", description = "유저가 해당 날짜의 채팅봇 상담 내역을 조회합니다.")

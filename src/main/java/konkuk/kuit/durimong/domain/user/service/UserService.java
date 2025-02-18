@@ -307,7 +307,7 @@ public class UserService {
         return "기록 지우기가 완료되었습니다.";
     }
 
-    public UserDailyBotChatChoiceRes showBotChatHistory(UserDailyBotChatChoiceReq req,Long userId){
+    public UserDailyBotChatChoiceRes showBotChatHistory(UserDailyBotChatChoiceReq req){
         LocalDate targetDate = req.getTargetDate();
         if(targetDate.isAfter(LocalDate.now())){
             throw new CustomException(DATE_IS_FUTURE);
