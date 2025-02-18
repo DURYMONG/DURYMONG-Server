@@ -7,6 +7,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UserUnRegisterRes {
+    @Schema(description = "몽 이름", example = "두리몽")
+    private String mongName;
+
     @Schema(description = "유저 닉네임", example = "엘리자베스")
     private String id;
 

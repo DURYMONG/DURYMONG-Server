@@ -272,7 +272,7 @@ public class UserService {
         LocalDateTime createdAt = mong.getCreatedAt();
         LocalDateTime today = LocalDateTime.now();
         int dateWithMong = getDateWithMong(today,createdAt);
-        return new UserUnRegisterRes(user.getId(),dateWithMong,mong.getImage());
+        return new UserUnRegisterRes(mong.getName(),user.getId(),dateWithMong,mong.getImage());
     }
 
     public String unRegister(String accessToken,Long userId){
