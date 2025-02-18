@@ -2,6 +2,7 @@ package konkuk.kuit.durimong.domain.chatbot.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import konkuk.kuit.durimong.domain.chatbot.dto.request.*;
 import konkuk.kuit.durimong.domain.chatbot.dto.response.*;
 import konkuk.kuit.durimong.domain.chatbot.service.ChatBotService;
@@ -25,6 +26,7 @@ public class ChatBotController {
     private final ChatBotService chatBotService;
 
     @Operation(summary = "채팅봇 조회", description = "유저가 채팅봇을 선택하는 화면입니다.")
+    @Tag(name = "Chat With Bot", description = "채팅봇 상담 관련 API")
     @CustomExceptionDescription(CHAT_BOT)
     @GetMapping()
     public SuccessResponse<List<ChatBotRes>> getChatBots() {
@@ -32,6 +34,7 @@ public class ChatBotController {
     }
 
     @Operation(summary = "채팅봇 상담 시작", description = "채팅봇이 먼저 말을 건네며 상담을 시작합니다.")
+    @Tag(name = "Chat With Bot", description = "채팅봇 상담 관련 API")
     @CustomExceptionDescription(CHAT_START)
     @GetMapping("chat")
     public SuccessResponse<ChatBotChattingRes> startChat(
@@ -40,6 +43,7 @@ public class ChatBotController {
     }
 
     @Operation(summary = "채팅봇 질환 추측", description = "유저가 선택한 증상을 기반으로 심적 질환을 추측합니다.")
+    @Tag(name = "Chat With Bot", description = "채팅봇 상담 관련 API")
     @CustomExceptionDescription(CHAT_START)
     @GetMapping("prediction")
     public SuccessResponse<ChatBotPredictRes> botPrediction(
@@ -48,6 +52,7 @@ public class ChatBotController {
     }
 
     @Operation(summary = "채팅봇 테스트 추천", description = "유저에게 테스트를 추천합니다.")
+    @Tag(name = "Chat With Bot", description = "채팅봇 상담 관련 API")
     @CustomExceptionDescription(CHATBOT_RECOMMEND_TEST)
     @GetMapping("test-recommendation")
     public SuccessResponse<ChatBotRecommendTestRes> testRecommendation(
@@ -57,6 +62,7 @@ public class ChatBotController {
     }
 
     @Operation(summary = "채팅봇 일기 추천", description = "유저에게 일기를 작성할 것을 권유합니다.")
+    @Tag(name = "Chat With Bot", description = "채팅봇 상담 관련 API")
     @CustomExceptionDescription(CHATBOT_RECOMMEND_DIARY)
     @GetMapping("diary-recommendation")
     public SuccessResponse<ChatBotRecommendDiaryRes> diaryRecommendation(ChatBotRecommendDiaryReq req){
@@ -64,6 +70,7 @@ public class ChatBotController {
     }
 
     @Operation(summary = "채팅 저장하기", description = "채팅 내역을 저장하고, 대화를 종료합니다.")
+    @Tag(name = "Chat With Bot", description = "채팅봇 상담 관련 API")
     @CustomExceptionDescription(CHATTING_END)
     @GetMapping("end-chat")
     public SuccessResponse<SaveChattingRes> endChat(SaveChattingReq req,

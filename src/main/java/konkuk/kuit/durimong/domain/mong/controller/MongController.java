@@ -46,6 +46,7 @@ public class MongController {
     }
 
     @Operation(summary = "몽 키우기", description = "사용자의 활동 기록을 조회하여 몽을 성장시킵니다.")
+    @Tag(name ="Mong Growth", description = "두리몽 키우기 API")
     @CustomExceptionDescription(MONG_GROWTH)
     @PostMapping("growth")
     public SuccessResponse<MongGrowthRes> growMong(@Parameter(hidden = true) @UserId Long userId){

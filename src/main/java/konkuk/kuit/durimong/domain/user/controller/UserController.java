@@ -193,6 +193,7 @@ public class UserController {
     }
 
     @Operation(summary = "알림 설정 화면",description = "알림 설정 화면 접속 시 호출되는 API입니다.")
+    @Tag(name = "User Notification", description = "푸시알림 설정 관련 API")
     @CustomExceptionDescription(USER_NOTIFICATION)
     @GetMapping("notification")
     public SuccessResponse<NotificationSettingFormRes> notificationSettingForm(
@@ -202,6 +203,7 @@ public class UserController {
     }
 
     @Operation(summary = "일별 몽 대화기록 조회", description = "원하는 날짜의 몽과의 대화 내역을 조회합니다.")
+    @Tag(name = "User Record", description = "유저 기록 조회 관련 API")
     @CustomExceptionDescription(USER_DAILY_CHAT)
     @GetMapping("daily-mong-chat")
     public SuccessResponse<UserDailyChatRes> dailyChat(
@@ -211,6 +213,7 @@ public class UserController {
     }
 
     @Operation(summary = "기록 지우기", description = "유저와 몽의 대화 기록, 채팅봇 상담내역을 삭제합니다.")
+    @Tag(name = "User Record", description = "유저 기록 조회 관련 API")
     @CustomExceptionDescription(USER_DELETE_HISTORY)
     @PostMapping("history-deletion")
     public SuccessResponse<String> deleteHistory(
@@ -219,6 +222,7 @@ public class UserController {
     }
 
     @Operation(summary = "채팅봇 상담내역 선택", description = "유저가 해당 날짜의 어떤 상담 내역을 조회할 지 선택합니다.")
+    @Tag(name = "User Record", description = "유저 기록 조회 관련 API")
     @CustomExceptionDescription(DAILY_BOT_CHAT_CHOICE)
     @GetMapping("daily-bot-chat-choice")
     public SuccessResponse<UserDailyBotChatChoiceRes> dailyBotChatChoice(UserDailyBotChatChoiceReq req,
@@ -227,6 +231,7 @@ public class UserController {
     }
 
     @Operation(summary = "채팅봇 상담내역 조회", description = "유저가 해당 날짜의 채팅봇 상담 내역을 조회합니다.")
+    @Tag(name = "User Record", description = "유저 기록 조회 관련 API")
     @CustomExceptionDescription(DAILY_BOT_CHAT)
     @GetMapping("daily-bot-chat")
     public SuccessResponse<UserDailyBotChatRes> getDailyBotChat(UserDailyBotChatReq req,
@@ -235,6 +240,7 @@ public class UserController {
     }
 
     @Operation(summary = "FCM 토큰 저장", description = "클라이언트로부터 전달받은 FCM 토큰을 저장합니다.")
+    @Tag(name = "User Notification", description = "푸시알림 설정 관련 API")
     @CustomExceptionDescription(SAVE_FCM_TOKEN)
     @PostMapping("fcm-token")
     public SuccessResponse<Void> updateFcmToken(@Parameter(hidden = true) @UserId Long userId,@RequestParam String fcmToken){
@@ -243,6 +249,7 @@ public class UserController {
     }
 
     @Operation(summary = "푸시알림 설정", description = "푸시알림 수신 여부를 설정합니다.")
+    @Tag(name = "User Notification", description = "푸시알림 설정 관련 API")
     @CustomExceptionDescription(SET_PUSH)
     @PostMapping("setting-notification")
     public SuccessResponse<Void> setPush(@Parameter(hidden = true) @UserId Long userId){
