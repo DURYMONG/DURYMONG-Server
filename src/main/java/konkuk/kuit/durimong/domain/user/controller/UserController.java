@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import konkuk.kuit.durimong.domain.user.dto.request.*;
-import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
-import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
 import konkuk.kuit.durimong.domain.user.dto.response.*;
 import konkuk.kuit.durimong.domain.user.service.FcmService;
@@ -76,43 +74,12 @@ public class UserController {
         return SuccessResponse.ok(userService.register(req));
     }
 
-    @Operation(summary = "로그인", description = "유저가 로그인을 합니다.")
-    @CustomExceptionDescription(USER_LOGIN)
-    @Tag(name = "Login", description = "로그인 관련 API")
-    @PostMapping("login")
-    public SuccessResponse<UserTokenRes> login(
-            @Validated @RequestBody UserLoginReq req){
-        return SuccessResponse.ok(userService.login(req));
-    }
-
-    @Operation(summary = "토큰 재발급", description = "토큰 유효기간 만료 시 호출되는 API입니다.")
-    @CustomExceptionDescription(REISSUE_TOKEN)
-    @Tag(name = "Login", description = "로그인 관련 API")
-    @PostMapping("newtokens")
-    public SuccessResponse<ReIssueTokenRes> reIssueTokens(
-            @Validated @RequestBody ReIssueTokenReq req
-    ){
-        return SuccessResponse.ok(userService.reissueToken(req));
-    }
-
     @Operation(summary = "홈 화면", description = "홈 화면을 조회합니다.")
     @CustomExceptionDescription(USER_HOME)
     @GetMapping("home")
     public SuccessResponse<UserHomeRes> getHomePage(
             @Parameter(hidden = true) @UserId Long userId){
         return SuccessResponse.ok(userService.homePage(userId));
-    }
-
-    @Operation(summary = "로그아웃", description = "유저가 로그아웃을 합니다.")
-    @CustomExceptionDescription(USER_LOGOUT)
-    @Tag(name = "Login", description = "로그인 관련 API")
-    @PostMapping("logout")
-    public SuccessResponse<String> logout(
-            @Parameter(hidden = true) @RequestHeader(value = "Authorization",required = false) String token,
-            @Parameter(hidden = true) @UserId Long userId){
-
-        String accessToken = token.replace("Bearer ", "");
-        return SuccessResponse.ok(userService.logout(accessToken,userId));
     }
 
     @Operation(summary = "회원 정보 수정", description = "유저의 이름과 몽의 이름을 수정합니다.")

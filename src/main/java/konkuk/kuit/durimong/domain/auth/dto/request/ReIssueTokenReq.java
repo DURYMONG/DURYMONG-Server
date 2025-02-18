@@ -1,4 +1,4 @@
-package konkuk.kuit.durimong.domain.user.dto.request.login;
+package konkuk.kuit.durimong.domain.auth.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

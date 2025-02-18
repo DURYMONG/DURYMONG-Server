@@ -1,6 +1,7 @@
 package konkuk.kuit.durimong.domain.user.service;
 
 import jakarta.transaction.Transactional;
+import konkuk.kuit.durimong.domain.auth.service.RedisService;
 import konkuk.kuit.durimong.domain.chatbot.entity.ChatBot;
 import konkuk.kuit.durimong.domain.chatbot.entity.ChatHistory;
 import konkuk.kuit.durimong.domain.chatbot.repository.ChatBotRepository;
@@ -10,8 +11,6 @@ import konkuk.kuit.durimong.domain.mong.entity.MongQuestion;
 import konkuk.kuit.durimong.domain.mong.repository.MongQuestionRepository;
 import konkuk.kuit.durimong.domain.mong.repository.MongRepository;
 import konkuk.kuit.durimong.domain.user.dto.request.*;
-import konkuk.kuit.durimong.domain.user.dto.request.login.ReIssueTokenReq;
-import konkuk.kuit.durimong.domain.user.dto.request.login.UserLoginReq;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.UserSignUpReq;
 import konkuk.kuit.durimong.domain.user.dto.response.*;
 import konkuk.kuit.durimong.domain.user.entity.User;
@@ -36,7 +35,7 @@ import java.util.List;
 import java.util.Random;
 
 import static konkuk.kuit.durimong.domain.user.dto.response.UserDailyBotChatChoiceRes.ChatBotChoiceDto;
-import static konkuk.kuit.durimong.domain.user.dto.response.UserDailyBotChatRes.*;
+import static konkuk.kuit.durimong.domain.user.dto.response.UserDailyBotChatRes.ChatHistoryDto;
 import static konkuk.kuit.durimong.global.exception.ErrorCode.*;
 
 @Slf4j
@@ -103,7 +102,6 @@ public class UserService {
             }
             return builder.toString();
         } catch (NoSuchAlgorithmException e) {
-            log.debug("MemberService.createCode() exception occur");
             throw new CustomException(NO_SUCH_ALGORITHM);
         }
     }
@@ -127,47 +125,12 @@ public class UserService {
     }
 
     public String register(UserSignUpReq req) {
-        User findUser = userRepository.findById(req.getId()).orElseThrow(
+        userRepository.findById(req.getId()).orElseThrow(
                 () -> new CustomException(USER_DUPLICATE_ID)
         );
         User user = User.create(req.getId(), req.getPassword(), req.getEmail(),req.getName(),req.getEmail());
         userRepository.save(user);
         return "회원가입이 완료되었습니다.";
-    }
-
-    public UserTokenRes login(UserLoginReq req){
-        if(req.getPassword().isEmpty()){
-            throw new CustomException(LOGIN_PASSWORD_EMPTY);
-        }
-        User user = userRepository.findById(req.getId())
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        if (!req.getPassword().equals(user.getPassword())) {
-            throw new CustomException(USER_NOT_MATCH_PASSWORD);
-        }
-        user.setLastLogin(LocalDateTime.now());
-        userRepository.save(user);
-        String accessToken = jwtProvider.createAccessToken(user);
-        String refreshToken = jwtProvider.createRefreshToken(user);
-        jwtProvider.storeRefreshToken(refreshToken,user.getUserId());
-        return new UserTokenRes(accessToken,refreshToken);
-    }
-
-    public ReIssueTokenRes reissueToken(ReIssueTokenReq req){
-        String refreshToken = req.getRefreshToken();
-        if(!jwtProvider.validateRefreshToken(refreshToken)) {
-            throw new CustomException(JWT_EXPIRE_TOKEN);
-        }
-        Long userId = jwtProvider.getUserIdFromRefreshToken(refreshToken);
-        if(!jwtProvider.checkTokenExists(String.valueOf(userId))) {
-            throw new CustomException(BAD_REQUEST);
-        }
-        jwtProvider.invalidateToken(userId);
-
-        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        String newAccessToken = jwtProvider.createAccessToken(user);
-        String newRefreshToken = jwtProvider.createRefreshToken(user);
-        return new ReIssueTokenRes(newAccessToken,newRefreshToken);
-
     }
 
     public UserHomeRes homePage(@UserId Long userId) {
@@ -211,19 +174,6 @@ public class UserService {
 
     }
 
-    public String logout(String accessToken, Long userId){
-        if(accessToken == null) {
-            throw new CustomException(USER_LOGOUTED);
-        }
-        long accessTokenExpirationMillis = jwtProvider.getClaims(accessToken).getExpiration().getTime() - System.currentTimeMillis();
-        if (accessTokenExpirationMillis > 0) {
-            redisService.setValues("BLACKLIST:" + accessToken, "logout", Duration.ofMillis(accessTokenExpirationMillis));
-        }
-        if (jwtProvider.checkTokenExists(String.valueOf(userId))) {
-            jwtProvider.invalidateToken(userId);
-        }
-        return "로그아웃이 완료되었습니다.";
-    }
 
     public String editUserInfo(UserInfoReq req, Long userId){
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));

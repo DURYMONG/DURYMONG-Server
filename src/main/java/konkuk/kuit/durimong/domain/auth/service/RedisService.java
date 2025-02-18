@@ -1,4 +1,4 @@
-package konkuk.kuit.durimong.domain.user.service;
+package konkuk.kuit.durimong.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
