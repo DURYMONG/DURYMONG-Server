@@ -19,7 +19,7 @@ import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescript
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("user")
+@RequestMapping("auth")
 public class AuthController {
     private final AuthService authService;
 
