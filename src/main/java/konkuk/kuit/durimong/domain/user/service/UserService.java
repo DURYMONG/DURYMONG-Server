@@ -125,10 +125,10 @@ public class UserService {
     }
 
     public String register(UserSignUpReq req) {
-        if(!userRepository.existsById(req.getId())){
+        if(userRepository.existsById(req.getId())) {
             throw new CustomException(USER_DUPLICATE_ID);
         }
-        User user = User.create(req.getId(), req.getPassword(), req.getEmail(),req.getName(),req.getEmail());
+        User user = User.create(req.getId(), req.getPassword(), req.getEmail());
         userRepository.save(user);
         return "회원가입이 완료되었습니다.";
     }

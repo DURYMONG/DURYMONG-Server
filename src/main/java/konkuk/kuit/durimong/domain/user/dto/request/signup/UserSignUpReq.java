@@ -16,9 +16,4 @@ public class UserSignUpReq {
     @Schema(description = "비밀번호", example = "durymong123")
     private String password;
 
-    @Schema(description = "이름",example = "이정연")
-    private String name;
-
-    @Schema(description = "닉네임",example = "이정연")
-    private String nickname;
 }

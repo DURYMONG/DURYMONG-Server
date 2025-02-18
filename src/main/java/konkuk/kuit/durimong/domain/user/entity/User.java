@@ -40,7 +40,7 @@ public class User {
     @Builder.Default
     private boolean isPushEnabled = true;
 
-    public static User create(String id, String password, String email, String name, String nickname) {
+    public static User create(String id, String password, String email) {
         return User.builder()
                 .id(id)
                 .password(password)
