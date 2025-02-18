@@ -136,6 +136,9 @@ public class UserService {
     }
 
     public UserTokenRes login(UserLoginReq req){
+        if(req.getPassword().isEmpty()){
+            throw new CustomException(LOGIN_PASSWORD_EMPTY);
+        }
         User user = userRepository.findById(req.getId())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         if (!req.getPassword().equals(user.getPassword())) {
@@ -173,7 +176,7 @@ public class UserService {
 
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Mong findMong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
-        String mongImage = findMong.getImage();
+        String mongImage = findMong.getMongImage().getImageUrl();
         String mongName = findMong.getName();
         LocalDateTime createdAt = findMong.getCreatedAt();
         int dateWithMong = getDateWithMong(today, createdAt);
@@ -269,7 +272,7 @@ public class UserService {
         LocalDateTime createdAt = mong.getCreatedAt();
         LocalDateTime today = LocalDateTime.now();
         int dateWithMong = getDateWithMong(today,createdAt);
-        return new UserUnRegisterRes(user.getId(),dateWithMong,mong.getImage());
+        return new UserUnRegisterRes(mong.getName(),user.getId(),dateWithMong,mong.getMongImage().getImageUrl());
     }
 
     public String unRegister(String accessToken,Long userId){

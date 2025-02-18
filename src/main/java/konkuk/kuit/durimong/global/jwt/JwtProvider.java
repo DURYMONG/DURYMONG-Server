@@ -105,6 +105,13 @@ public class JwtProvider {
 
     public boolean verify(HttpServletRequest request, String token) {
         try {
+            // 🔹 블랙리스트 확인 추가
+            if (redisTemplate.hasKey("BLACKLIST:" + token)) {
+                log.debug("로그아웃된 토큰입니다.");
+                throw new CustomException(ErrorCode.JWT_ERROR_TOKEN);
+            }
+
+            // 🔹 블랙리스트에서 검출된 경우, 아래 검증 로직을 실행하지 않도록 즉시 반환
             Jwts.parserBuilder()
                     .setSigningKey(secretKey)
                     .build()
@@ -129,6 +136,8 @@ public class JwtProvider {
 
         return true;
     }
+
+
 
     public Claims getClaims(String token) {
         return Jwts.parserBuilder()

@@ -29,7 +29,8 @@ public enum SwaggerResponseDescription {
     ))),
     USER_LOGIN(new LinkedHashSet<>(Set.of(
             USER_NOT_MATCH_PASSWORD,
-            USER_NOT_FOUND
+            USER_NOT_FOUND,
+            LOGIN_PASSWORD_EMPTY
     ))),
     USER_EMAIL_VERIFICATION(new LinkedHashSet<>(Set.of(
             USER_EMAIL_VERIFY_FAILED
@@ -125,6 +126,7 @@ public enum SwaggerResponseDescription {
     MONG_GROWTH(new LinkedHashSet<>(Set.of(
             USER_NOT_FOUND,
             MONG_NOT_FOUND,
+            MONG_IMAGE_NOT_FOUND,
             USER_SIGNUP_LESSTHAN_TWOWEEK
     ))),
 

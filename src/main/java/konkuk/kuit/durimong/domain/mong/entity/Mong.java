@@ -23,17 +23,6 @@ public class Mong {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String image;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private MongType mongType;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private MongColor color;
-
     @Builder.Default
     private int level = 1;
 
@@ -44,27 +33,27 @@ public class Mong {
     private LocalDate lastGrowthDate;
 
     @OneToOne
+    @JoinColumn(name = "mongImageId")
+    private MongImage mongImage;
+
+    @OneToOne
     @JoinColumn(name = "userId")
     private User user;
 
 
-    public static Mong create(String name, String type, String color, User user) {
-        MongType mongType = MongType.from(type);
-        MongColor mongColor = MongColor.from(color);
+    public static Mong create(String name, MongImage mongImage, User user) {
         return Mong.builder()
                 .name(name)
-                .image(mongType.getImagePath(mongColor,1))
-                .color(mongColor)
-                .mongType(mongType)
                 .lastGrowthDate(LocalDate.now())
+                .mongImage(mongImage)
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
-    public void levelUp() {
+    public void levelUp(MongImage nextImage) {
         if (this.level < 3) {
             this.level++;
-            this.image = this.mongType.getImagePath(this.color,this.level);
+            this.mongImage = nextImage;
             this.lastGrowthDate = LocalDate.now();
         }
     }
