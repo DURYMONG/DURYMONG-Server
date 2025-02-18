@@ -125,16 +125,16 @@ public class UserController {
     }
 
     @Operation(summary = "몽과의 대화", description = "유저가 몽의 질문에 답변을 작성합니다.")
-    @Tag(name = "Mong Conversation", description = "몽과의 대화 관련 API")
+    @Tag(name = "Chat with Mong", description = "몽과의 대화 관련 API")
     @CustomExceptionDescription(USER_ANSWER)
-    @PostMapping("mong-conversation")
+    @PostMapping("answer-mong")
     public SuccessResponse<String> mongConversation(@RequestBody @Validated UserMongConversationReq req,
                                                     @Parameter(hidden = true) @UserId Long userId){
         return SuccessResponse.ok(userService.userAnswer(req,userId));
     }
 
     @Operation(summary = "답변 다시하기", description = "유저가 몽의 질문에 했던 답변을 수정합니다.")
-    @Tag(name = "Mong Conversation", description = "몽과의 대화 관련 API")
+    @Tag(name = "Chat with Mong", description = "몽과의 대화 관련 API")
     @CustomExceptionDescription(USER_EDIT_ANSWER)
     @PostMapping("answer-modification")
     public SuccessResponse<String> answerModification(@RequestBody @Validated UserEditAnswerReq req,
@@ -143,7 +143,7 @@ public class UserController {
     }
 
     @Operation(summary = "몽과의 대화 기록 보기", description = "몽과의 대화 기록을 조회합니다.")
-    @Tag(name = "Mong Conversation", description = "몽과의 대화 관련 API")
+    @Tag(name = "Chat with Mong", description = "몽과의 대화 관련 API")
     @CustomExceptionDescription(USER_CHAT_HISTORY)
     @GetMapping("mong-chat-history")
     public SuccessResponse<List<UserChatHistoryRes>> showChatHistory(
@@ -152,9 +152,9 @@ public class UserController {
     }
 
     @Operation(summary = "몽과의 대화 기록 삭제", description = "몽과의 대화 기록을 삭제합니다.")
-    @Tag(name = "Mong Conversation", description = "몽과의 대화 관련 API")
+    @Tag(name = "Chat with Mong", description = "몽과의 대화 관련 API")
     @CustomExceptionDescription(USER_DELETE_CHAT)
-    @PostMapping("conversation-elimination")
+    @PostMapping("mong-chat-elimination")
     public SuccessResponse<String> deleteChat(@RequestBody @Validated UserDeleteChatReq req){
         return SuccessResponse.ok(userService.deleteChat(req));
     }
