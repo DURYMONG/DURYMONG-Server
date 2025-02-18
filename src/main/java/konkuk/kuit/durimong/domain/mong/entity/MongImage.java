@@ -18,7 +18,7 @@ public class MongImage {
     private String imageUrl;
 
     @Column(nullable = false)
-    private int level = 1;
+    private int level;
 
     @Column(nullable = false)
     private String mongType;
