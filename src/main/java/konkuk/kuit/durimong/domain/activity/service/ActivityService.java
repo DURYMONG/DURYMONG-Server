@@ -49,7 +49,7 @@ public class ActivityService {
         Mong mong = mongRepository.findByUser(user)
                 .orElseThrow(() -> new CustomException(ErrorCode.MONG_NOT_FOUND));
 
-        String mongImage = mong.getImage();
+        String mongImage = mong.getMongImage().getImageUrl();
         String mongName = mong.getName();
         // 오늘 날짜에 체크됐는 지 확인
 
@@ -163,7 +163,7 @@ public class ActivityService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MONG_NOT_FOUND));
 
         String mongName = mong.getName();
-        String mongImage = mong.getImage();
+        String mongImage = mong.getMongImage().getImageUrl();
 
         return new ActivityDayRecordRes(targetDate,mongName,mongImage);
     }
@@ -175,7 +175,7 @@ public class ActivityService {
 
         Mong mong = mongRepository.findByUser(user)
                 .orElseThrow(() -> new CustomException(ErrorCode.MONG_NOT_FOUND));
-        String mongImage = mong.getImage();
+        String mongImage = mong.getMongImage().getImageUrl();
 
         // 유저가 가입한 날짜
         LocalDate createdAt = LocalDate.from(user.getCreatedAt());
@@ -203,7 +203,7 @@ public class ActivityService {
 
         Mong mong = mongRepository.findByUser(user)
                 .orElseThrow(() -> new CustomException(ErrorCode.MONG_NOT_FOUND));
-        String mongImage = mong.getImage();
+        String mongImage = mong.getMongImage().getImageUrl();
 
         Optional<Diary> existingDiary = diaryRepository.findByUserAndCreatedAt(user,LocalDate.now());
         Diary diary;

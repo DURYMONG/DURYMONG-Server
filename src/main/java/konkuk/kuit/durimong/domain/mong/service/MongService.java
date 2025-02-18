@@ -5,6 +5,8 @@ import konkuk.kuit.durimong.domain.mong.dto.request.MongCreateReq;
 import konkuk.kuit.durimong.domain.mong.dto.request.MongNameReq;
 import konkuk.kuit.durimong.domain.mong.dto.response.MongGrowthRes;
 import konkuk.kuit.durimong.domain.mong.entity.Mong;
+import konkuk.kuit.durimong.domain.mong.entity.MongImage;
+import konkuk.kuit.durimong.domain.mong.repository.MongImageRepository;
 import konkuk.kuit.durimong.domain.mong.repository.MongRepository;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
@@ -26,6 +28,7 @@ public class MongService {
     private final MongRepository mongRepository;
     private final UserRepository userRepository;
     private final ActivityService activityService;
+    private final MongImageRepository mongImageRepository;
 
     public String validateName(MongNameReq req) {
         if (req.getMongName().length() > 6) {
@@ -41,7 +44,9 @@ public class MongService {
         if(mongRepository.findByUser(user).isPresent()){
             throw new CustomException(MONG_ALREADY_EXISTS);
         }
-        Mong mong = Mong.create(req.getMongName(),req.getMongType(),req.getMongColor(),user);
+        MongImage mongImage = mongImageRepository.findByMongTypeAndMongColorAndLevel(req.getMongType(),req.getMongColor(),1)
+                .orElseThrow(() -> new CustomException(MONG_IMAGE_NOT_FOUND));
+        Mong mong = Mong.create(req.getMongName(),mongImage,user);
         mongRepository.save(mong);
         return "두리몽 생성이 완료되었습니다.";
     }
@@ -63,9 +68,16 @@ public class MongService {
         if(!hasCompletedAllDays){
             throw new CustomException(USER_NOT_COMPLETED_15DAYS);
         }
-        mong.levelUp();
+        MongImage currentMongImage = mong.getMongImage();
+
+        MongImage nextMongImage = mongImageRepository.findByMongTypeAndMongColorAndLevel(currentMongImage.getMongType(),
+                currentMongImage.getMongColor(),
+                currentMongImage.getLevel() + 1).
+                orElseThrow( () -> new CustomException(MONG_IMAGE_NOT_FOUND));
+        mong.levelUp(nextMongImage);
         mongRepository.save(mong);
 
-        return new MongGrowthRes(mong.getImage(),"안녕하세요! 잘 부탁해요!");
+        return new MongGrowthRes(mong.getMongImage().getImageUrl(),"안녕하세요! 잘 부탁해요!");
     }
 }
+

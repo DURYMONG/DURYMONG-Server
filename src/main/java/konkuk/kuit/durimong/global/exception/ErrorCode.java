@@ -66,6 +66,7 @@ public enum ErrorCode {
     MONG_ALREADY_EXISTS(-406,"이미 몽을 생성하셨습니다.",400),
     MONG_MAX_LEVEL(-407,"이미 성장레벨 3단계에 도달하셨습니다.",400),
     MONG_CANNOT_GROW_YET(-408,"몽이 성장하려면 마지막 성장 날짜보다 최소 15일이 지나야 합니다,",400),
+    MONG_IMAGE_NOT_FOUND(-409,"존재하지 않는 몽 이미지입니다.",404),
 
     //UserMongConversation
     CONVERSATION_NOT_EXISTS(-500,"몽과의 대화가 존재하지 않습니다,",404),

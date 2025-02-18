@@ -126,6 +126,7 @@ public enum SwaggerResponseDescription {
     MONG_GROWTH(new LinkedHashSet<>(Set.of(
             USER_NOT_FOUND,
             MONG_NOT_FOUND,
+            MONG_IMAGE_NOT_FOUND,
             USER_SIGNUP_LESSTHAN_TWOWEEK
     ))),
 
