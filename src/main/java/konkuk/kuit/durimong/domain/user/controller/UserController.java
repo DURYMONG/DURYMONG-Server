@@ -7,6 +7,7 @@ import konkuk.kuit.durimong.domain.user.dto.request.*;
 import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
 import konkuk.kuit.durimong.domain.user.dto.response.*;
 import konkuk.kuit.durimong.domain.user.service.FcmService;
+import konkuk.kuit.durimong.domain.user.service.NotificationService;
 import konkuk.kuit.durimong.domain.user.service.UserService;
 import konkuk.kuit.durimong.global.annotation.CustomExceptionDescription;
 import konkuk.kuit.durimong.global.annotation.UserId;
@@ -25,6 +26,7 @@ import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescript
 public class UserController {
     private final UserService userService;
     private final FcmService fcmService;
+    private final NotificationService notificationService;
 
     @Operation(summary = "아이디 중복검사", description = "아이디 중복여부를 확인합니다.")
     @CustomExceptionDescription(USER_ID)
@@ -220,6 +222,14 @@ public class UserController {
     @PostMapping("setting-notification")
     public SuccessResponse<Void> setPush(@Parameter(hidden = true) @UserId Long userId){
         userService.setPushEnabled(userId);
+        return SuccessResponse.ok(null);
+    }
+
+    @Operation(summary = "테스트용 수동 푸시알림", description = "테스트용입니다.")
+    @Tag(name = "User Notification", description = "푸시알림 설정 관련 API")
+    @PostMapping("/test-push")
+    public SuccessResponse<Void> triggerPushManually() {
+        notificationService.sendPushNotificationsToInactiveUsers();
         return SuccessResponse.ok(null);
     }
 
