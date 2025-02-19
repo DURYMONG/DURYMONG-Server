@@ -26,7 +26,7 @@ public enum ErrorCode {
     NOT_FOUND_PATH(-108, "존재하지 않는 API 경로입니다.", 404),
     UNABLE_TO_SEND_EMAIL(-109,"이메일을 전송할 수 없습니다.", 500),
     NO_SUCH_ALGORITHM(-110,"사용 불가능한 암호화 알고리즘입니다.", 500),
-    BAD_REQUEST(-111,"로그아웃된 사용자입니다.", 400),
+    BAD_REQUEST(-111,"잘못된 요청입니다.", 400),
     // Auth
     UNAUTHORIZED(-200, "인증 자격이 없습니다.", 401),
     FORBIDDEN(-201, "권한이 없습니다.", 403),
@@ -38,6 +38,7 @@ public enum ErrorCode {
     NOT_FOUND_AVAILABLE_PORT(-209,"이용 가능한 포트를 찾지 못했습니다.", 500),
     ERROR_EXECUTING_EMBEDDED_REDIS(-210,"REDIS 서버 실행 중 오류가 발생했습니다.", 500),
     JWT_LOGOUT_TOKEN(-211,"로그아웃된 토큰입니다.", 403),
+    TOKEN_NOT_EXISTS(-212,"존재하지 않는 토큰입니다.",404),
     // User
     USER_NOT_FOUND(-300, "존재하지 않는 회원입니다.", 404),
     USER_DUPLICATE_ID(-301, "이미 존재하는 아이디입니다.", 409),

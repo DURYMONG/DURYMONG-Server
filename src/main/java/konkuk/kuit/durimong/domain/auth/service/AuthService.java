@@ -51,7 +51,7 @@ public class AuthService {
         }
         Long userId = jwtProvider.getUserIdFromRefreshToken(refreshToken);
         if(!jwtProvider.checkTokenExists(String.valueOf(userId))) {
-            throw new CustomException(BAD_REQUEST);
+            throw new CustomException(TOKEN_NOT_EXISTS);
         }
         jwtProvider.invalidateToken(userId);
 
