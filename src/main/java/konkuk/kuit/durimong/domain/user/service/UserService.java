@@ -264,9 +264,11 @@ public class UserService {
         }
     }
 
-    public List<UserChatHistoryRes> showChatHistory(Long userId){
+    public UserChatHistoryRes showChatHistory(Long userId){
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        return userMongConversationRepository.findAllByUser(user);
+        Mong mong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
+        List<UserChatHistoryDto> userChatHistoryDto = userMongConversationRepository.findAllByUser(user);
+        return new UserChatHistoryRes(mong.getMongImage().getImageUrl(),userChatHistoryDto);
     }
 
     public String deleteChat(UserDeleteChatReq req){
@@ -284,15 +286,16 @@ public class UserService {
         return new NotificationSettingFormRes(mong.getName(),user.getId());
     }
 
-    public UserDailyChatRes userDailyChat(Long userId, UserDailyChatReq req){
+    public UserDailyChatRes userDailyChat(Long userId, LocalDate targetDate){
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        if(req.getTargetDate().isAfter(LocalDate.now())){
+        Mong mong  = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
+        if(targetDate.isAfter(LocalDate.now())){
             throw new CustomException(DATE_IS_FUTURE);
         }
-        UserMongConversation chat = userMongConversationRepository.findByCreatedAtAndUser(req.getTargetDate(), user).orElseThrow(
+        UserMongConversation chat = userMongConversationRepository.findByCreatedAtAndUser(targetDate, user).orElseThrow(
                 () -> new CustomException(CONVERSATION_NOT_EXISTS)
         );
-        return new UserDailyChatRes(req.getTargetDate(),chat.getMongQuestion(),chat.getUserAnswer());
+        return new UserDailyChatRes(targetDate,mong.getMongImage().getImageUrl(),chat.getMongQuestion(),chat.getUserAnswer());
     }
 
     public String deleteHistory(Long userId){
@@ -307,8 +310,7 @@ public class UserService {
         return "기록 지우기가 완료되었습니다.";
     }
 
-    public UserDailyBotChatChoiceRes showBotChatHistory(UserDailyBotChatChoiceReq req){
-        LocalDate targetDate = req.getTargetDate();
+    public UserDailyBotChatChoiceRes showBotChatHistory(LocalDate targetDate){
         if(targetDate.isAfter(LocalDate.now())){
             throw new CustomException(DATE_IS_FUTURE);
         }
@@ -329,11 +331,10 @@ public class UserService {
 
     }
 
-    public UserDailyBotChatRes userDailyBotChat( UserDailyBotChatReq req, Long userId){
+    public UserDailyBotChatRes userDailyBotChat( LocalDate targetDate, Long chatBotId, Long userId){
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        ChatBot chatBot = chatBotRepository.findById(req.getChatBotId()).orElseThrow(
+        ChatBot chatBot = chatBotRepository.findById(chatBotId).orElseThrow(
                 () -> new CustomException(CHATBOT_NOT_FOUND));
-        LocalDate targetDate = req.getTargetDate();
         if(targetDate.isAfter(LocalDate.now())){
             throw new CustomException(DATE_IS_FUTURE);
         }

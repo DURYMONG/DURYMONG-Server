@@ -2,7 +2,7 @@ package konkuk.kuit.durimong.domain.user.repository;
 
 
 import konkuk.kuit.durimong.domain.mong.entity.MongQuestion;
-import konkuk.kuit.durimong.domain.user.dto.response.UserChatHistoryRes;
+import konkuk.kuit.durimong.domain.user.dto.response.UserChatHistoryDto;
 import konkuk.kuit.durimong.domain.user.entity.User;
 import konkuk.kuit.durimong.domain.user.entity.UserMongConversation;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,11 +16,11 @@ public interface UserMongConversationRepository extends JpaRepository<UserMongCo
     UserMongConversation save(UserMongConversation conversation);
     UserMongConversation findByUserAndQuestion(User user, MongQuestion mongQuestion);
     Optional<UserMongConversation> findByCreatedAtAndUser(LocalDate createdAt, User user);
-    @Query("SELECT new konkuk.kuit.durimong.domain.user.dto.response.UserChatHistoryRes(c.userMongConversationId,c.createdAt, c.mongQuestion, c.userAnswer) " +
+    @Query("SELECT new konkuk.kuit.durimong.domain.user.dto.response.UserChatHistoryDto(c.userMongConversationId,c.createdAt, c.mongQuestion, c.userAnswer) " +
             "FROM UserMongConversation c " +
             "WHERE c.user = :user " +
             "ORDER BY c.createdAt")
-    List<UserChatHistoryRes> findAllByUser(User user);
+    List<UserChatHistoryDto> findAllByUser(User user);
     Optional<UserMongConversation> findByUserMongConversationId(Long conversationId);
     void deleteAllByUser(User user);
 }

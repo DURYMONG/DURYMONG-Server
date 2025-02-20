@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import konkuk.kuit.durimong.domain.mong.dto.request.MongCreateReq;
-import konkuk.kuit.durimong.domain.mong.dto.request.MongNameReq;
 import konkuk.kuit.durimong.domain.mong.dto.response.MongGrowthRes;
 import konkuk.kuit.durimong.domain.mong.service.MongService;
 import konkuk.kuit.durimong.domain.user.repository.UserRepository;
@@ -29,10 +28,10 @@ public class MongController {
     @Operation(summary = "몽 이름 검사",description = "몽의 이름이 길이 제한에 맞는지 검사합니다.")
     @CustomExceptionDescription(MONG_NAME)
     @Tag(name = "Mong Creation", description = "몽 생성 관련 API")
-    @GetMapping("name")
+    @GetMapping("name/{mongName}")
     public SuccessResponse<String> setMongName(
-            @Validated MongNameReq req){
-        return SuccessResponse.ok(mongService.validateName(req));
+            @PathVariable String mongName){
+        return SuccessResponse.ok(mongService.validateName(mongName));
     }
 
     @Operation(summary = "몽 생성", description = "몽을 생성합니다.")

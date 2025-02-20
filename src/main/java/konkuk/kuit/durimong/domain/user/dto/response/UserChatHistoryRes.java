@@ -6,20 +6,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserChatHistoryRes {
-    @Schema(description = "대화 ID", example = "1")
-    private Long conversationId;
+    @Schema(description = "몽 이미지" , example = "image")
+    private String mongImage;
 
-    @Schema(description = "대화 날짜", example = "2025/01/01")
-    private LocalDate createdAt;
+    @Schema(description = "UserChatHistoryDto")
+    private List<UserChatHistoryDto> userChatHistory;
 
-    @Schema(description = "몽의 질문", example = "좋아하는 장소가 어딘가요?")
-    private String mongQuestion;
 
-    @Schema(description = "유저의 답변", example = "건국대학교")
-    private String userAnswer;
 }

@@ -4,7 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import konkuk.kuit.durimong.domain.user.dto.request.*;
-import konkuk.kuit.durimong.domain.user.dto.request.signup.*;
+import konkuk.kuit.durimong.domain.user.dto.request.signup.UserEmailReq;
+import konkuk.kuit.durimong.domain.user.dto.request.signup.UserSignUpReq;
 import konkuk.kuit.durimong.domain.user.dto.response.*;
 import konkuk.kuit.durimong.domain.user.service.FcmService;
 import konkuk.kuit.durimong.domain.user.service.NotificationService;
@@ -16,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDate;
 
 import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.*;
 
@@ -31,25 +32,25 @@ public class UserController {
     @Operation(summary = "아이디 중복검사", description = "아이디 중복여부를 확인합니다.")
     @CustomExceptionDescription(USER_ID)
     @Tag(name = "Sign Up", description = "회원가입 관련 API")
-    @GetMapping("userid")
-    public SuccessResponse<String> getId(UserIdReq req){
-        return SuccessResponse.ok(userService.validateId(req.getId()));
+    @GetMapping("userid/{userId}")
+    public SuccessResponse<String> getId(@PathVariable String userId){
+        return SuccessResponse.ok(userService.validateId(userId));
     }
 
     @Operation(summary = "이메일 중복검사", description = "이메일 중복여부를 확인합니다.")
     @CustomExceptionDescription(USER_EMAIL)
     @Tag(name = "Sign Up", description = "회원가입 관련 API")
-    @GetMapping("email")
-    public SuccessResponse<String> getEmail(UserEmailReq req){
-        return SuccessResponse.ok(userService.validateEmail(req.getEmail()));
+    @GetMapping("email/{email}")
+    public SuccessResponse<String> getEmail(@PathVariable String email){
+        return SuccessResponse.ok(userService.validateEmail(email));
     }
 
     @Operation(summary = "비밀번호 유효성 검사", description = "비밀번호의 유효성(길이,영문 + 숫자)을 검사합니다.")
     @CustomExceptionDescription(USER_PASSWORD)
     @Tag(name = "Sign Up", description = "회원가입 관련 API")
-    @GetMapping("password")
-    public SuccessResponse<String> getPassword(UserPasswordReq req){
-        return SuccessResponse.ok(userService.validatePassword(req.getPassword()));
+    @GetMapping("password/{password}")
+    public SuccessResponse<String> getPassword(@PathVariable String password){
+        return SuccessResponse.ok(userService.validatePassword(password));
     }
 
     @Operation(summary = "이메일 인증번호 전송",description = "유저의 이메일로 인증번호를 전송합니다.")
@@ -62,9 +63,9 @@ public class UserController {
     @Operation(summary = "이메일 인증번호 확인", description = "유저에게 전송한 인증번호와 유저가 입력한 인증번호 일치 여부를 확인합니다.")
     @CustomExceptionDescription(USER_EMAIL_VERIFICATION)
     @Tag(name = "Sign Up", description = "회원가입 관련 API")
-    @GetMapping("email-verifications")
-    public SuccessResponse<String> emailVerification(UserEmailVerifyReq req){
-        return SuccessResponse.ok(userService.verifyCode(req.getEmail(),req.getAuthCode()));
+    @GetMapping("email-verification/{email}/{authCode}")
+    public SuccessResponse<String> emailVerification(@PathVariable String email, @PathVariable String authCode){
+        return SuccessResponse.ok(userService.verifyCode(email, authCode));
     }
 
     @Operation(summary = "회원가입",description = "유저가 회원가입을 합니다.")
@@ -148,7 +149,7 @@ public class UserController {
     @Tag(name = "Chat with Mong", description = "몽과의 대화 관련 API")
     @CustomExceptionDescription(USER_CHAT_HISTORY)
     @GetMapping("mong-chat-history")
-    public SuccessResponse<List<UserChatHistoryRes>> showChatHistory(
+    public SuccessResponse<UserChatHistoryRes> showChatHistory(
             @Parameter(hidden = true) @UserId Long userId){
         return SuccessResponse.ok(userService.showChatHistory(userId));
     }
@@ -174,11 +175,11 @@ public class UserController {
     @Operation(summary = "일별 몽 대화기록 조회", description = "원하는 날짜의 몽과의 대화 내역을 조회합니다.")
     @Tag(name = "User Record", description = "유저 기록 조회 관련 API")
     @CustomExceptionDescription(USER_DAILY_CHAT)
-    @GetMapping("daily-mong-chat")
+    @GetMapping("daily-mong-chat/{targetDate}")
     public SuccessResponse<UserDailyChatRes> dailyChat(
-            UserDailyChatReq req,
+            @PathVariable LocalDate targetDate,
             @Parameter(hidden = true) @UserId Long userId){
-        return SuccessResponse.ok(userService.userDailyChat(userId,req));
+        return SuccessResponse.ok(userService.userDailyChat(userId,targetDate));
     }
 
     @Operation(summary = "기록 지우기", description = "유저와 몽의 대화 기록, 채팅봇 상담내역을 삭제합니다.")
@@ -190,21 +191,21 @@ public class UserController {
         return SuccessResponse.ok(userService.deleteHistory(userId));
     }
 
-    @Operation(summary = "채팅봇 상담내역 선택", description = "유저가 해당 날짜의 어떤 상담 내역을 조회할 지 선택합니다.")
+    @Operation(summary = "채팅봇 상담내역 선택", description = "유저가 해당 날짜의 어떤 채팅봇과의 상담 내역을 조회할 지 선택합니다.")
     @Tag(name = "User Record", description = "유저 기록 조회 관련 API")
     @CustomExceptionDescription(DAILY_BOT_CHAT_CHOICE)
-    @GetMapping("daily-bot-chat-choice")
-    public SuccessResponse<UserDailyBotChatChoiceRes> dailyBotChatChoice(UserDailyBotChatChoiceReq req){
-        return SuccessResponse.ok(userService.showBotChatHistory(req));
+    @GetMapping("daily-bot-chat-choice/{targetDate}")
+    public SuccessResponse<UserDailyBotChatChoiceRes> dailyBotChatChoice(@PathVariable LocalDate targetDate){
+        return SuccessResponse.ok(userService.showBotChatHistory(targetDate));
     }
 
     @Operation(summary = "채팅봇 상담내역 조회", description = "유저가 해당 날짜의 채팅봇 상담 내역을 조회합니다.")
     @Tag(name = "User Record", description = "유저 기록 조회 관련 API")
     @CustomExceptionDescription(DAILY_BOT_CHAT)
-    @GetMapping("daily-bot-chat")
-    public SuccessResponse<UserDailyBotChatRes> getDailyBotChat(UserDailyBotChatReq req,
+    @GetMapping("daily-bot-chat/{targetDate}/{chatBotId}")
+    public SuccessResponse<UserDailyBotChatRes> getDailyBotChat(@PathVariable LocalDate targetDate, @PathVariable Long chatBotId,
                                                                 @Parameter(hidden = true) @UserId Long userId){
-        return SuccessResponse.ok(userService.userDailyBotChat(req,userId));
+        return SuccessResponse.ok(userService.userDailyBotChat(targetDate, chatBotId, userId));
     }
 
     @Operation(summary = "FCM 토큰 저장", description = "클라이언트로부터 전달받은 FCM 토큰을 저장합니다.")
