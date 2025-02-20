@@ -5,18 +5,15 @@ import konkuk.kuit.durimong.domain.column.dto.response.CategoryRes;
 import konkuk.kuit.durimong.domain.column.dto.response.ColumnRes;
 import konkuk.kuit.durimong.domain.column.dto.response.KeywordSearchRes;
 import konkuk.kuit.durimong.domain.column.entity.Column;
-import konkuk.kuit.durimong.domain.column.entity.ColumnCategory;
 import konkuk.kuit.durimong.domain.column.repository.CategoryRepository;
 import konkuk.kuit.durimong.domain.column.repository.ColumnRepository;
 import konkuk.kuit.durimong.global.exception.CustomException;
 import konkuk.kuit.durimong.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,7 +47,7 @@ public class ColumnService {
         // 결과가 있으면 포함하는 단어 혹은 문장 최대 25자 이내로 반환 + 그 칼럼의 카테고리 Id 참조하여 카테고리 이름
         // 결과가 없으면... {keyword}에 대한 검색결과가 없다고 반환.
 
-        if(keyword == null || keyword.isEmpty()) {
+        if(keyword == null || keyword.isBlank()) {
             throw new CustomException(ErrorCode.KEYWORD_NOT_EXISTS);
         }
 
