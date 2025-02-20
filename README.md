@@ -1,6 +1,5 @@
 # DURYMONG-Server
 <br>
-## API 명세서
 API 명세서 : https://www.notion.so/API-e026e1c8719146bf9531fd0d498c8dc6
 
 
