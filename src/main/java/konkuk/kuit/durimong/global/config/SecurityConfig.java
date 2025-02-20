@@ -32,7 +32,8 @@ public class SecurityConfig {
     private final String[] PERMITTED_APIS = {
             "/swagger-ui/**", "/api-docs",
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html","/swagger-ui/index.html",
-            "/users/userid","users/email","users/email-requests",
+            "/users/userid/{userId}","users/email/{email}","users/email-requests",
+            "/users/password/{password}","/users/email/{email}","/users/email-verification/{email}/{authCode}",
             "users/email-verifications","/v3/api-docs/swagger-config",
             "/users/signup",
             "/auth/login","/auth/newtokens"
