@@ -37,7 +37,7 @@ public class ColumnController {
     @Operation(summary = "칼럼 키워드 검색 결과", description = "키워드로 칼럼을 검색합니다.")
     @Tag(name = "Column", description = "칼럼 관련 API")
     @CustomExceptionDescription(COLUMN_SEARCH)
-    public SuccessResponse<KeywordSearchRes> getKeywordSearchResult(@RequestParam @Parameter(description = "검색 키워드", example = "어려움") String keyword) {
+    public SuccessResponse<KeywordSearchRes> getKeywordSearchResult(@RequestParam @Parameter(description = "검색 키워드", example = "스트레스") String keyword) {
 
         return SuccessResponse.ok(columnService.searchColumnsByKeyword(keyword));
     }
