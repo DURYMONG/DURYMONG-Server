@@ -70,8 +70,8 @@ public class ChatBotService {
         return chatBotResList;
     }
 
-    public ChatBotChattingRes getChatBotGreeting(ChatBotChattingReq req, Long userId) {
-        ChatBot chatBot = chatBotRepository.findById(req.getChatBotId())
+    public ChatBotChattingRes getChatBotGreeting(Long chatBotId, Long userId) {
+        ChatBot chatBot = chatBotRepository.findById(chatBotId)
                 .orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -227,10 +227,10 @@ public class ChatBotService {
         return message + recommendation;
     }
 
-    public ChatBotRecommendTestRes recommendTest(ChatBotRecommendTestReq req, Long userId) {
+    public ChatBotRecommendTestRes recommendTest(Long chatBotId, Long chatSessionId, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        ChatBot bot = chatBotRepository.findById(req.getChatBotId()).orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
-        ChatSession session = chatSessionRepository.findBySessionId(req.getChatSessionId())
+        ChatBot bot = chatBotRepository.findById(chatBotId).orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
+        ChatSession session = chatSessionRepository.findBySessionId(chatSessionId)
                 .orElseThrow(() -> new CustomException(CHATSESSION_NOT_FOUND));
         List<TestListDto> tests = testRepository.findTestIdAndName();
         List<String> recommendedTests = testRepository.findAllNames();
@@ -252,9 +252,9 @@ public class ChatBotService {
 
     }
 
-    public ChatBotRecommendDiaryRes recommendDiary(ChatBotRecommendDiaryReq req) {
-        ChatBot bot = chatBotRepository.findById(req.getChatBotId()).orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
-        ChatSession session = chatSessionRepository.findBySessionId(req.getChatSessionId())
+    public ChatBotRecommendDiaryRes recommendDiary(Long chatBotId, Long chatSessionId) {
+        ChatBot bot = chatBotRepository.findById(chatBotId).orElseThrow(() -> new CustomException(CHATBOT_NOT_FOUND));
+        ChatSession session = chatSessionRepository.findBySessionId(chatSessionId)
                 .orElseThrow(() -> new CustomException(CHATSESSION_NOT_FOUND));
         String botMessage = makeDiaryRecommendMessage(bot);
         DiaryRecommendHistory diaryRecommendHistory = DiaryRecommendHistory.builder()
