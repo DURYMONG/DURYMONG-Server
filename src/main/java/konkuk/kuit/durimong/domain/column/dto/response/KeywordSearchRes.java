@@ -28,7 +28,7 @@ public class KeywordSearchRes {
         @Schema(description = "카테고리 이름", example = "불면증")
         private String categoryName;
 
-        @Schema(description = "미리보기(~25자)", example = "잠드는 데 어려움을 겪거나, 잠을 유지하는데...")
+        @Schema(description = "미리보기(~25자)", example = "있다.\n\n불면증은 스트레스, 불안, 우울증 등과 같은")
         private String preview;
     }
 }
