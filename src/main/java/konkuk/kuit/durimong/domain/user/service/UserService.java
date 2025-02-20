@@ -264,9 +264,11 @@ public class UserService {
         }
     }
 
-    public List<UserChatHistoryRes> showChatHistory(Long userId){
+    public UserChatHistoryRes showChatHistory(Long userId){
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        return userMongConversationRepository.findAllByUser(user);
+        Mong mong = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
+        List<UserChatHistoryDto> userChatHistoryDto = userMongConversationRepository.findAllByUser(user);
+        return new UserChatHistoryRes(mong.getMongImage().getImageUrl(),userChatHistoryDto);
     }
 
     public String deleteChat(UserDeleteChatReq req){
@@ -286,13 +288,14 @@ public class UserService {
 
     public UserDailyChatRes userDailyChat(Long userId, LocalDate targetDate){
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Mong mong  = mongRepository.findByUser(user).orElseThrow(() -> new CustomException(MONG_NOT_FOUND));
         if(targetDate.isAfter(LocalDate.now())){
             throw new CustomException(DATE_IS_FUTURE);
         }
         UserMongConversation chat = userMongConversationRepository.findByCreatedAtAndUser(targetDate, user).orElseThrow(
                 () -> new CustomException(CONVERSATION_NOT_EXISTS)
         );
-        return new UserDailyChatRes(targetDate,chat.getMongQuestion(),chat.getUserAnswer());
+        return new UserDailyChatRes(targetDate,mong.getMongImage().getImageUrl(),chat.getMongQuestion(),chat.getUserAnswer());
     }
 
     public String deleteHistory(Long userId){

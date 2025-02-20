@@ -18,7 +18,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static konkuk.kuit.durimong.global.config.swagger.SwaggerResponseDescription.*;
 
@@ -150,7 +149,7 @@ public class UserController {
     @Tag(name = "Chat with Mong", description = "몽과의 대화 관련 API")
     @CustomExceptionDescription(USER_CHAT_HISTORY)
     @GetMapping("mong-chat-history")
-    public SuccessResponse<List<UserChatHistoryRes>> showChatHistory(
+    public SuccessResponse<UserChatHistoryRes> showChatHistory(
             @Parameter(hidden = true) @UserId Long userId){
         return SuccessResponse.ok(userService.showChatHistory(userId));
     }
